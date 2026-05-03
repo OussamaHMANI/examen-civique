@@ -1,2561 +1,2634 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>QCM – Examen civique carte de résident</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    .quiz-container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      font-size: 1.6rem;
-      margin-top: 0;
-      text-align: center;
-    }
-    #progress {
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 12px;
-    }
-    #question {
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .choice-btn {
-      text-align: left;
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #f9f9f9;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .choice-btn:hover {
-      background: #f0f0f0;
-    }
-    .choice-btn.selected {
-      border-color: #2563eb;
-      background: #e0ecff;
-    }
-    .choice-btn.correct {
-      background: #16a34a;
-      color: #fff;
-      border-color: #15803d;
-    }
-    .choice-btn.incorrect {
-      background: #dc2626;
-      color: #fff;
-      border-color: #b91c1c;
-    }
-    #controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-    }
-    #nextBtn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #2563eb;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    #nextBtn:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-    #nextBtn:hover:not(:disabled) {
-      background: #1d4ed8;
-    }
-    #result {
-      display: none;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-    }
-    #result h2 {
-      margin-top: 0;
-    }
-    .summary-item {
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-    .tag-good {
-      color: #16a34a;
-      font-weight: 600;
-    }
-    .tag-bad {
-      color: #dc2626;
-      font-weight: 600;
-    }
-    .restart-btn {
-      margin-top: 12px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #6b7280;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-	/* Zone de résultat globale */
-#result {
-  display: none;
-  margin-top: 24px;
-}
+    <meta charset="UTF-8" />
+    <title>QCM – Examen civique carte de résident</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
 
-/* Carte de score en haut */
-.result-header {
-  background: #111827;
-  color: #f9fafb;
-  border-radius: 10px;
-  padding: 18px 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-}
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
 
-.result-header h2 {
-  margin: 0 0 8px;
-  font-size: 1.3rem;
-}
+        h1 {
+            font-size: 1.6rem;
+            margin-top: 0;
+            text-align: center;
+        }
 
-.result-score-line {
-  font-size: 1rem;
-  margin-bottom: 6px;
-}
+        #progress {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 12px;
+        }
 
-.result-message {
-  font-size: 0.95rem;
-  font-weight: 600;
-}
+        #question {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
 
-.result-message.success {
-  color: #bbf7d0; /* vert pâle */
-}
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
 
-.result-message.fail {
-  color: #fecaca; /* rouge pâle */
-}
+        .choice-btn {
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
 
-/* Liste de correction */
-.result-list-title {
-  margin: 0 0 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #111827;
-}
+        .choice-btn:hover {
+            background: #f0f0f0;
+        }
 
-/* Carte par question */
-.question-review {
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  margin-bottom: 10px;
-  overflow: hidden;
-  background: #ffffff;
-}
+        .choice-btn.selected {
+            border-color: #2563eb;
+            background: #e0ecff;
+        }
 
-.question-review-header {
-  padding: 8px 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+        .choice-btn.correct {
+            background: #16a34a;
+            color: #fff;
+            border-color: #15803d;
+        }
 
-.question-review-header.correct {
-  background: #ecfdf5;
-  color: #166534;
-}
+        .choice-btn.incorrect {
+            background: #dc2626;
+            color: #fff;
+            border-color: #b91c1c;
+        }
 
-.question-review-header.incorrect {
-  background: #fef2f2;
-  color: #b91c1c;
-}
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
 
-.question-review-body {
-  padding: 10px 12px 12px;
-  font-size: 0.95rem;
-  color: #374151;
-}
+        #nextBtn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
 
-.question-review-body p {
-  margin: 2px 0;
-}
+        #nextBtn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
 
-/* Badges */
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
+        #nextBtn:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
 
-.badge.correct {
-  background: #bbf7d0;
-  color: #166534;
-}
+        #result {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
 
-.badge.incorrect {
-  background: #fecaca;
-  color: #b91c1c;
-}
+        #result h2 {
+            margin-top: 0;
+        }
 
-/* Bouton recommencer */
-.restart-btn {
-  margin-top: 16px;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  background: #6b7280;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-.restart-btn:hover {
-  background: #4b5563;
-}
-	.home-btn {
-  display: inline-block;
-  margin: 12px 16px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #f9fafb;
-  color: #111827;
-  font-size: 0.9rem;
-  text-decoration: none;
-  font-weight: 500;
-}
-.home-btn:hover {
-  background: #e5e7eb;
-}
-  </style>
+        .summary-item {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .tag-good {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .tag-bad {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #6b7280;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Zone de résultat globale */
+        #result {
+            display: none;
+            margin-top: 24px;
+        }
+
+        /* Carte de score en haut */
+        .result-header {
+            background: #111827;
+            color: #f9fafb;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-header h2 {
+            margin: 0 0 8px;
+            font-size: 1.3rem;
+        }
+
+        .result-score-line {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .result-message {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .result-message.success {
+            color: #bbf7d0;
+            /* vert pâle */
+        }
+
+        .result-message.fail {
+            color: #fecaca;
+            /* rouge pâle */
+        }
+
+        /* Liste de correction */
+        .result-list-title {
+            margin: 0 0 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* Carte par question */
+        .question-review {
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .question-review-header {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-review-header.correct {
+            background: #ecfdf5;
+            color: #166534;
+        }
+
+        .question-review-header.incorrect {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .question-review-body {
+            padding: 10px 12px 12px;
+            font-size: 0.95rem;
+            color: #374151;
+        }
+
+        .question-review-body p {
+            margin: 2px 0;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.correct {
+            background: #bbf7d0;
+            color: #166534;
+        }
+
+        .badge.incorrect {
+            background: #fecaca;
+            color: #b91c1c;
+        }
+
+        /* Bouton recommencer */
+        .restart-btn {
+            margin-top: 16px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #6b7280;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .restart-btn:hover {
+            background: #4b5563;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin: 12px 16px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .home-btn:hover {
+            background: #e5e7eb;
+        }
+
+        #timer {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #b91c1c;
+            /* rouge foncé */
+            margin-bottom: 8px;
+            text-align: right;
+        }
+    </style>
 </head>
+
 <body>
-<a href="index.html" class="home-btn">← Retour à l’accueil</a>
+    <a href="index.html" class="home-btn">← Retour à l’accueil</a>
 
-  <div class="quiz-container">
-    <h1>QCM – Examen civique carte de résident :</h1>
+    <div class="quiz-container">
+        <h1>QCM – Examen civique carte de résident :</h1>
 
-    <div id="quiz">
-      <div id="progress"></div>
-      <div id="question"></div>
-      <div id="choices" class="choices"></div>
-      <div id="controls">
-        <div></div>
-        <button id="nextBtn" disabled>Question suivante</button>
-      </div>
+        <div id="quiz">
+            <div id="timer"></div>
+            <div id="progress"></div>
+            <div id="question"></div>
+            <div id="choices" class="choices"></div>
+            <div id="controls">
+                <div></div>
+                <button id="nextBtn" disabled>Question suivante</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
     </div>
 
-    <div id="result"></div>
-  </div>
+    <script>
+        // --------------------------------------------------------
+        // 1) Banque de questions : Principes et valeurs (40 questions)
+        // --------------------------------------------------------
+        const VIVRE_SOCIETE_QUESTIONS = [{
+                question: "Quel mariage est reconnu par l'État ?",
+                choices: [
+                    "Le mariage civil célébré à la mairie",
+                    "Le mariage religieux uniquement",
+                    "Le mariage traditionnel organisé par la famille",
+                    "Le mariage célébré à l’étranger sans aucune formalité"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Auprès de quelle institution les parents peuvent-ils inscrire leur enfant à l'école publique ?",
+                choices: [
+                    "À la mairie de la commune ou directement à l’école selon l’organisation locale",
+                    "Au commissariat de police",
+                    "À la préfecture",
+                    "Au tribunal judiciaire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En cas de divorce, qui exerce l'autorité parentale ?",
+                choices: [
+                    "En principe, les deux parents conjointement",
+                    "Uniquement la mère",
+                    "Uniquement le père",
+                    "Les grands-parents"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle aide permet aux personnes qui ont des difficultés financières d'avoir un avocat ?",
+                choices: [
+                    "L’aide juridictionnelle",
+                    "L’aide au logement",
+                    "La bourse scolaire",
+                    "La réduction d’impôt"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où faut-il déclarer la naissance d'un enfant ?",
+                choices: [
+                    "À la mairie du lieu de naissance",
+                    "À la mairie du domicile des parents seulement",
+                    "Au commissariat de police",
+                    "À l’ambassade du pays d’origine"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l'une des conditions pour passer l'examen du permis de conduire ?",
+                choices: [
+                    "Avoir réussi l’examen du code de la route",
+                    "Être propriétaire d’une voiture",
+                    "Avoir un emploi à temps plein",
+                    "Avoir la nationalité française"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Un bail locatif est valide s'il est :",
+                choices: [
+                    "Écrit et signé par le bailleur et le locataire, avec les mentions obligatoires",
+                    "Demandé seulement à l’oral au propriétaire",
+                    "Affiché dans le hall de l’immeuble",
+                    "Signé uniquement par le locataire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où peut-on déposer un lave-vaisselle cassé ?",
+                choices: [
+                    "À la déchetterie ou dans un point de collecte des encombrants",
+                    "Dans la poubelle ordinaire de la rue",
+                    "Dans la nature, en forêt",
+                    "Dans les toilettes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel numéro d'urgence permet d'appeler la police ?",
+                choices: [
+                    "Le 17",
+                    "Le 15",
+                    "Le 18",
+                    "Le 3615"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant l'accès aux soins, quelle proposition est correcte ?",
+                choices: [
+                    "Toute personne peut être soignée, notamment en cas d’urgence, et les résidents sont couverts par l’Assurance maladie",
+                    "Seuls les citoyens français peuvent consulter un médecin",
+                    "On ne peut pas être soigné sans carte bancaire",
+                    "Les soins sont gratuits uniquement pour les enfants"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À qui est accessible la contraception ?",
+                choices: [
+                    "À toutes les personnes, y compris les mineur(e)s, dans le respect de la loi",
+                    "Uniquement aux personnes mariées",
+                    "Uniquement aux femmes majeures",
+                    "Uniquement avec l’autorisation des parents"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu’est-ce que le principe de confidentialité dans le domaine de la santé ?",
+                choices: [
+                    "L’obligation pour les professionnels de santé de garder secrètes les informations du patient",
+                    "Le droit du médecin de parler de la maladie à tout le monde",
+                    "L’obligation pour le patient de tout raconter à ses voisins",
+                    "Le fait de ne rien dire à son médecin"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "L'inscription à l'Assurance maladie est :",
+                choices: [
+                    "Un droit pour les personnes résidant de manière stable et régulière en France",
+                    "Réservée uniquement aux salariés à temps plein",
+                    "Obligatoire uniquement après 30 ans",
+                    "Impossible pour les étrangers"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui peut demander un congé parental d'éducation ?",
+                choices: [
+                    "Le père ou la mère salarié(e), ou les deux, après une naissance ou une adoption",
+                    "Uniquement la mère",
+                    "Uniquement le père",
+                    "Uniquement les parents fonctionnaires"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelles sont les affaires traitées par le conseil de prud'hommes ?",
+                choices: [
+                    "Les litiges entre salariés et employeurs",
+                    "Les conflits entre voisins",
+                    "Les affaires pénales graves",
+                    "Les questions de nationalité"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Travailler sans être déclaré est :",
+                choices: [
+                    "Interdit et constitue du travail dissimulé",
+                    "Autorisé si le salarié est d’accord",
+                    "Autorisé pour les petits boulots",
+                    "Obligatoire dans certaines entreprises"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Lorsqu'un employeur veut qu'un salarié travaille plus longtemps que la durée prévue dans le contrat de travail :",
+                choices: [
+                    "Il doit obtenir son accord et rémunérer les heures supplémentaires",
+                    "Il peut l’imposer sans le payer plus",
+                    "Il peut baisser le salaire en échange",
+                    "Il n’a aucune démarche à faire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la mission de France Travail ?",
+                choices: [
+                    "Accompagner les personnes vers l’emploi et gérer les droits au chômage",
+                    "Attribuer les logements sociaux",
+                    "Contrôler les écoles",
+                    "Gérer les hôpitaux publics"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Dans une entreprise, le droit syndical permet :",
+                choices: [
+                    "De se regrouper pour défendre collectivement les intérêts des salariés",
+                    "D’imposer sa religion aux autres",
+                    "De choisir les lois applicables",
+                    "De refuser toute règle de sécurité"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Dans une entreprise, le droit de grève autorise :",
+                choices: [
+                    "Les salariés à cesser collectivement le travail pour défendre leurs revendications",
+                    "Les salariés à ne plus jamais revenir travailler",
+                    "Les salariés à dégrader les locaux",
+                    "Les salariés à refuser de respecter le règlement intérieur"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelles sont les conditions pour toucher les allocations chômage ?",
+                choices: [
+                    "Avoir suffisamment travaillé, être inscrit comme demandeur d’emploi et rechercher activement un travail",
+                    "Être inscrit à l’université",
+                    "Ne jamais avoir travaillé",
+                    "Refuser toutes les offres d’emploi"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que l'école maternelle ?",
+                choices: [
+                    "L’école publique qui accueille les enfants avant l’école élémentaire, à partir de 3 ans",
+                    "Une école réservée aux adultes",
+                    "Une école spécialisée pour les élèves en difficulté",
+                    "Une école privée obligatoire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Comment s'appelle le diplôme passé par les élèves à la fin du collège ?",
+                choices: [
+                    "Le diplôme national du brevet",
+                    "Le baccalauréat",
+                    "Le CAP",
+                    "Le master"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Les parents d'élève ont le droit de :",
+                choices: [
+                    "Être informés de la scolarité de leur enfant et participer à la vie de l’école (réunions, élections de parents d’élèves, etc.)",
+                    "Entrer dans la classe à tout moment sans autorisation",
+                    "Décider seuls du contenu des cours",
+                    "Choisir les notes de leur enfant"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui peut manger à la cantine scolaire ?",
+                choices: [
+                    "Les élèves inscrits dans l’établissement, dans le respect du règlement de la cantine",
+                    "Uniquement les enseignants",
+                    "Toutes les personnes du quartier",
+                    "Uniquement les enfants qui ont de très bons résultats"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À quel âge commence l'instruction obligatoire des enfants ?",
+                choices: [
+                    "À 3 ans",
+                    "À 6 ans",
+                    "À 10 ans",
+                    "À 16 ans"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est l'âge de la majorité ?",
+                choices: [
+                    "18 ans",
+                    "16 ans",
+                    "21 ans",
+                    "25 ans"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À l'école, il est interdit aux parents de :",
+                choices: [
+                    "Insulter ou menacer les personnels et intervenir dans la classe sans autorisation",
+                    "Assister aux réunions parents-professeurs",
+                    "Parler avec le directeur",
+                    "Accompagner les sorties scolaires"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel motif d'absence est accepté par l'école ?",
+                choices: [
+                    "Une maladie justifiée ou un rendez-vous médical important",
+                    "Une envie de rester à la maison",
+                    "Un voyage sans prévenir l’école",
+                    "Le fait d’être en retard le matin"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Des parents ne respectent pas l'obligation d'instruction pour leurs enfants. Quelle sanction maximale risquent-ils ?",
+                choices: [
+                    "Une amende et éventuellement une peine de prison",
+                    "Une simple remarque orale sans suite",
+                    "La perte automatique de la nationalité",
+                    "La suppression du droit de vote à vie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quand ont lieu les vacances scolaires de Noël ?",
+                choices: [
+                    "Fin décembre et début janvier",
+                    "Au mois de mars",
+                    "En juillet-août",
+                    "Au mois d’octobre uniquement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À l'école, un enfant en situation de handicap :",
+                choices: [
+                    "A droit à une scolarisation adaptée et à des aménagements, si nécessaire avec un accompagnant",
+                    "Ne peut pas être scolarisé",
+                    "Doit obligatoirement être dans une école séparée",
+                    "N’a pas droit de passer d’examens"
+                ],
+                correctIndex: 0
+            }
+        ];
+        const PRINCIPES_QUESTIONS = [{
+                question: "Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",
+                choices: [
+                    "Voter lors des élections",
+                    "Regarder les informations à la télévision",
+                    "Partir en vacances à l’étranger",
+                    "Faire ses courses au supermarché"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit la liberté d’expression ?",
+                choices: [
+                    "Le droit d’exprimer ses opinions dans le respect de la loi",
+                    "Le droit d’insulter les autres publiquement",
+                    "Le droit de publier n’importe quelle information, même mensongère",
+                    "Le droit d’appeler à la violence contre une personne ou un groupe"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À quoi sert un titre de séjour ?",
+                choices: [
+                    "À permettre à un étranger de résider légalement en France",
+                    "À voyager gratuitement en train",
+                    "À voter aux élections françaises",
+                    "À devenir automatiquement fonctionnaire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La liberté de circulation permet à toute personne de :",
+                choices: [
+                    "Se déplacer librement sur le territoire français dans le respect de la loi",
+                    "Refuser tout contrôle d’identité de la police",
+                    "Entrer partout sans autorisation, même dans les lieux privés",
+                    "Passer toutes les frontières sans passeport ni visa"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Sur quel site internet peut-on retrouver le symbole de la République française ?",
+                choices: [
+                    "Sur le site officiel de l’administration : www.service-public.fr",
+                    "Sur un site de petites annonces entre particuliers",
+                    "Sur un réseau social privé",
+                    "Uniquement sur le site d’un parti politique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Complétez ces paroles de la Marseillaise : \"Aux armes […] ! Formez vos bataillons\"",
+                choices: [
+                    "citoyens",
+                    "soldats",
+                    "Français",
+                    "amis"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Complétez les paroles de la Marseillaise : \"Allons enfants de la patrie […]\"",
+                choices: [
+                    "le jour de gloire est arrivé",
+                    "la France est notre pays",
+                    "marchons tous vers la victoire",
+                    "unis pour la liberté"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En application de la liberté individuelle, quelle proposition est correcte ? Une personne peut :",
+                choices: [
+                    "choisir librement son mode de vie tant qu’elle respecte la loi",
+                    "être arrêtée sans motif et sans décision de justice",
+                    "être mariée de force par sa famille",
+                    "être fouillée sans aucune raison par n’importe qui"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant la pratique de la religion, quelle proposition est correcte ?",
+                choices: [
+                    "Chacun est libre de croire ou de ne pas croire, dans le respect de la loi",
+                    "Tout le monde doit avoir une religion",
+                    "L’État impose une religion officielle à tous",
+                    "Seules certaines religions sont autorisées"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En tant que parent, peut-on refuser que son enfant participe aux cours de sport à l'école car ils sont mixtes ?",
+                choices: [
+                    "Non, la mixité fait partie des règles de l’école publique",
+                    "Oui, si on en informe le professeur",
+                    "Oui, si l’enfant n’aime pas le sport",
+                    "Oui, si on fournit un certificat de complaisance"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la devise de la France ?",
+                choices: [
+                    "Liberté, Égalité, Fraternité",
+                    "Paix, Travail, Justice",
+                    "Unité, Force, Progrès",
+                    "Travail, Famille, Patrie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La répudiation de sa femme est :",
+                choices: [
+                    "interdite par la loi française",
+                    "autorisée avec l’accord de la famille",
+                    "possible uniquement devant le maire",
+                    "tolérée dans certaines régions"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Les impôts permettent de financer les dépenses publiques. Quelle proposition est correcte ?",
+                choices: [
+                    "Ils servent notamment à financer les écoles, les hôpitaux, les routes et les services publics",
+                    "Ils vont directement sur le compte bancaire du président de la République",
+                    "Ils ne servent qu’à payer les retraites des fonctionnaires",
+                    "Ils sont facultatifs pour les personnes qui ne veulent pas les payer"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Peut-on brûler publiquement un drapeau français ?",
+                choices: [
+                    "Non, c’est un délit puni par la loi",
+                    "Oui, c’est une liberté sans limite",
+                    "Oui, mais seulement le 14 juillet",
+                    "Oui, si on demande l’autorisation au maire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que fait l’État pour lutter contre les discriminations ?",
+                choices: [
+                    "Il interdit les discriminations et peut sanctionner ceux qui les pratiquent",
+                    "Il laisse les entreprises décider librement",
+                    "Il autorise les discriminations dans certains métiers",
+                    "Il n’a aucun rôle dans ce domaine"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que représente Marianne ?",
+                choices: [
+                    "La République française et ses valeurs",
+                    "Une reine de France",
+                    "Une sainte protectrice",
+                    "Une héroïne de roman"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la liberté d'association ?",
+                choices: [
+                    "Le droit de créer ou de rejoindre une association dans le cadre de la loi",
+                    "L’obligation d’adhérer à une association",
+                    "Le droit de refuser la loi si on est dans une association",
+                    "Le droit de faire des réunions sans respecter aucune règle"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la liberté ?",
+                choices: [
+                    "Le droit de faire tout ce qui ne nuit pas à autrui",
+                    "Le droit de faire ce que l’on veut sans aucune limite",
+                    "Le droit de ne jamais obéir aux lois",
+                    "Le droit de ne pas respecter les autres"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la Marseillaise ?",
+                choices: [
+                    "L’hymne national français",
+                    "Le drapeau national français",
+                    "La devise nationale française",
+                    "Une ancienne monnaie française"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Sur quel document peut-on voir Marianne ?",
+                choices: [
+                    "Sur certains timbres-poste et pièces de monnaie",
+                    "Uniquement sur les billets de banque étrangers",
+                    "Seulement dans les livres d’histoire",
+                    "Uniquement sur les passeports étrangers"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Un employeur refuse d’embaucher des femmes dans son entreprise. Que dit la loi ?",
+                choices: [
+                    "C’est une discrimination interdite par la loi",
+                    "C’est acceptable si l’employeur le justifie",
+                    "C’est autorisé pour les petites entreprises",
+                    "C’est autorisé si les femmes sont d’accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une des valeurs de la devise républicaine est l'égalité. Qu'est-ce que cela signifie ?",
+                choices: [
+                    "Tous les citoyens ont les mêmes droits et les mêmes devoirs devant la loi",
+                    "Certains citoyens ont plus de droits que d’autres",
+                    "Les hommes ont plus de droits que les femmes",
+                    "Seuls les Français nés en France ont des droits"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la place de la langue française dans la République ?",
+                choices: [
+                    "C’est la langue officielle de la République",
+                    "C’est une langue régionale parmi d’autres",
+                    "Elle n’a aucun statut particulier",
+                    "Elle est seulement utilisée dans les tribunaux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quels sont des symboles officiels de la République française ?",
+                choices: [
+                    "Le drapeau tricolore, la Marseillaise, Marianne, la devise Liberté-Égalité-Fraternité",
+                    "Le coq, le franc, le château de Versailles",
+                    "La baguette, le fromage, le béret",
+                    "Le lion, la couronne, l’hymne européen"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "A-t-on le droit d'insulter publiquement quelqu’un parce qu’il est différent (handicap, apparence physique, sexe…) ?",
+                choices: [
+                    "Non, c’est interdit et puni par la loi",
+                    "Oui, c’est une liberté d’expression normale",
+                    "Oui, si c’est sur internet seulement",
+                    "Oui, si c’est dans une discussion privée"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le régime de la France est :",
+                choices: [
+                    "Une République démocratique",
+                    "Une monarchie absolue",
+                    "Une dictature militaire",
+                    "Un empire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
+                choices: [
+                    "Pour garantir la neutralité et le respect de toutes les convictions",
+                    "Pour obliger tous les élèves à avoir la même religion",
+                    "Pour interdire de parler de religion en France",
+                    "Pour privilégier une religion par rapport aux autres"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année la loi de séparation des Églises et de l'Etat a-t-elle été votée ?",
+                choices: [
+                    "1905",
+                    "1789",
+                    "1958",
+                    "1918"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
+                choices: [
+                    "Oui, c’est la liberté de conscience",
+                    "Non, tout le monde doit avoir une religion",
+                    "Oui, mais seulement à partir de 18 ans",
+                    "Oui, mais seulement si sa famille est d’accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel droit est garanti par la laïcité ?",
+                choices: [
+                    "La liberté de conscience et de religion",
+                    "L’obligation de pratiquer une religion",
+                    "Le droit pour l’État d’imposer une religion",
+                    "Le droit pour une religion de diriger l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À l'école publique, qui peut porter des signes religieux très visibles ?",
+                choices: [
+                    "Ni les élèves ni les personnels, car ils doivent respecter la neutralité religieuse",
+                    "Seuls les enseignants",
+                    "Tous les élèves sans restriction",
+                    "Tout le monde, sans aucune règle"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Selon le principe de laïcité, que signifie la neutralité de l’État ?",
+                choices: [
+                    "L’État ne favorise ni ne discrimine aucune religion",
+                    "L’État choisit une religion officielle",
+                    "L’État interdit toutes les religions",
+                    "L’État délègue les lois aux responsables religieux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que peut faire un usager du service public dans une mairie ?",
+                choices: [
+                    "Être traité de la même façon quels que soient sa religion ou ses opinions",
+                    "Exiger que le service public applique sa religion",
+                    "Refuser de parler avec un agent d’une autre origine",
+                    "Obliger les autres usagers à suivre sa religion"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",
+                choices: [
+                    "Tous les agents du service public",
+                    "Uniquement le préfet",
+                    "Uniquement les usagers étrangers",
+                    "Uniquement les agents croyants"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",
+                choices: [
+                    "Oui, ils ne doivent pas montrer de préférence religieuse",
+                    "Non, ils peuvent exprimer leur religion en priorité",
+                    "Oui, mais uniquement pendant les fêtes religieuses",
+                    "Non, cela ne concerne que les élus"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit le principe de laïcité ?",
+                choices: [
+                    "La liberté de croire ou de ne pas croire et l’égalité de tous devant la loi",
+                    "La supériorité d’une religion sur les autres",
+                    "L’interdiction de parler de religion dans la société",
+                    "Le pouvoir des religions sur l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "A-t-on le droit de changer de religion ?",
+                choices: [
+                    "Oui, chacun est libre de changer ou d’abandonner sa religion",
+                    "Non, on garde obligatoirement la religion de ses parents",
+                    "Oui, mais seulement une fois dans sa vie",
+                    "Oui, si l’État donne son autorisation"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que représente la laïcité ?",
+                choices: [
+                    "Un principe qui permet la coexistence de toutes les convictions dans le respect de la loi",
+                    "Une religion officielle de la France",
+                    "L’interdiction totale de toute religion",
+                    "Un simple conseil sans valeur juridique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est ce qui est interdit par la Charte de la laïcité à l'école ?",
+                choices: [
+                    "Le prosélytisme et l’imposition de sa religion aux autres à l’école",
+                    "L’enseignement de l’histoire des religions",
+                    "La discussion respectueuse sur les croyances",
+                    "La présence d’élèves de religions différentes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que dit l'article 1er de la Constitution française ?",
+                choices: [
+                    "Que la France est une République indivisible, laïque, démocratique et sociale",
+                    "Que la France est une monarchie parlementaire",
+                    "Que la France a une religion officielle",
+                    "Que seuls les hommes peuvent être citoyens"
+                ],
+                correctIndex: 0
+            }
+        ];
+        const SYSTEME_INSTIT_QUESTIONS = [{
+                question: "Qu'est-ce que l'État de droit ?",
+                choices: [
+                    "Un système dans lequel tout le monde, y compris les gouvernants, est soumis à la loi",
+                    "Un État où le président décide de tout",
+                    "Un État où la police n’a pas besoin de respecter la loi",
+                    "Un système où seuls les riches ont des droits"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le président de la République a commis un crime. Quelle proposition est correcte ?",
+                choices: [
+                    "Il peut être jugé, car personne n’est au-dessus de la loi",
+                    "Il ne peut jamais être jugé pendant son mandat",
+                    "Il est protégé à vie contre toute poursuite",
+                    "Seul le Parlement peut le gronder mais pas le juger"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La loi est l'expression de :",
+                choices: [
+                    "la volonté générale",
+                    "la volonté du président",
+                    "la volonté des tribunaux",
+                    "la volonté des partis politiques"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la durée du mandat du conseil municipal et du maire ?",
+                choices: [
+                    "6 ans",
+                    "3 ans",
+                    "4 ans",
+                    "10 ans"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit l’État de droit ?",
+                choices: [
+                    "La protection des droits et libertés par des règles juridiques et des juges indépendants",
+                    "Le pouvoir illimité du gouvernement",
+                    "L’absence totale de lois",
+                    "Le droit de se faire justice soi-même"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une personne peut-elle voter à la place d'une autre ?",
+                choices: [
+                    "Non, c’est interdit : le vote est personnel et secret",
+                    "Oui, si c’est un membre de la famille",
+                    "Oui, si la personne est malade",
+                    "Oui, si le maire donne son accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Est-ce que le vote est obligatoire ?",
+                choices: [
+                    "Non, mais c’est un droit essentiel du citoyen",
+                    "Oui, sous peine de prison",
+                    "Oui, sous peine d’amende automatique",
+                    "Il n’existe pas de droit de vote en France"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À la fin de son mandat, le président de la République peut-il décider de rester au pouvoir ?",
+                choices: [
+                    "Non, il doit respecter la Constitution et les élections",
+                    "Oui, s’il le souhaite",
+                    "Oui, si le Parlement est d’accord",
+                    "Oui, si les sondages sont favorables"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui dirige l'action du Gouvernement ?",
+                choices: [
+                    "Le Premier ministre",
+                    "Le président du Sénat",
+                    "Le ministre de l’Intérieur",
+                    "Le président de l’Assemblée nationale"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui nomme le Premier ministre ?",
+                choices: [
+                    "Le président de la République",
+                    "Le Parlement",
+                    "Le Conseil constitutionnel",
+                    "Les maires"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l'organisation administrative de la France ?",
+                choices: [
+                    "L’État, les régions, les départements et les communes",
+                    "L’État, les royaumes et les colonies",
+                    "Uniquement l’État central sans aucune collectivité",
+                    "Des provinces autonomes indépendantes de l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que le pouvoir législatif ? Le pouvoir :",
+                choices: [
+                    "d’adopter les lois",
+                    "de juger les citoyens",
+                    "de faire appliquer les lois",
+                    "de diriger les communes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi séparer les trois pouvoirs dans une démocratie ?",
+                choices: [
+                    "Pour éviter les abus de pouvoir et garantir l’équilibre des institutions",
+                    "Pour faire plaisir aux partis politiques",
+                    "Pour compliquer le fonctionnement de l’État",
+                    "Pour empêcher les citoyens de comprendre la politique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui sanctionne l'auteur d'un vol ?",
+                choices: [
+                    "Le juge, au sein des tribunaux",
+                    "Le maire",
+                    "Le président de la République",
+                    "Le préfet"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du gouvernement ?",
+                choices: [
+                    "Conduire la politique de la Nation et faire appliquer les lois",
+                    "Rédiger la Constitution",
+                    "Contrôler les juges",
+                    "Organiser uniquement les élections"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
+                choices: [
+                    "Il peut être jugé et sanctionné comme tout citoyen",
+                    "Il est protégé et ne risque rien",
+                    "Seul le président peut le punir sans juge",
+                    "Il perd automatiquement sa nationalité"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien de députés composent l’Assemblée nationale ?",
+                choices: [
+                    "577 députés",
+                    "350 députés",
+                    "750 députés",
+                    "120 députés"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui peut voter aux élections en France ?",
+                choices: [
+                    "Les citoyens français majeurs jouissant de leurs droits civiques",
+                    "Toutes les personnes vivant en France, quel que soit leur statut",
+                    "Uniquement les propriétaires",
+                    "Uniquement les fonctionnaires"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pour combien de temps sont élus les sénateurs ?",
+                choices: [
+                    "6 ans",
+                    "3 ans",
+                    "4 ans",
+                    "9 ans"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
+                choices: [
+                    "Législatif, exécutif et judiciaire",
+                    "Municipal, régional et national",
+                    "Politique, économique et religieux",
+                    "Présidentiel, militaire et religieux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Est-ce que le président de la République a tous les pouvoirs ?",
+                choices: [
+                    "Non, ses pouvoirs sont limités par la Constitution et les autres institutions",
+                    "Oui, il décide seul de tout",
+                    "Oui, mais uniquement en temps de paix",
+                    "Oui, s’il est élu deux fois"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui est le préfet ?",
+                choices: [
+                    "Le représentant de l’État dans un département ou une région",
+                    "Le chef de la commune",
+                    "Le président du conseil régional",
+                    "Un juge du tribunal"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle condition est nécessaire pour voter aux élections ?",
+                choices: [
+                    "Être inscrit sur les listes électorales",
+                    "Avoir un permis de conduire",
+                    "Avoir un emploi stable",
+                    "Être propriétaire de son logement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui dirige la commune ?",
+                choices: [
+                    "Le maire",
+                    "Le préfet",
+                    "Le président de la République",
+                    "Le Premier ministre"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le régime politique de la France aujourd'hui ?",
+                choices: [
+                    "Une République démocratique",
+                    "Une monarchie absolue",
+                    "Une dictature militaire",
+                    "Un empire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que l'Hôtel de Matignon ?",
+                choices: [
+                    "La résidence et le lieu de travail du Premier ministre",
+                    "La résidence du président de la République",
+                    "Le siège du Parlement",
+                    "Le siège du Conseil constitutionnel"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le Parlement est composé :",
+                choices: [
+                    "de l’Assemblée nationale et du Sénat",
+                    "du président de la République seul",
+                    "des maires de France",
+                    "des ministres du gouvernement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du président de la République ?",
+                choices: [
+                    "Il garantit le fonctionnement régulier des pouvoirs publics et la continuité de l’État",
+                    "Il rédige seul toutes les lois",
+                    "Il juge les citoyens",
+                    "Il dirige chaque commune"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du Premier ministre ?",
+                choices: [
+                    "Diriger l’action du gouvernement et assurer l’exécution des lois",
+                    "Commander l’armée",
+                    "Organiser les élections municipales",
+                    "Rédiger la Constitution"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui est le chef du Gouvernement ?",
+                choices: [
+                    "Le Premier ministre",
+                    "Le président du Sénat",
+                    "Le président de la République",
+                    "Le président du Conseil constitutionnel"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien y a-t-il de régions en France ?",
+                choices: [
+                    "18 régions",
+                    "10 régions",
+                    "22 régions",
+                    "25 régions"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du Défenseur des droits ?",
+                choices: [
+                    "Protéger les droits et libertés des personnes et lutter contre les discriminations",
+                    "Diriger les armées",
+                    "Écrire les lois",
+                    "Organiser les élections"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Depuis quand l'euro est-elle la monnaie unique en France (pièces et billets) ?",
+                choices: [
+                    "Depuis 2002",
+                    "Depuis 1990",
+                    "Depuis 1995",
+                    "Depuis 2010"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle principal du département ?",
+                choices: [
+                    "Gérer l’action sociale, les collèges et certaines routes",
+                    "Diriger les relations internationales",
+                    "Organiser les élections présidentielles",
+                    "Commander l’armée"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle principal des communes ?",
+                choices: [
+                    "Gérer les services de proximité (état civil, écoles primaires, voirie locale, etc.)",
+                    "Voter les lois nationales",
+                    "Contrôler les banques",
+                    "Rédiger la Constitution"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien de communes environ existe-t-il en France ?",
+                choices: [
+                    "Environ 35 000 communes",
+                    "Environ 5 000 communes",
+                    "Environ 100 000 communes",
+                    "Environ 500 communes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel traité concerne la construction de l'Union européenne ?",
+                choices: [
+                    "Le traité de Maastricht",
+                    "Le traité de Versailles",
+                    "Le traité de Yalta",
+                    "Le traité de Genève"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel État a quitté l'Union européenne en 2020 ?",
+                choices: [
+                    "Le Royaume-Uni",
+                    "La Suisse",
+                    "La Norvège",
+                    "La Turquie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la devise de l’Union européenne ?",
+                choices: [
+                    "« Unie dans la diversité »",
+                    "« Liberté, Égalité, Fraternité »",
+                    "« In God We Trust »",
+                    "« E pluribus unum »"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est l'hymne de l'Union européenne ?",
+                choices: [
+                    "L’Ode à la joie de Beethoven",
+                    "La Marseillaise",
+                    "God Save the King",
+                    "L’hymne à la liberté"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "De quoi est composé le drapeau européen ?",
+                choices: [
+                    "Un cercle de 12 étoiles dorées sur fond bleu",
+                    "12 bandes horizontales bleues et jaunes",
+                    "Des étoiles rouges sur fond blanc",
+                    "Un aigle noir sur fond jaune"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "De quelle couleur est le drapeau européen ?",
+                choices: [
+                    "Bleu avec des étoiles jaunes",
+                    "Rouge avec des étoiles blanches",
+                    "Vert avec des étoiles rouges",
+                    "Blanc avec des rayures bleues"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année le traité de Maastricht, qui marque la fondation de l'Union européenne, a-t-il été signé ?",
+                choices: [
+                    "En 1992",
+                    "En 1945",
+                    "En 1957",
+                    "En 2004"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où est le siège du Parlement européen (sessions plénières) ?",
+                choices: [
+                    "À Strasbourg",
+                    "À Paris",
+                    "À Rome",
+                    "À Madrid"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où est le siège de la Commission européenne ?",
+                choices: [
+                    "À Bruxelles",
+                    "À Strasbourg",
+                    "À Luxembourg",
+                    "À Berlin"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel État n'est pas membre de l'Union européenne ?",
+                choices: [
+                    "La Suisse",
+                    "L’Allemagne",
+                    "L’Italie",
+                    "L’Espagne"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quand célèbre-t-on la journée de l'Europe ?",
+                choices: [
+                    "Le 9 mai",
+                    "Le 1er janvier",
+                    "Le 14 juillet",
+                    "Le 25 décembre"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À quelle fréquence les élections européennes sont-elles organisées ?",
+                choices: [
+                    "Tous les 5 ans",
+                    "Tous les 2 ans",
+                    "Tous les 10 ans",
+                    "Chaque année"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
+                choices: [
+                    "Être citoyen d’un État membre de l’UE et inscrit sur les listes électorales",
+                    "Habiter en Europe depuis au moins 1 an",
+                    "Parler au moins trois langues européennes",
+                    "Avoir un passeport européen biométrique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel pays est un pays fondateur de l'Union européenne ?",
+                choices: [
+                    "La France",
+                    "La Pologne",
+                    "La Suède",
+                    "La Bulgarie"
+                ],
+                correctIndex: 0
+            }
+        ];
+        const HISTOIRE_GEO_CULTURE_QUESTIONS = [{
+                question: "Quel était le surnom de Louis XIV ?",
+                choices: [
+                    "Le Roi-Soleil",
+                    "Le Bon Roi",
+                    "Le Conquérant",
+                    "Le Sage"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel roi de France a été exécuté pendant la Révolution française ?",
+                choices: [
+                    "Louis XVI",
+                    "Louis XV",
+                    "Louis XIV",
+                    "Charles X"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année Napoléon Ier est-il devenu empereur ?",
+                choices: [
+                    "1804",
+                    "1789",
+                    "1815",
+                    "1792"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Lequel de ces personnages a un lien avec la République française ?",
+                choices: [
+                    "Marianne",
+                    "Jeanne d’Arc",
+                    "Louis XIV",
+                    "Charlemagne"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "De quand date l'appel à la résistance du général de Gaulle ?",
+                choices: [
+                    "18 juin 1940",
+                    "11 novembre 1918",
+                    "8 mai 1945",
+                    "14 juillet 1789"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi la Shoah est-elle étudiée à l'école ?",
+                choices: [
+                    "Pour rappeler les crimes nazis et lutter contre l’antisémitisme et toutes les formes de racisme",
+                    "Pour apprendre des stratégies militaires",
+                    "Pour étudier la religion juive",
+                    "Pour justifier les guerres"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel pays a été colonisé par la France ?",
+                choices: [
+                    "L’Algérie",
+                    "Le Portugal",
+                    "La Suède",
+                    "Le Japon"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Depuis quand les Français élisent-ils le président de la République au suffrage universel direct ?",
+                choices: [
+                    "Depuis l’élection de 1965",
+                    "Depuis 1789",
+                    "Depuis 1945",
+                    "Depuis 2002"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la première étape de la construction européenne en 1951 ?",
+                choices: [
+                    "La création de la CECA (Communauté européenne du charbon et de l’acier)",
+                    "La création de l’euro",
+                    "La création de l’OTAN",
+                    "La création de l’ONU"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Durant le mandat de quel président la peine de mort a-t-elle été abolie ?",
+                choices: [
+                    "François Mitterrand",
+                    "Charles de Gaulle",
+                    "Valéry Giscard d’Estaing",
+                    "Jacques Chirac"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel régime politique a été mis en place pendant la Révolution française en 1792 ?",
+                choices: [
+                    "La Première République",
+                    "La Première Monarchie constitutionnelle",
+                    "Le Second Empire",
+                    "La Cinquième République"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui était une figure de la Résistance française pendant la Seconde Guerre mondiale ?",
+                choices: [
+                    "Jean Moulin",
+                    "Louis XIV",
+                    "Napoléon III",
+                    "Philippe Pétain"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
+                choices: [
+                    "Elles ont obtenu le droit de vote",
+                    "Elles ont été obligées de travailler",
+                    "Elles ont perdu le droit de se marier",
+                    "Elles ont obtenu la gratuité des transports"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle organisation internationale a été créée en 1945 après la Seconde Guerre mondiale ?",
+                choices: [
+                    "L’Organisation des Nations unies (ONU)",
+                    "L’Union européenne",
+                    "L’OTAN",
+                    "La Banque mondiale"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle peine a été supprimée en 1981 en France ?",
+                choices: [
+                    "La peine de mort",
+                    "La prison à vie",
+                    "Les amendes",
+                    "Les travaux d’intérêt général"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année l'euro est-elle devenue la monnaie utilisée en France (pièces et billets) ?",
+                choices: [
+                    "2002",
+                    "1999",
+                    "1990",
+                    "2010"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année a commencé la Première Guerre mondiale ?",
+                choices: [
+                    "1914",
+                    "1918",
+                    "1939",
+                    "1945"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où a eu lieu le débarquement en 1944 ?",
+                choices: [
+                    "En Normandie",
+                    "En Provence",
+                    "En Corse",
+                    "En Bretagne"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel continent a été le plus concerné par la décolonisation française après la Seconde Guerre mondiale ?",
+                choices: [
+                    "L’Afrique",
+                    "L’Asie",
+                    "L’Amérique du Sud",
+                    "L’Océanie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que fête-t-on le 8 mai en France ?",
+                choices: [
+                    "La fin de la Seconde Guerre mondiale en Europe (Victoire de 1945)",
+                    "La fin de la Première Guerre mondiale",
+                    "La prise de la Bastille",
+                    "La fondation de la République"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle mer ou océan borde la France métropolitaine ?",
+                choices: [
+                    "L’océan Atlantique",
+                    "La mer Noire",
+                    "La mer Caspienne",
+                    "L’océan Indien"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel pays a une frontière terrestre avec la France métropolitaine ?",
+                choices: [
+                    "L’Espagne",
+                    "Le Danemark",
+                    "La Pologne",
+                    "La Grèce"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle ville française est un port maritime ?",
+                choices: [
+                    "Marseille",
+                    "Lyon",
+                    "Toulouse",
+                    "Clermont-Ferrand"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle mer se situe entre la France et l'Angleterre ?",
+                choices: [
+                    "La Manche",
+                    "La mer Noire",
+                    "La mer Baltique",
+                    "La mer Rouge"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est ce que la France d'outre-mer ?",
+                choices: [
+                    "Des territoires français situés en dehors de l’Europe",
+                    "Des régions françaises très éloignées de Paris mais en Europe",
+                    "Des anciennes colonies devenues indépendantes",
+                    "Des bases militaires à l’étranger"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle chaîne de montagnes est située entre la France et l’Espagne ?",
+                choices: [
+                    "Les Pyrénées",
+                    "Les Alpes",
+                    "Le Jura",
+                    "Le Massif central"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle île française se trouve dans l'océan Indien ?",
+                choices: [
+                    "La Réunion",
+                    "La Corse",
+                    "La Guadeloupe",
+                    "La Martinique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la population approximative de la France en 2025 ?",
+                choices: [
+                    "Environ 68 millions d’habitants",
+                    "Environ 10 millions d’habitants",
+                    "Environ 120 millions d’habitants",
+                    "Environ 30 millions d’habitants"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel fleuve traverse Paris ?",
+                choices: [
+                    "La Seine",
+                    "La Loire",
+                    "Le Rhône",
+                    "La Garonne"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Lequel de ces pays partage des frontières terrestres avec la France ?",
+                choices: [
+                    "L’Allemagne",
+                    "Le Portugal",
+                    "La Suède",
+                    "La Finlande"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel pays a une frontière avec la France métropolitaine au nord-est ?",
+                choices: [
+                    "L’Allemagne",
+                    "L’Espagne",
+                    "L’Italie",
+                    "La Suisse"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où se trouvent les principales activités économiques en France ?",
+                choices: [
+                    "Dans les grandes villes et les régions urbaines (comme l’Île-de-France)",
+                    "Uniquement dans les campagnes",
+                    "Seulement dans les ports",
+                    "Exclusivement dans les montagnes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Parmi ces pays, lequel attire le plus de visiteurs chaque année ?",
+                choices: [
+                    "La France",
+                    "La Norvège",
+                    "La Roumanie",
+                    "La Bulgarie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où habite la majorité des Français ?",
+                choices: [
+                    "En ville ou en zone urbaine",
+                    "À la campagne isolée",
+                    "En montagne",
+                    "En bord de mer"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle région est la plus peuplée ?",
+                choices: [
+                    "L’Île-de-France",
+                    "La Bretagne",
+                    "La Corse",
+                    "La Bourgogne-Franche-Comté"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle ville française fait partie des 10 plus grandes métropoles du pays ?",
+                choices: [
+                    "Lyon",
+                    "Biarritz",
+                    "Calais",
+                    "Bastia"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Lequel de ces départements de France est le plus touristique ?",
+                choices: [
+                    "Paris",
+                    "La Creuse",
+                    "La Meuse",
+                    "La Haute-Marne"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quand peut-on visiter gratuitement des lieux culturels en France (musées nationaux, dans certains cas) ?",
+                choices: [
+                    "Le premier dimanche de certains mois, selon les musées",
+                    "Uniquement le 25 décembre",
+                    "Jamais, c’est toujours payant",
+                    "Seulement la nuit"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien de personnes parlent français dans le monde (ordre de grandeur) ?",
+                choices: [
+                    "Environ 320 millions de personnes",
+                    "Environ 10 millions de personnes",
+                    "Environ 50 millions de personnes",
+                    "Plus d’un milliard de personnes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui était Marguerite Yourcenar ?",
+                choices: [
+                    "Une écrivaine française, première femme élue à l’Académie française",
+                    "Une femme politique française",
+                    "Une actrice française célèbre",
+                    "Une scientifique française"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel peintre est français ?",
+                choices: [
+                    "Claude Monet",
+                    "Pablo Picasso",
+                    "Vincent Van Gogh",
+                    "Salvador Dalí"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel musée est situé à Paris ?",
+                choices: [
+                    "Le musée du Louvre",
+                    "Le musée du Prado",
+                    "Le British Museum",
+                    "Le Rijksmuseum"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui était Auguste Rodin ?",
+                choices: [
+                    "Un sculpteur français",
+                    "Un écrivain français",
+                    "Un musicien français",
+                    "Un homme politique français"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le classement de la langue française parmi les langues les plus parlées dans le monde (en 2020–2026 environ) ?",
+                choices: [
+                    "Elle fait partie des 5 langues les plus parlées au monde (environ 4ᵉ)",
+                    "Elle est la 20ᵉ langue la plus parlée",
+                    "Elle est la langue la plus parlée au monde",
+                    "Elle n’est parlée que par quelques millions de personnes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle cathédrale célèbre a été en partie détruite par un incendie en 2019 ?",
+                choices: [
+                    "Notre-Dame de Paris",
+                    "La cathédrale de Chartres",
+                    "La cathédrale de Reims",
+                    "La cathédrale de Strasbourg"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui était une écrivaine française célèbre ?",
+                choices: [
+                    "Simone de Beauvoir",
+                    "Victor Hugo",
+                    "Georges Brassens",
+                    "Claude Debussy"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui était un célèbre musicien français ?",
+                choices: [
+                    "Claude Debussy",
+                    "Ludwig van Beethoven",
+                    "Wolfgang Amadeus Mozart",
+                    "Frederic Chopin (Polonais)"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui était Auguste Renoir ?",
+                choices: [
+                    "Un peintre français impressionniste",
+                    "Un écrivain français",
+                    "Un architecte français",
+                    "Un homme politique français"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle fête est française ?",
+                choices: [
+                    "La fête nationale du 14 juillet",
+                    "Thanksgiving",
+                    "La fête de la Saint-Patrick",
+                    "La fête de la Mi-Automne"
+                ],
+                correctIndex: 0
+            }
+        ];
+        const DROITS_DEVOIRS_QUESTIONS = [
 
-  <script>
-    // --------------------------------------------------------
-    // 1) Banque de questions : Principes et valeurs (40 questions)
-    // --------------------------------------------------------
-	 const VIVRE_SOCIETE_QUESTIONS  = [
-  {
-    question: "Quel mariage est reconnu par l'État ?",
-    choices: [
-      "Le mariage civil célébré à la mairie",
-      "Le mariage religieux uniquement",
-      "Le mariage traditionnel organisé par la famille",
-      "Le mariage célébré à l’étranger sans aucune formalité"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Auprès de quelle institution les parents peuvent-ils inscrire leur enfant à l'école publique ?",
-    choices: [
-      "À la mairie de la commune ou directement à l’école selon l’organisation locale",
-      "Au commissariat de police",
-      "À la préfecture",
-      "Au tribunal judiciaire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En cas de divorce, qui exerce l'autorité parentale ?",
-    choices: [
-      "En principe, les deux parents conjointement",
-      "Uniquement la mère",
-      "Uniquement le père",
-      "Les grands-parents"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle aide permet aux personnes qui ont des difficultés financières d'avoir un avocat ?",
-    choices: [
-      "L’aide juridictionnelle",
-      "L’aide au logement",
-      "La bourse scolaire",
-      "La réduction d’impôt"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où faut-il déclarer la naissance d'un enfant ?",
-    choices: [
-      "À la mairie du lieu de naissance",
-      "À la mairie du domicile des parents seulement",
-      "Au commissariat de police",
-      "À l’ambassade du pays d’origine"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est l'une des conditions pour passer l'examen du permis de conduire ?",
-    choices: [
-      "Avoir réussi l’examen du code de la route",
-      "Être propriétaire d’une voiture",
-      "Avoir un emploi à temps plein",
-      "Avoir la nationalité française"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Un bail locatif est valide s'il est :",
-    choices: [
-      "Écrit et signé par le bailleur et le locataire, avec les mentions obligatoires",
-      "Demandé seulement à l’oral au propriétaire",
-      "Affiché dans le hall de l’immeuble",
-      "Signé uniquement par le locataire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où peut-on déposer un lave-vaisselle cassé ?",
-    choices: [
-      "À la déchetterie ou dans un point de collecte des encombrants",
-      "Dans la poubelle ordinaire de la rue",
-      "Dans la nature, en forêt",
-      "Dans les toilettes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel numéro d'urgence permet d'appeler la police ?",
-    choices: [
-      "Le 17",
-      "Le 15",
-      "Le 18",
-      "Le 3615"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Concernant l'accès aux soins, quelle proposition est correcte ?",
-    choices: [
-      "Toute personne peut être soignée, notamment en cas d’urgence, et les résidents sont couverts par l’Assurance maladie",
-      "Seuls les citoyens français peuvent consulter un médecin",
-      "On ne peut pas être soigné sans carte bancaire",
-      "Les soins sont gratuits uniquement pour les enfants"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À qui est accessible la contraception ?",
-    choices: [
-      "À toutes les personnes, y compris les mineur(e)s, dans le respect de la loi",
-      "Uniquement aux personnes mariées",
-      "Uniquement aux femmes majeures",
-      "Uniquement avec l’autorisation des parents"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu’est-ce que le principe de confidentialité dans le domaine de la santé ?",
-    choices: [
-      "L’obligation pour les professionnels de santé de garder secrètes les informations du patient",
-      "Le droit du médecin de parler de la maladie à tout le monde",
-      "L’obligation pour le patient de tout raconter à ses voisins",
-      "Le fait de ne rien dire à son médecin"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "L'inscription à l'Assurance maladie est :",
-    choices: [
-      "Un droit pour les personnes résidant de manière stable et régulière en France",
-      "Réservée uniquement aux salariés à temps plein",
-      "Obligatoire uniquement après 30 ans",
-      "Impossible pour les étrangers"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui peut demander un congé parental d'éducation ?",
-    choices: [
-      "Le père ou la mère salarié(e), ou les deux, après une naissance ou une adoption",
-      "Uniquement la mère",
-      "Uniquement le père",
-      "Uniquement les parents fonctionnaires"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelles sont les affaires traitées par le conseil de prud'hommes ?",
-    choices: [
-      "Les litiges entre salariés et employeurs",
-      "Les conflits entre voisins",
-      "Les affaires pénales graves",
-      "Les questions de nationalité"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Travailler sans être déclaré est :",
-    choices: [
-      "Interdit et constitue du travail dissimulé",
-      "Autorisé si le salarié est d’accord",
-      "Autorisé pour les petits boulots",
-      "Obligatoire dans certaines entreprises"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Lorsqu'un employeur veut qu'un salarié travaille plus longtemps que la durée prévue dans le contrat de travail :",
-    choices: [
-      "Il doit obtenir son accord et rémunérer les heures supplémentaires",
-      "Il peut l’imposer sans le payer plus",
-      "Il peut baisser le salaire en échange",
-      "Il n’a aucune démarche à faire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la mission de France Travail ?",
-    choices: [
-      "Accompagner les personnes vers l’emploi et gérer les droits au chômage",
-      "Attribuer les logements sociaux",
-      "Contrôler les écoles",
-      "Gérer les hôpitaux publics"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Dans une entreprise, le droit syndical permet :",
-    choices: [
-      "De se regrouper pour défendre collectivement les intérêts des salariés",
-      "D’imposer sa religion aux autres",
-      "De choisir les lois applicables",
-      "De refuser toute règle de sécurité"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Dans une entreprise, le droit de grève autorise :",
-    choices: [
-      "Les salariés à cesser collectivement le travail pour défendre leurs revendications",
-      "Les salariés à ne plus jamais revenir travailler",
-      "Les salariés à dégrader les locaux",
-      "Les salariés à refuser de respecter le règlement intérieur"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelles sont les conditions pour toucher les allocations chômage ?",
-    choices: [
-      "Avoir suffisamment travaillé, être inscrit comme demandeur d’emploi et rechercher activement un travail",
-      "Être inscrit à l’université",
-      "Ne jamais avoir travaillé",
-      "Refuser toutes les offres d’emploi"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que l'école maternelle ?",
-    choices: [
-      "L’école publique qui accueille les enfants avant l’école élémentaire, à partir de 3 ans",
-      "Une école réservée aux adultes",
-      "Une école spécialisée pour les élèves en difficulté",
-      "Une école privée obligatoire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Comment s'appelle le diplôme passé par les élèves à la fin du collège ?",
-    choices: [
-      "Le diplôme national du brevet",
-      "Le baccalauréat",
-      "Le CAP",
-      "Le master"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Les parents d'élève ont le droit de :",
-    choices: [
-      "Être informés de la scolarité de leur enfant et participer à la vie de l’école (réunions, élections de parents d’élèves, etc.)",
-      "Entrer dans la classe à tout moment sans autorisation",
-      "Décider seuls du contenu des cours",
-      "Choisir les notes de leur enfant"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui peut manger à la cantine scolaire ?",
-    choices: [
-      "Les élèves inscrits dans l’établissement, dans le respect du règlement de la cantine",
-      "Uniquement les enseignants",
-      "Toutes les personnes du quartier",
-      "Uniquement les enfants qui ont de très bons résultats"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À quel âge commence l'instruction obligatoire des enfants ?",
-    choices: [
-      "À 3 ans",
-      "À 6 ans",
-      "À 10 ans",
-      "À 16 ans"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est l'âge de la majorité ?",
-    choices: [
-      "18 ans",
-      "16 ans",
-      "21 ans",
-      "25 ans"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À l'école, il est interdit aux parents de :",
-    choices: [
-      "Insulter ou menacer les personnels et intervenir dans la classe sans autorisation",
-      "Assister aux réunions parents-professeurs",
-      "Parler avec le directeur",
-      "Accompagner les sorties scolaires"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel motif d'absence est accepté par l'école ?",
-    choices: [
-      "Une maladie justifiée ou un rendez-vous médical important",
-      "Une envie de rester à la maison",
-      "Un voyage sans prévenir l’école",
-      "Le fait d’être en retard le matin"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Des parents ne respectent pas l'obligation d'instruction pour leurs enfants. Quelle sanction maximale risquent-ils ?",
-    choices: [
-      "Une amende et éventuellement une peine de prison",
-      "Une simple remarque orale sans suite",
-      "La perte automatique de la nationalité",
-      "La suppression du droit de vote à vie"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quand ont lieu les vacances scolaires de Noël ?",
-    choices: [
-      "Fin décembre et début janvier",
-      "Au mois de mars",
-      "En juillet-août",
-      "Au mois d’octobre uniquement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À l'école, un enfant en situation de handicap :",
-    choices: [
-      "A droit à une scolarisation adaptée et à des aménagements, si nécessaire avec un accompagnant",
-      "Ne peut pas être scolarisé",
-      "Doit obligatoirement être dans une école séparée",
-      "N’a pas droit de passer d’examens"
-    ],
-    correctIndex: 0
-  }
-];
-	 const PRINCIPES_QUESTIONS = [
-      {
-        question: "Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",
-        choices: [
-          "Voter lors des élections",
-          "Regarder les informations à la télévision",
-          "Partir en vacances à l’étranger",
-          "Faire ses courses au supermarché"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que garantit la liberté d’expression ?",
-        choices: [
-          "Le droit d’exprimer ses opinions dans le respect de la loi",
-          "Le droit d’insulter les autres publiquement",
-          "Le droit de publier n’importe quelle information, même mensongère",
-          "Le droit d’appeler à la violence contre une personne ou un groupe"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "À quoi sert un titre de séjour ?",
-        choices: [
-          "À permettre à un étranger de résider légalement en France",
-          "À voyager gratuitement en train",
-          "À voter aux élections françaises",
-          "À devenir automatiquement fonctionnaire"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "La liberté de circulation permet à toute personne de :",
-        choices: [
-          "Se déplacer librement sur le territoire français dans le respect de la loi",
-          "Refuser tout contrôle d’identité de la police",
-          "Entrer partout sans autorisation, même dans les lieux privés",
-          "Passer toutes les frontières sans passeport ni visa"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Sur quel site internet peut-on retrouver le symbole de la République française ?",
-        choices: [
-          "Sur le site officiel de l’administration : www.service-public.fr",
-          "Sur un site de petites annonces entre particuliers",
-          "Sur un réseau social privé",
-          "Uniquement sur le site d’un parti politique"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Complétez ces paroles de la Marseillaise : \"Aux armes […] ! Formez vos bataillons\"",
-        choices: [
-          "citoyens",
-          "soldats",
-          "Français",
-          "amis"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Complétez les paroles de la Marseillaise : \"Allons enfants de la patrie […]\"",
-        choices: [
-          "le jour de gloire est arrivé",
-          "la France est notre pays",
-          "marchons tous vers la victoire",
-          "unis pour la liberté"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "En application de la liberté individuelle, quelle proposition est correcte ? Une personne peut :",
-        choices: [
-          "choisir librement son mode de vie tant qu’elle respecte la loi",
-          "être arrêtée sans motif et sans décision de justice",
-          "être mariée de force par sa famille",
-          "être fouillée sans aucune raison par n’importe qui"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Concernant la pratique de la religion, quelle proposition est correcte ?",
-        choices: [
-          "Chacun est libre de croire ou de ne pas croire, dans le respect de la loi",
-          "Tout le monde doit avoir une religion",
-          "L’État impose une religion officielle à tous",
-          "Seules certaines religions sont autorisées"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "En tant que parent, peut-on refuser que son enfant participe aux cours de sport à l'école car ils sont mixtes ?",
-        choices: [
-          "Non, la mixité fait partie des règles de l’école publique",
-          "Oui, si on en informe le professeur",
-          "Oui, si l’enfant n’aime pas le sport",
-          "Oui, si on fournit un certificat de complaisance"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quelle est la devise de la France ?",
-        choices: [
-          "Liberté, Égalité, Fraternité",
-          "Paix, Travail, Justice",
-          "Unité, Force, Progrès",
-          "Travail, Famille, Patrie"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "La répudiation de sa femme est :",
-        choices: [
-          "interdite par la loi française",
-          "autorisée avec l’accord de la famille",
-          "possible uniquement devant le maire",
-          "tolérée dans certaines régions"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Les impôts permettent de financer les dépenses publiques. Quelle proposition est correcte ?",
-        choices: [
-          "Ils servent notamment à financer les écoles, les hôpitaux, les routes et les services publics",
-          "Ils vont directement sur le compte bancaire du président de la République",
-          "Ils ne servent qu’à payer les retraites des fonctionnaires",
-          "Ils sont facultatifs pour les personnes qui ne veulent pas les payer"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Peut-on brûler publiquement un drapeau français ?",
-        choices: [
-          "Non, c’est un délit puni par la loi",
-          "Oui, c’est une liberté sans limite",
-          "Oui, mais seulement le 14 juillet",
-          "Oui, si on demande l’autorisation au maire"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que fait l’État pour lutter contre les discriminations ?",
-        choices: [
-          "Il interdit les discriminations et peut sanctionner ceux qui les pratiquent",
-          "Il laisse les entreprises décider librement",
-          "Il autorise les discriminations dans certains métiers",
-          "Il n’a aucun rôle dans ce domaine"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que représente Marianne ?",
-        choices: [
-          "La République française et ses valeurs",
-          "Une reine de France",
-          "Une sainte protectrice",
-          "Une héroïne de roman"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est-ce que la liberté d'association ?",
-        choices: [
-          "Le droit de créer ou de rejoindre une association dans le cadre de la loi",
-          "L’obligation d’adhérer à une association",
-          "Le droit de refuser la loi si on est dans une association",
-          "Le droit de faire des réunions sans respecter aucune règle"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est-ce que la liberté ?",
-        choices: [
-          "Le droit de faire tout ce qui ne nuit pas à autrui",
-          "Le droit de faire ce que l’on veut sans aucune limite",
-          "Le droit de ne jamais obéir aux lois",
-          "Le droit de ne pas respecter les autres"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est-ce que la Marseillaise ?",
-        choices: [
-          "L’hymne national français",
-          "Le drapeau national français",
-          "La devise nationale française",
-          "Une ancienne monnaie française"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Sur quel document peut-on voir Marianne ?",
-        choices: [
-          "Sur certains timbres-poste et pièces de monnaie",
-          "Uniquement sur les billets de banque étrangers",
-          "Seulement dans les livres d’histoire",
-          "Uniquement sur les passeports étrangers"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Un employeur refuse d’embaucher des femmes dans son entreprise. Que dit la loi ?",
-        choices: [
-          "C’est une discrimination interdite par la loi",
-          "C’est acceptable si l’employeur le justifie",
-          "C’est autorisé pour les petites entreprises",
-          "C’est autorisé si les femmes sont d’accord"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Une des valeurs de la devise républicaine est l'égalité. Qu'est-ce que cela signifie ?",
-        choices: [
-          "Tous les citoyens ont les mêmes droits et les mêmes devoirs devant la loi",
-          "Certains citoyens ont plus de droits que d’autres",
-          "Les hommes ont plus de droits que les femmes",
-          "Seuls les Français nés en France ont des droits"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quelle est la place de la langue française dans la République ?",
-        choices: [
-          "C’est la langue officielle de la République",
-          "C’est une langue régionale parmi d’autres",
-          "Elle n’a aucun statut particulier",
-          "Elle est seulement utilisée dans les tribunaux"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quels sont des symboles officiels de la République française ?",
-        choices: [
-          "Le drapeau tricolore, la Marseillaise, Marianne, la devise Liberté-Égalité-Fraternité",
-          "Le coq, le franc, le château de Versailles",
-          "La baguette, le fromage, le béret",
-          "Le lion, la couronne, l’hymne européen"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "A-t-on le droit d'insulter publiquement quelqu’un parce qu’il est différent (handicap, apparence physique, sexe…) ?",
-        choices: [
-          "Non, c’est interdit et puni par la loi",
-          "Oui, c’est une liberté d’expression normale",
-          "Oui, si c’est sur internet seulement",
-          "Oui, si c’est dans une discussion privée"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Le régime de la France est :",
-        choices: [
-          "Une République démocratique",
-          "Une monarchie absolue",
-          "Une dictature militaire",
-          "Un empire"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
-        choices: [
-          "Pour garantir la neutralité et le respect de toutes les convictions",
-          "Pour obliger tous les élèves à avoir la même religion",
-          "Pour interdire de parler de religion en France",
-          "Pour privilégier une religion par rapport aux autres"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "En quelle année la loi de séparation des Églises et de l'Etat a-t-elle été votée ?",
-        choices: [
-          "1905",
-          "1789",
-          "1958",
-          "1918"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
-        choices: [
-          "Oui, c’est la liberté de conscience",
-          "Non, tout le monde doit avoir une religion",
-          "Oui, mais seulement à partir de 18 ans",
-          "Oui, mais seulement si sa famille est d’accord"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quel droit est garanti par la laïcité ?",
-        choices: [
-          "La liberté de conscience et de religion",
-          "L’obligation de pratiquer une religion",
-          "Le droit pour l’État d’imposer une religion",
-          "Le droit pour une religion de diriger l’État"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "À l'école publique, qui peut porter des signes religieux très visibles ?",
-        choices: [
-          "Ni les élèves ni les personnels, car ils doivent respecter la neutralité religieuse",
-          "Seuls les enseignants",
-          "Tous les élèves sans restriction",
-          "Tout le monde, sans aucune règle"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Selon le principe de laïcité, que signifie la neutralité de l’État ?",
-        choices: [
-          "L’État ne favorise ni ne discrimine aucune religion",
-          "L’État choisit une religion officielle",
-          "L’État interdit toutes les religions",
-          "L’État délègue les lois aux responsables religieux"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que peut faire un usager du service public dans une mairie ?",
-        choices: [
-          "Être traité de la même façon quels que soient sa religion ou ses opinions",
-          "Exiger que le service public applique sa religion",
-          "Refuser de parler avec un agent d’une autre origine",
-          "Obliger les autres usagers à suivre sa religion"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",
-        choices: [
-          "Tous les agents du service public",
-          "Uniquement le préfet",
-          "Uniquement les usagers étrangers",
-          "Uniquement les agents croyants"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",
-        choices: [
-          "Oui, ils ne doivent pas montrer de préférence religieuse",
-          "Non, ils peuvent exprimer leur religion en priorité",
-          "Oui, mais uniquement pendant les fêtes religieuses",
-          "Non, cela ne concerne que les élus"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que garantit le principe de laïcité ?",
-        choices: [
-          "La liberté de croire ou de ne pas croire et l’égalité de tous devant la loi",
-          "La supériorité d’une religion sur les autres",
-          "L’interdiction de parler de religion dans la société",
-          "Le pouvoir des religions sur l’État"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "A-t-on le droit de changer de religion ?",
-        choices: [
-          "Oui, chacun est libre de changer ou d’abandonner sa religion",
-          "Non, on garde obligatoirement la religion de ses parents",
-          "Oui, mais seulement une fois dans sa vie",
-          "Oui, si l’État donne son autorisation"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que représente la laïcité ?",
-        choices: [
-          "Un principe qui permet la coexistence de toutes les convictions dans le respect de la loi",
-          "Une religion officielle de la France",
-          "L’interdiction totale de toute religion",
-          "Un simple conseil sans valeur juridique"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est ce qui est interdit par la Charte de la laïcité à l'école ?",
-        choices: [
-          "Le prosélytisme et l’imposition de sa religion aux autres à l’école",
-          "L’enseignement de l’histoire des religions",
-          "La discussion respectueuse sur les croyances",
-          "La présence d’élèves de religions différentes"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que dit l'article 1er de la Constitution française ?",
-        choices: [
-          "Que la France est une République indivisible, laïque, démocratique et sociale",
-          "Que la France est une monarchie parlementaire",
-          "Que la France a une religion officielle",
-          "Que seuls les hommes peuvent être citoyens"
-        ],
-        correctIndex: 0
-      }
-    ];
-	const SYSTEME_INSTIT_QUESTIONS  = [
-  {
-    question: "Qu'est-ce que l'État de droit ?",
-    choices: [
-      "Un système dans lequel tout le monde, y compris les gouvernants, est soumis à la loi",
-      "Un État où le président décide de tout",
-      "Un État où la police n’a pas besoin de respecter la loi",
-      "Un système où seuls les riches ont des droits"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Le président de la République a commis un crime. Quelle proposition est correcte ?",
-    choices: [
-      "Il peut être jugé, car personne n’est au-dessus de la loi",
-      "Il ne peut jamais être jugé pendant son mandat",
-      "Il est protégé à vie contre toute poursuite",
-      "Seul le Parlement peut le gronder mais pas le juger"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "La loi est l'expression de :",
-    choices: [
-      "la volonté générale",
-      "la volonté du président",
-      "la volonté des tribunaux",
-      "la volonté des partis politiques"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la durée du mandat du conseil municipal et du maire ?",
-    choices: [
-      "6 ans",
-      "3 ans",
-      "4 ans",
-      "10 ans"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que garantit l’État de droit ?",
-    choices: [
-      "La protection des droits et libertés par des règles juridiques et des juges indépendants",
-      "Le pouvoir illimité du gouvernement",
-      "L’absence totale de lois",
-      "Le droit de se faire justice soi-même"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Une personne peut-elle voter à la place d'une autre ?",
-    choices: [
-      "Non, c’est interdit : le vote est personnel et secret",
-      "Oui, si c’est un membre de la famille",
-      "Oui, si la personne est malade",
-      "Oui, si le maire donne son accord"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Est-ce que le vote est obligatoire ?",
-    choices: [
-      "Non, mais c’est un droit essentiel du citoyen",
-      "Oui, sous peine de prison",
-      "Oui, sous peine d’amende automatique",
-      "Il n’existe pas de droit de vote en France"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À la fin de son mandat, le président de la République peut-il décider de rester au pouvoir ?",
-    choices: [
-      "Non, il doit respecter la Constitution et les élections",
-      "Oui, s’il le souhaite",
-      "Oui, si le Parlement est d’accord",
-      "Oui, si les sondages sont favorables"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui dirige l'action du Gouvernement ?",
-    choices: [
-      "Le Premier ministre",
-      "Le président du Sénat",
-      "Le ministre de l’Intérieur",
-      "Le président de l’Assemblée nationale"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui nomme le Premier ministre ?",
-    choices: [
-      "Le président de la République",
-      "Le Parlement",
-      "Le Conseil constitutionnel",
-      "Les maires"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est l'organisation administrative de la France ?",
-    choices: [
-      "L’État, les régions, les départements et les communes",
-      "L’État, les royaumes et les colonies",
-      "Uniquement l’État central sans aucune collectivité",
-      "Des provinces autonomes indépendantes de l’État"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que le pouvoir législatif ? Le pouvoir :",
-    choices: [
-      "d’adopter les lois",
-      "de juger les citoyens",
-      "de faire appliquer les lois",
-      "de diriger les communes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pourquoi séparer les trois pouvoirs dans une démocratie ?",
-    choices: [
-      "Pour éviter les abus de pouvoir et garantir l’équilibre des institutions",
-      "Pour faire plaisir aux partis politiques",
-      "Pour compliquer le fonctionnement de l’État",
-      "Pour empêcher les citoyens de comprendre la politique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui sanctionne l'auteur d'un vol ?",
-    choices: [
-      "Le juge, au sein des tribunaux",
-      "Le maire",
-      "Le président de la République",
-      "Le préfet"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du gouvernement ?",
-    choices: [
-      "Conduire la politique de la Nation et faire appliquer les lois",
-      "Rédiger la Constitution",
-      "Contrôler les juges",
-      "Organiser uniquement les élections"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
-    choices: [
-      "Il peut être jugé et sanctionné comme tout citoyen",
-      "Il est protégé et ne risque rien",
-      "Seul le président peut le punir sans juge",
-      "Il perd automatiquement sa nationalité"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien de députés composent l’Assemblée nationale ?",
-    choices: [
-      "577 députés",
-      "350 députés",
-      "750 députés",
-      "120 députés"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui peut voter aux élections en France ?",
-    choices: [
-      "Les citoyens français majeurs jouissant de leurs droits civiques",
-      "Toutes les personnes vivant en France, quel que soit leur statut",
-      "Uniquement les propriétaires",
-      "Uniquement les fonctionnaires"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pour combien de temps sont élus les sénateurs ?",
-    choices: [
-      "6 ans",
-      "3 ans",
-      "4 ans",
-      "9 ans"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
-    choices: [
-      "Législatif, exécutif et judiciaire",
-      "Municipal, régional et national",
-      "Politique, économique et religieux",
-      "Présidentiel, militaire et religieux"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Est-ce que le président de la République a tous les pouvoirs ?",
-    choices: [
-      "Non, ses pouvoirs sont limités par la Constitution et les autres institutions",
-      "Oui, il décide seul de tout",
-      "Oui, mais uniquement en temps de paix",
-      "Oui, s’il est élu deux fois"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui est le préfet ?",
-    choices: [
-      "Le représentant de l’État dans un département ou une région",
-      "Le chef de la commune",
-      "Le président du conseil régional",
-      "Un juge du tribunal"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle condition est nécessaire pour voter aux élections ?",
-    choices: [
-      "Être inscrit sur les listes électorales",
-      "Avoir un permis de conduire",
-      "Avoir un emploi stable",
-      "Être propriétaire de son logement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui dirige la commune ?",
-    choices: [
-      "Le maire",
-      "Le préfet",
-      "Le président de la République",
-      "Le Premier ministre"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le régime politique de la France aujourd'hui ?",
-    choices: [
-      "Une République démocratique",
-      "Une monarchie absolue",
-      "Une dictature militaire",
-      "Un empire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que l'Hôtel de Matignon ?",
-    choices: [
-      "La résidence et le lieu de travail du Premier ministre",
-      "La résidence du président de la République",
-      "Le siège du Parlement",
-      "Le siège du Conseil constitutionnel"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Le Parlement est composé :",
-    choices: [
-      "de l’Assemblée nationale et du Sénat",
-      "du président de la République seul",
-      "des maires de France",
-      "des ministres du gouvernement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du président de la République ?",
-    choices: [
-      "Il garantit le fonctionnement régulier des pouvoirs publics et la continuité de l’État",
-      "Il rédige seul toutes les lois",
-      "Il juge les citoyens",
-      "Il dirige chaque commune"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du Premier ministre ?",
-    choices: [
-      "Diriger l’action du gouvernement et assurer l’exécution des lois",
-      "Commander l’armée",
-      "Organiser les élections municipales",
-      "Rédiger la Constitution"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui est le chef du Gouvernement ?",
-    choices: [
-      "Le Premier ministre",
-      "Le président du Sénat",
-      "Le président de la République",
-      "Le président du Conseil constitutionnel"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien y a-t-il de régions en France ?",
-    choices: [
-      "18 régions",
-      "10 régions",
-      "22 régions",
-      "25 régions"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du Défenseur des droits ?",
-    choices: [
-      "Protéger les droits et libertés des personnes et lutter contre les discriminations",
-      "Diriger les armées",
-      "Écrire les lois",
-      "Organiser les élections"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Depuis quand l'euro est-elle la monnaie unique en France (pièces et billets) ?",
-    choices: [
-      "Depuis 2002",
-      "Depuis 1990",
-      "Depuis 1995",
-      "Depuis 2010"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle principal du département ?",
-    choices: [
-      "Gérer l’action sociale, les collèges et certaines routes",
-      "Diriger les relations internationales",
-      "Organiser les élections présidentielles",
-      "Commander l’armée"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle principal des communes ?",
-    choices: [
-      "Gérer les services de proximité (état civil, écoles primaires, voirie locale, etc.)",
-      "Voter les lois nationales",
-      "Contrôler les banques",
-      "Rédiger la Constitution"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien de communes environ existe-t-il en France ?",
-    choices: [
-      "Environ 35 000 communes",
-      "Environ 5 000 communes",
-      "Environ 100 000 communes",
-      "Environ 500 communes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel traité concerne la construction de l'Union européenne ?",
-    choices: [
-      "Le traité de Maastricht",
-      "Le traité de Versailles",
-      "Le traité de Yalta",
-      "Le traité de Genève"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel État a quitté l'Union européenne en 2020 ?",
-    choices: [
-      "Le Royaume-Uni",
-      "La Suisse",
-      "La Norvège",
-      "La Turquie"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la devise de l’Union européenne ?",
-    choices: [
-      "« Unie dans la diversité »",
-      "« Liberté, Égalité, Fraternité »",
-      "« In God We Trust »",
-      "« E pluribus unum »"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est l'hymne de l'Union européenne ?",
-    choices: [
-      "L’Ode à la joie de Beethoven",
-      "La Marseillaise",
-      "God Save the King",
-      "L’hymne à la liberté"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "De quoi est composé le drapeau européen ?",
-    choices: [
-      "Un cercle de 12 étoiles dorées sur fond bleu",
-      "12 bandes horizontales bleues et jaunes",
-      "Des étoiles rouges sur fond blanc",
-      "Un aigle noir sur fond jaune"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "De quelle couleur est le drapeau européen ?",
-    choices: [
-      "Bleu avec des étoiles jaunes",
-      "Rouge avec des étoiles blanches",
-      "Vert avec des étoiles rouges",
-      "Blanc avec des rayures bleues"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En quelle année le traité de Maastricht, qui marque la fondation de l'Union européenne, a-t-il été signé ?",
-    choices: [
-      "En 1992",
-      "En 1945",
-      "En 1957",
-      "En 2004"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où est le siège du Parlement européen (sessions plénières) ?",
-    choices: [
-      "À Strasbourg",
-      "À Paris",
-      "À Rome",
-      "À Madrid"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où est le siège de la Commission européenne ?",
-    choices: [
-      "À Bruxelles",
-      "À Strasbourg",
-      "À Luxembourg",
-      "À Berlin"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel État n'est pas membre de l'Union européenne ?",
-    choices: [
-      "La Suisse",
-      "L’Allemagne",
-      "L’Italie",
-      "L’Espagne"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quand célèbre-t-on la journée de l'Europe ?",
-    choices: [
-      "Le 9 mai",
-      "Le 1er janvier",
-      "Le 14 juillet",
-      "Le 25 décembre"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À quelle fréquence les élections européennes sont-elles organisées ?",
-    choices: [
-      "Tous les 5 ans",
-      "Tous les 2 ans",
-      "Tous les 10 ans",
-      "Chaque année"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
-    choices: [
-      "Être citoyen d’un État membre de l’UE et inscrit sur les listes électorales",
-      "Habiter en Europe depuis au moins 1 an",
-      "Parler au moins trois langues européennes",
-      "Avoir un passeport européen biométrique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel pays est un pays fondateur de l'Union européenne ?",
-    choices: [
-      "La France",
-      "La Pologne",
-      "La Suède",
-      "La Bulgarie"
-    ],
-    correctIndex: 0
-  }
-];
- const HISTOIRE_GEO_CULTURE_QUESTIONS  = [
-  {
-    question: "Quel était le surnom de Louis XIV ?",
-    choices: [
-      "Le Roi-Soleil",
-      "Le Bon Roi",
-      "Le Conquérant",
-      "Le Sage"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel roi de France a été exécuté pendant la Révolution française ?",
-    choices: [
-      "Louis XVI",
-      "Louis XV",
-      "Louis XIV",
-      "Charles X"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En quelle année Napoléon Ier est-il devenu empereur ?",
-    choices: [
-      "1804",
-      "1789",
-      "1815",
-      "1792"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Lequel de ces personnages a un lien avec la République française ?",
-    choices: [
-      "Marianne",
-      "Jeanne d’Arc",
-      "Louis XIV",
-      "Charlemagne"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "De quand date l'appel à la résistance du général de Gaulle ?",
-    choices: [
-      "18 juin 1940",
-      "11 novembre 1918",
-      "8 mai 1945",
-      "14 juillet 1789"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pourquoi la Shoah est-elle étudiée à l'école ?",
-    choices: [
-      "Pour rappeler les crimes nazis et lutter contre l’antisémitisme et toutes les formes de racisme",
-      "Pour apprendre des stratégies militaires",
-      "Pour étudier la religion juive",
-      "Pour justifier les guerres"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel pays a été colonisé par la France ?",
-    choices: [
-      "L’Algérie",
-      "Le Portugal",
-      "La Suède",
-      "Le Japon"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Depuis quand les Français élisent-ils le président de la République au suffrage universel direct ?",
-    choices: [
-      "Depuis l’élection de 1965",
-      "Depuis 1789",
-      "Depuis 1945",
-      "Depuis 2002"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la première étape de la construction européenne en 1951 ?",
-    choices: [
-      "La création de la CECA (Communauté européenne du charbon et de l’acier)",
-      "La création de l’euro",
-      "La création de l’OTAN",
-      "La création de l’ONU"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Durant le mandat de quel président la peine de mort a-t-elle été abolie ?",
-    choices: [
-      "François Mitterrand",
-      "Charles de Gaulle",
-      "Valéry Giscard d’Estaing",
-      "Jacques Chirac"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel régime politique a été mis en place pendant la Révolution française en 1792 ?",
-    choices: [
-      "La Première République",
-      "La Première Monarchie constitutionnelle",
-      "Le Second Empire",
-      "La Cinquième République"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui était une figure de la Résistance française pendant la Seconde Guerre mondiale ?",
-    choices: [
-      "Jean Moulin",
-      "Louis XIV",
-      "Napoléon III",
-      "Philippe Pétain"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
-    choices: [
-      "Elles ont obtenu le droit de vote",
-      "Elles ont été obligées de travailler",
-      "Elles ont perdu le droit de se marier",
-      "Elles ont obtenu la gratuité des transports"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle organisation internationale a été créée en 1945 après la Seconde Guerre mondiale ?",
-    choices: [
-      "L’Organisation des Nations unies (ONU)",
-      "L’Union européenne",
-      "L’OTAN",
-      "La Banque mondiale"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle peine a été supprimée en 1981 en France ?",
-    choices: [
-      "La peine de mort",
-      "La prison à vie",
-      "Les amendes",
-      "Les travaux d’intérêt général"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En quelle année l'euro est-elle devenue la monnaie utilisée en France (pièces et billets) ?",
-    choices: [
-      "2002",
-      "1999",
-      "1990",
-      "2010"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En quelle année a commencé la Première Guerre mondiale ?",
-    choices: [
-      "1914",
-      "1918",
-      "1939",
-      "1945"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où a eu lieu le débarquement en 1944 ?",
-    choices: [
-      "En Normandie",
-      "En Provence",
-      "En Corse",
-      "En Bretagne"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel continent a été le plus concerné par la décolonisation française après la Seconde Guerre mondiale ?",
-    choices: [
-      "L’Afrique",
-      "L’Asie",
-      "L’Amérique du Sud",
-      "L’Océanie"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que fête-t-on le 8 mai en France ?",
-    choices: [
-      "La fin de la Seconde Guerre mondiale en Europe (Victoire de 1945)",
-      "La fin de la Première Guerre mondiale",
-      "La prise de la Bastille",
-      "La fondation de la République"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle mer ou océan borde la France métropolitaine ?",
-    choices: [
-      "L’océan Atlantique",
-      "La mer Noire",
-      "La mer Caspienne",
-      "L’océan Indien"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel pays a une frontière terrestre avec la France métropolitaine ?",
-    choices: [
-      "L’Espagne",
-      "Le Danemark",
-      "La Pologne",
-      "La Grèce"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle ville française est un port maritime ?",
-    choices: [
-      "Marseille",
-      "Lyon",
-      "Toulouse",
-      "Clermont-Ferrand"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle mer se situe entre la France et l'Angleterre ?",
-    choices: [
-      "La Manche",
-      "La mer Noire",
-      "La mer Baltique",
-      "La mer Rouge"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est ce que la France d'outre-mer ?",
-    choices: [
-      "Des territoires français situés en dehors de l’Europe",
-      "Des régions françaises très éloignées de Paris mais en Europe",
-      "Des anciennes colonies devenues indépendantes",
-      "Des bases militaires à l’étranger"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle chaîne de montagnes est située entre la France et l’Espagne ?",
-    choices: [
-      "Les Pyrénées",
-      "Les Alpes",
-      "Le Jura",
-      "Le Massif central"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle île française se trouve dans l'océan Indien ?",
-    choices: [
-      "La Réunion",
-      "La Corse",
-      "La Guadeloupe",
-      "La Martinique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la population approximative de la France en 2025 ?",
-    choices: [
-      "Environ 68 millions d’habitants",
-      "Environ 10 millions d’habitants",
-      "Environ 120 millions d’habitants",
-      "Environ 30 millions d’habitants"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel fleuve traverse Paris ?",
-    choices: [
-      "La Seine",
-      "La Loire",
-      "Le Rhône",
-      "La Garonne"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Lequel de ces pays partage des frontières terrestres avec la France ?",
-    choices: [
-      "L’Allemagne",
-      "Le Portugal",
-      "La Suède",
-      "La Finlande"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel pays a une frontière avec la France métropolitaine au nord-est ?",
-    choices: [
-      "L’Allemagne",
-      "L’Espagne",
-      "L’Italie",
-      "La Suisse"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où se trouvent les principales activités économiques en France ?",
-    choices: [
-      "Dans les grandes villes et les régions urbaines (comme l’Île-de-France)",
-      "Uniquement dans les campagnes",
-      "Seulement dans les ports",
-      "Exclusivement dans les montagnes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Parmi ces pays, lequel attire le plus de visiteurs chaque année ?",
-    choices: [
-      "La France",
-      "La Norvège",
-      "La Roumanie",
-      "La Bulgarie"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où habite la majorité des Français ?",
-    choices: [
-      "En ville ou en zone urbaine",
-      "À la campagne isolée",
-      "En montagne",
-      "En bord de mer"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle région est la plus peuplée ?",
-    choices: [
-      "L’Île-de-France",
-      "La Bretagne",
-      "La Corse",
-      "La Bourgogne-Franche-Comté"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle ville française fait partie des 10 plus grandes métropoles du pays ?",
-    choices: [
-      "Lyon",
-      "Biarritz",
-      "Calais",
-      "Bastia"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Lequel de ces départements de France est le plus touristique ?",
-    choices: [
-      "Paris",
-      "La Creuse",
-      "La Meuse",
-      "La Haute-Marne"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quand peut-on visiter gratuitement des lieux culturels en France (musées nationaux, dans certains cas) ?",
-    choices: [
-      "Le premier dimanche de certains mois, selon les musées",
-      "Uniquement le 25 décembre",
-      "Jamais, c’est toujours payant",
-      "Seulement la nuit"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien de personnes parlent français dans le monde (ordre de grandeur) ?",
-    choices: [
-      "Environ 320 millions de personnes",
-      "Environ 10 millions de personnes",
-      "Environ 50 millions de personnes",
-      "Plus d’un milliard de personnes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui était Marguerite Yourcenar ?",
-    choices: [
-      "Une écrivaine française, première femme élue à l’Académie française",
-      "Une femme politique française",
-      "Une actrice française célèbre",
-      "Une scientifique française"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel peintre est français ?",
-    choices: [
-      "Claude Monet",
-      "Pablo Picasso",
-      "Vincent Van Gogh",
-      "Salvador Dalí"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel musée est situé à Paris ?",
-    choices: [
-      "Le musée du Louvre",
-      "Le musée du Prado",
-      "Le British Museum",
-      "Le Rijksmuseum"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui était Auguste Rodin ?",
-    choices: [
-      "Un sculpteur français",
-      "Un écrivain français",
-      "Un musicien français",
-      "Un homme politique français"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le classement de la langue française parmi les langues les plus parlées dans le monde (en 2020–2026 environ) ?",
-    choices: [
-      "Elle fait partie des 5 langues les plus parlées au monde (environ 4ᵉ)",
-      "Elle est la 20ᵉ langue la plus parlée",
-      "Elle est la langue la plus parlée au monde",
-      "Elle n’est parlée que par quelques millions de personnes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle cathédrale célèbre a été en partie détruite par un incendie en 2019 ?",
-    choices: [
-      "Notre-Dame de Paris",
-      "La cathédrale de Chartres",
-      "La cathédrale de Reims",
-      "La cathédrale de Strasbourg"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui était une écrivaine française célèbre ?",
-    choices: [
-      "Simone de Beauvoir",
-      "Victor Hugo",
-      "Georges Brassens",
-      "Claude Debussy"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui était un célèbre musicien français ?",
-    choices: [
-      "Claude Debussy",
-      "Ludwig van Beethoven",
-      "Wolfgang Amadeus Mozart",
-      "Frederic Chopin (Polonais)"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui était Auguste Renoir ?",
-    choices: [
-      "Un peintre français impressionniste",
-      "Un écrivain français",
-      "Un architecte français",
-      "Un homme politique français"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle fête est française ?",
-    choices: [
-      "La fête nationale du 14 juillet",
-      "Thanksgiving",
-      "La fête de la Saint-Patrick",
-      "La fête de la Mi-Automne"
-    ],
-    correctIndex: 0
-  }
-];
-   const DROITS_DEVOIRS_QUESTIONS  = [
- 
-  {
-    question: "À quelle liberté la PMA fait-elle référence ?",
-    choices: [
-      "À la liberté de disposer de son corps et de fonder une famille",
-      "À la liberté de circulation",
-      "À la liberté d’entreprendre",
-      "À la liberté de la presse"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Au nom de quoi l'État justifie-t-il la restriction des droits ?",
-    choices: [
-      "Au nom de la protection de l’ordre public et des droits d’autrui",
-      "Au nom de la volonté du gouvernement uniquement",
-      "Au nom des traditions religieuses",
-      "Au nom de la majorité politique seulement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Concernant le droit de se marier, quelle proposition est correcte ?",
-    choices: [
-      "Deux personnes majeures et consentantes peuvent se marier civilement, y compris de même sexe",
-      "Seuls les couples hétérosexuels peuvent se marier",
-      "Le mariage est réservé aux personnes de nationalité française",
-      "Le mariage religieux suffit pour être reconnu par l’État"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Est-il toujours possible de divorcer ?",
-    choices: [
-      "Oui, le divorce est possible dans les conditions prévues par la loi",
-      "Non, le divorce est interdit en France",
-      "Oui, mais uniquement si le couple n’a pas d’enfants",
-      "Oui, mais uniquement avec l’accord du maire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "La peine de mort est :",
-    choices: [
-      "Abolie en France depuis 1981",
-      "Toujours appliquée pour les crimes les plus graves",
-      "Réservée aux crimes terroristes",
-      "En vigueur uniquement en temps de guerre"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Laquelle de ces citations est inscrite dans la Déclaration des Droits de l'homme et du Citoyen de 1789 ?",
-    choices: [
-      "« Les hommes naissent et demeurent libres et égaux en droits »",
-      "« Un pour tous, tous pour un »",
-      "« Liberté, Égalité, Fraternité »",
-      "« L’union fait la force »"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Le recours à l'avortement est-il autorisé ?",
-    choices: [
-      "Oui, l’IVG est un droit encadré par la loi et garanti par la Constitution",
-      "Non, l’avortement est totalement interdit",
-      "Oui, mais uniquement en cas de viol",
-      "Oui, mais uniquement sur décision du juge"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que contient la Constitution ?",
-    choices: [
-      "Les règles d’organisation des pouvoirs publics et les droits fondamentaux",
-      "Les programmes scolaires détaillés",
-      "Les décisions de justice au cas par cas",
-      "Les tarifs des impôts et des cotisations"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que garantit la liberté de la presse ?",
-    choices: [
-      "Le droit d’informer et de critiquer dans le respect de la loi",
-      "Le droit de dire n’importe quoi sans aucune limite",
-      "Le droit de ne jamais être poursuivi pour diffamation",
-      "Le droit de publier uniquement des informations officielles"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que prévoit la Charte de l'environnement ?",
-    choices: [
-      "Le droit de chacun de vivre dans un environnement équilibré et respectueux de la santé",
-      "Le droit de polluer s’il y a de l’emploi",
-      "Le droit de construire partout sans autorisation",
-      "Le droit de ne pas s’occuper de l’environnement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que signifie la dignité humaine ?",
-    choices: [
-      "Chaque personne doit être respectée et ne pas subir de traitements dégradants ou humiliants",
-      "Seules les personnes âgées ont droit au respect",
-      "Seuls les citoyens français ont droit à la dignité",
-      "La dignité ne concerne que la vie professionnelle"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que signifie le droit de manifester ?",
-    choices: [
-      "Le droit d’exprimer collectivement ses opinions sur la voie publique, dans le respect de la loi",
-      "Le droit de tout casser dans la rue",
-      "Le droit de se réunir sans aucune règle",
-      "Le droit d’empêcher les autres de circuler en permanence"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que signifie PMA ?",
-    choices: [
-      "Procréation médicalement assistée",
-      "Prévention médicale avancée",
-      "Protection maternelle et alimentaire",
-      "Plan médical annuel"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel texte est le plus difficile à modifier ?",
-    choices: [
-      "La Constitution",
-      "Un règlement intérieur d’entreprise",
-      "Une circulaire administrative",
-      "Un arrêté municipal"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle liberté permet à une personne de croire en la religion de son choix ?",
-    choices: [
-      "La liberté de conscience et de religion",
-      "La liberté d’entreprendre",
-      "La liberté de circulation",
-      "La liberté de la presse"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que le droit de grève ?",
-    choices: [
-      "La cessation collective et concertée du travail pour appuyer des revendications professionnelles",
-      "Le droit de quitter son travail définitivement",
-      "Le droit de ne jamais respecter son contrat de travail",
-      "Le droit de partir en vacances sans prévenir"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que la Constitution ?",
-    choices: [
-      "La loi fondamentale de l’État qui fixe les institutions et les droits fondamentaux",
-      "Un simple règlement intérieur du gouvernement",
-      "Une loi ordinaire parmi d’autres",
-      "Le programme d’un parti politique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui peut demander à avorter ?",
-    choices: [
-      "Toute femme enceinte, majeure ou mineure, qui ne souhaite pas poursuivre sa grossesse",
-      "Uniquement les femmes mariées",
-      "Uniquement les femmes majeures",
-      "Uniquement les femmes sans enfants"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Une femme majeure de nationalité française a-t-elle le droit de voter aux élections ?",
-    choices: [
-      "Oui, dans les mêmes conditions que les hommes",
-      "Non, seules les femmes mariées peuvent voter",
-      "Non, seules les femmes sans casier judiciaire peuvent voter",
-      "Non, le droit de vote est réservé aux hommes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Concernant l'utilisation des réseaux sociaux, quelle proposition est correcte ?",
-    choices: [
-      "Les propos publics sont soumis à la loi : les insultes, propos racistes et menaces sont interdits",
-      "On peut tout dire, même des menaces, sans risque",
-      "La loi ne s’applique pas sur internet",
-      "Seuls les journalistes sont responsables de ce qu’ils publient"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Jeter un mégot par terre est :",
-    choices: [
-      "Une pollution de l’espace public, passible d’une amende",
-      "Un geste normal sans conséquence",
-      "Autorisé mais seulement en ville",
-      "Autorisé si personne ne regarde"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "L'État peut-il limiter les droits et libertés ?",
-    choices: [
-      "Oui, pour protéger l’ordre public, la santé, la sécurité et les droits d’autrui",
-      "Non, jamais",
-      "Oui, uniquement pour les étrangers",
-      "Oui, uniquement pour les mineurs"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Parmi ces actions, laquelle permet d'adopter une attitude respectueuse de l’environnement ?",
-    choices: [
-      "Trier ses déchets et limiter sa consommation d’énergie",
-      "Laisser la lumière allumée en permanence",
-      "Jeter ses déchets par la fenêtre de la voiture",
-      "Arroser son jardin en plein été en période de sécheresse"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle proposition constitue une obligation ?",
-    choices: [
-      "Respecter les lois et payer ses impôts",
-      "Participer à toutes les manifestations",
-      "Être membre d’un parti politique",
-      "Lire le journal tous les jours"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pour quel motif peut-on limiter la liberté d'expression ?",
-    choices: [
-      "Pour empêcher l’incitation à la haine, à la violence ou à la discrimination",
-      "Pour interdire toute critique du gouvernement",
-      "Pour empêcher de parler de politique",
-      "Pour limiter la liberté des journalistes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pourquoi doit-on trier ses déchets ?",
-    choices: [
-      "Pour favoriser le recyclage et protéger l’environnement",
-      "Pour gagner de l’argent automatiquement",
-      "Pour réduire le nombre de poubelles dans la rue",
-      "Uniquement pour faire plaisir à la mairie"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que doit faire une victime de violences ?",
-    choices: [
-      "Se mettre en sécurité, contacter les secours ou la police et porter plainte",
-      "Garder le silence et ne rien dire",
-      "Se venger seule de l’auteur des violences",
-      "Attendre plusieurs années avant d’en parler"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que doit-on faire face aux ordres des policiers ou gendarmes ?",
-    choices: [
-      "Obéir dans le calme et, en cas de contestation, utiliser ensuite les voies de recours",
-      "Refuser systématiquement d’obéir",
-      "Fuir pour éviter le contrôle",
-      "N’obéir que si l’on est d’accord"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle de la police ?",
-    choices: [
-      "Protéger les personnes et les biens, faire respecter la loi et maintenir l’ordre public",
-      "Rédiger les lois",
-      "Décider des peines de prison",
-      "Organiser les élections"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est un exemple d’assistance à personne en danger ?",
-    choices: [
-      "Appeler les secours pour une personne en détresse",
-      "Ignorer une personne blessée",
-      "Filmer une agression sans rien faire",
-      "Se moquer de quelqu’un en difficulté"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel exemple illustre une limitation de liberté pour protéger l'intérêt général ?",
-    choices: [
-      "L’interdiction de fumer dans les lieux publics fermés",
-      "L’interdiction de parler au téléphone chez soi",
-      "L’interdiction d’avoir une opinion politique",
-      "L’interdiction d’aller au parc"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est l’attitude à avoir lorsque qu'on est témoin de violences ?",
-    choices: [
-      "Ne pas se mettre en danger, alerter les secours et prévenir la police",
-      "Intervenir physiquement à tout prix",
-      "Ne rien faire et partir",
-      "Filmer la scène pour la publier sur les réseaux sociaux"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est l'infraction la plus grave ?",
-    choices: [
-      "Le crime",
-      "Le délit",
-      "La contravention",
-      "La simple incivilité"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle obligation concerne toutes les personnes résidant en France quelle que soit leur nationalité ?",
-    choices: [
-      "Respecter les lois françaises",
-      "Voter à toutes les élections",
-      "Adopter la nationalité française",
-      "Appartenir à un parti politique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle proposition représente un exemple de crime ?",
-    choices: [
-      "Un meurtre",
-      "Un stationnement gênant",
-      "Un excès de vitesse léger",
-      "Un retard de paiement de facture"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle proposition représente un exemple de délit ?",
-    choices: [
-      "Un vol dans un magasin",
-      "Une simple insulte entre amis",
-      "Un bruit de voisinage ponctuel",
-      "Un oubli de dire bonjour"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui veille au maintien de l’ordre public ?",
-    choices: [
-      "La police et la gendarmerie sous l’autorité de l’État (préfets, maires…)",
-      "Uniquement les associations de quartier",
-      "Les partis politiques",
-      "Les directeurs d’école uniquement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "S'agissant des déchets, quelle proposition est correcte ?",
-    choices: [
-      "On doit les déposer dans les poubelles prévues ou en déchetterie, et les trier si possible",
-      "On peut les jeter dans la rue si personne ne regarde",
-      "On peut les brûler dans la forêt",
-      "On peut les mettre dans les toilettes"
-    ],
-    correctIndex: 0
-  }
-];
-const ALL_QUESTIONS = [
-  ...PRINCIPES_QUESTIONS,
-  ...SYSTEME_INSTIT_QUESTIONS,
-  ...DROITS_DEVOIRS_QUESTIONS,
-  ...HISTOIRE_GEO_CULTURE_QUESTIONS,
-  ...VIVRE_SOCIETE_QUESTIONS
-];
-    // --------------------------------------------------------
-    // 2) Mélange aléatoire (Fisher–Yates)
-    // --------------------------------------------------------
-    function shuffle(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-	const QUESTIONS_PAR_THEME = 10;
+            {
+                question: "À quelle liberté la PMA fait-elle référence ?",
+                choices: [
+                    "À la liberté de disposer de son corps et de fonder une famille",
+                    "À la liberté de circulation",
+                    "À la liberté d’entreprendre",
+                    "À la liberté de la presse"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Au nom de quoi l'État justifie-t-il la restriction des droits ?",
+                choices: [
+                    "Au nom de la protection de l’ordre public et des droits d’autrui",
+                    "Au nom de la volonté du gouvernement uniquement",
+                    "Au nom des traditions religieuses",
+                    "Au nom de la majorité politique seulement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant le droit de se marier, quelle proposition est correcte ?",
+                choices: [
+                    "Deux personnes majeures et consentantes peuvent se marier civilement, y compris de même sexe",
+                    "Seuls les couples hétérosexuels peuvent se marier",
+                    "Le mariage est réservé aux personnes de nationalité française",
+                    "Le mariage religieux suffit pour être reconnu par l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Est-il toujours possible de divorcer ?",
+                choices: [
+                    "Oui, le divorce est possible dans les conditions prévues par la loi",
+                    "Non, le divorce est interdit en France",
+                    "Oui, mais uniquement si le couple n’a pas d’enfants",
+                    "Oui, mais uniquement avec l’accord du maire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La peine de mort est :",
+                choices: [
+                    "Abolie en France depuis 1981",
+                    "Toujours appliquée pour les crimes les plus graves",
+                    "Réservée aux crimes terroristes",
+                    "En vigueur uniquement en temps de guerre"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Laquelle de ces citations est inscrite dans la Déclaration des Droits de l'homme et du Citoyen de 1789 ?",
+                choices: [
+                    "« Les hommes naissent et demeurent libres et égaux en droits »",
+                    "« Un pour tous, tous pour un »",
+                    "« Liberté, Égalité, Fraternité »",
+                    "« L’union fait la force »"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le recours à l'avortement est-il autorisé ?",
+                choices: [
+                    "Oui, l’IVG est un droit encadré par la loi et garanti par la Constitution",
+                    "Non, l’avortement est totalement interdit",
+                    "Oui, mais uniquement en cas de viol",
+                    "Oui, mais uniquement sur décision du juge"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que contient la Constitution ?",
+                choices: [
+                    "Les règles d’organisation des pouvoirs publics et les droits fondamentaux",
+                    "Les programmes scolaires détaillés",
+                    "Les décisions de justice au cas par cas",
+                    "Les tarifs des impôts et des cotisations"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit la liberté de la presse ?",
+                choices: [
+                    "Le droit d’informer et de critiquer dans le respect de la loi",
+                    "Le droit de dire n’importe quoi sans aucune limite",
+                    "Le droit de ne jamais être poursuivi pour diffamation",
+                    "Le droit de publier uniquement des informations officielles"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que prévoit la Charte de l'environnement ?",
+                choices: [
+                    "Le droit de chacun de vivre dans un environnement équilibré et respectueux de la santé",
+                    "Le droit de polluer s’il y a de l’emploi",
+                    "Le droit de construire partout sans autorisation",
+                    "Le droit de ne pas s’occuper de l’environnement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que signifie la dignité humaine ?",
+                choices: [
+                    "Chaque personne doit être respectée et ne pas subir de traitements dégradants ou humiliants",
+                    "Seules les personnes âgées ont droit au respect",
+                    "Seuls les citoyens français ont droit à la dignité",
+                    "La dignité ne concerne que la vie professionnelle"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que signifie le droit de manifester ?",
+                choices: [
+                    "Le droit d’exprimer collectivement ses opinions sur la voie publique, dans le respect de la loi",
+                    "Le droit de tout casser dans la rue",
+                    "Le droit de se réunir sans aucune règle",
+                    "Le droit d’empêcher les autres de circuler en permanence"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que signifie PMA ?",
+                choices: [
+                    "Procréation médicalement assistée",
+                    "Prévention médicale avancée",
+                    "Protection maternelle et alimentaire",
+                    "Plan médical annuel"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel texte est le plus difficile à modifier ?",
+                choices: [
+                    "La Constitution",
+                    "Un règlement intérieur d’entreprise",
+                    "Une circulaire administrative",
+                    "Un arrêté municipal"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle liberté permet à une personne de croire en la religion de son choix ?",
+                choices: [
+                    "La liberté de conscience et de religion",
+                    "La liberté d’entreprendre",
+                    "La liberté de circulation",
+                    "La liberté de la presse"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que le droit de grève ?",
+                choices: [
+                    "La cessation collective et concertée du travail pour appuyer des revendications professionnelles",
+                    "Le droit de quitter son travail définitivement",
+                    "Le droit de ne jamais respecter son contrat de travail",
+                    "Le droit de partir en vacances sans prévenir"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la Constitution ?",
+                choices: [
+                    "La loi fondamentale de l’État qui fixe les institutions et les droits fondamentaux",
+                    "Un simple règlement intérieur du gouvernement",
+                    "Une loi ordinaire parmi d’autres",
+                    "Le programme d’un parti politique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui peut demander à avorter ?",
+                choices: [
+                    "Toute femme enceinte, majeure ou mineure, qui ne souhaite pas poursuivre sa grossesse",
+                    "Uniquement les femmes mariées",
+                    "Uniquement les femmes majeures",
+                    "Uniquement les femmes sans enfants"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une femme majeure de nationalité française a-t-elle le droit de voter aux élections ?",
+                choices: [
+                    "Oui, dans les mêmes conditions que les hommes",
+                    "Non, seules les femmes mariées peuvent voter",
+                    "Non, seules les femmes sans casier judiciaire peuvent voter",
+                    "Non, le droit de vote est réservé aux hommes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant l'utilisation des réseaux sociaux, quelle proposition est correcte ?",
+                choices: [
+                    "Les propos publics sont soumis à la loi : les insultes, propos racistes et menaces sont interdits",
+                    "On peut tout dire, même des menaces, sans risque",
+                    "La loi ne s’applique pas sur internet",
+                    "Seuls les journalistes sont responsables de ce qu’ils publient"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Jeter un mégot par terre est :",
+                choices: [
+                    "Une pollution de l’espace public, passible d’une amende",
+                    "Un geste normal sans conséquence",
+                    "Autorisé mais seulement en ville",
+                    "Autorisé si personne ne regarde"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "L'État peut-il limiter les droits et libertés ?",
+                choices: [
+                    "Oui, pour protéger l’ordre public, la santé, la sécurité et les droits d’autrui",
+                    "Non, jamais",
+                    "Oui, uniquement pour les étrangers",
+                    "Oui, uniquement pour les mineurs"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Parmi ces actions, laquelle permet d'adopter une attitude respectueuse de l’environnement ?",
+                choices: [
+                    "Trier ses déchets et limiter sa consommation d’énergie",
+                    "Laisser la lumière allumée en permanence",
+                    "Jeter ses déchets par la fenêtre de la voiture",
+                    "Arroser son jardin en plein été en période de sécheresse"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle proposition constitue une obligation ?",
+                choices: [
+                    "Respecter les lois et payer ses impôts",
+                    "Participer à toutes les manifestations",
+                    "Être membre d’un parti politique",
+                    "Lire le journal tous les jours"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pour quel motif peut-on limiter la liberté d'expression ?",
+                choices: [
+                    "Pour empêcher l’incitation à la haine, à la violence ou à la discrimination",
+                    "Pour interdire toute critique du gouvernement",
+                    "Pour empêcher de parler de politique",
+                    "Pour limiter la liberté des journalistes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi doit-on trier ses déchets ?",
+                choices: [
+                    "Pour favoriser le recyclage et protéger l’environnement",
+                    "Pour gagner de l’argent automatiquement",
+                    "Pour réduire le nombre de poubelles dans la rue",
+                    "Uniquement pour faire plaisir à la mairie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que doit faire une victime de violences ?",
+                choices: [
+                    "Se mettre en sécurité, contacter les secours ou la police et porter plainte",
+                    "Garder le silence et ne rien dire",
+                    "Se venger seule de l’auteur des violences",
+                    "Attendre plusieurs années avant d’en parler"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que doit-on faire face aux ordres des policiers ou gendarmes ?",
+                choices: [
+                    "Obéir dans le calme et, en cas de contestation, utiliser ensuite les voies de recours",
+                    "Refuser systématiquement d’obéir",
+                    "Fuir pour éviter le contrôle",
+                    "N’obéir que si l’on est d’accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle de la police ?",
+                choices: [
+                    "Protéger les personnes et les biens, faire respecter la loi et maintenir l’ordre public",
+                    "Rédiger les lois",
+                    "Décider des peines de prison",
+                    "Organiser les élections"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est un exemple d’assistance à personne en danger ?",
+                choices: [
+                    "Appeler les secours pour une personne en détresse",
+                    "Ignorer une personne blessée",
+                    "Filmer une agression sans rien faire",
+                    "Se moquer de quelqu’un en difficulté"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel exemple illustre une limitation de liberté pour protéger l'intérêt général ?",
+                choices: [
+                    "L’interdiction de fumer dans les lieux publics fermés",
+                    "L’interdiction de parler au téléphone chez soi",
+                    "L’interdiction d’avoir une opinion politique",
+                    "L’interdiction d’aller au parc"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l’attitude à avoir lorsque qu'on est témoin de violences ?",
+                choices: [
+                    "Ne pas se mettre en danger, alerter les secours et prévenir la police",
+                    "Intervenir physiquement à tout prix",
+                    "Ne rien faire et partir",
+                    "Filmer la scène pour la publier sur les réseaux sociaux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l'infraction la plus grave ?",
+                choices: [
+                    "Le crime",
+                    "Le délit",
+                    "La contravention",
+                    "La simple incivilité"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle obligation concerne toutes les personnes résidant en France quelle que soit leur nationalité ?",
+                choices: [
+                    "Respecter les lois françaises",
+                    "Voter à toutes les élections",
+                    "Adopter la nationalité française",
+                    "Appartenir à un parti politique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle proposition représente un exemple de crime ?",
+                choices: [
+                    "Un meurtre",
+                    "Un stationnement gênant",
+                    "Un excès de vitesse léger",
+                    "Un retard de paiement de facture"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle proposition représente un exemple de délit ?",
+                choices: [
+                    "Un vol dans un magasin",
+                    "Une simple insulte entre amis",
+                    "Un bruit de voisinage ponctuel",
+                    "Un oubli de dire bonjour"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui veille au maintien de l’ordre public ?",
+                choices: [
+                    "La police et la gendarmerie sous l’autorité de l’État (préfets, maires…)",
+                    "Uniquement les associations de quartier",
+                    "Les partis politiques",
+                    "Les directeurs d’école uniquement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "S'agissant des déchets, quelle proposition est correcte ?",
+                choices: [
+                    "On doit les déposer dans les poubelles prévues ou en déchetterie, et les trier si possible",
+                    "On peut les jeter dans la rue si personne ne regarde",
+                    "On peut les brûler dans la forêt",
+                    "On peut les mettre dans les toilettes"
+                ],
+                correctIndex: 0
+            }
+        ];
+        // --------------------------------------------------------
+        // 1) Mélange aléatoire (Fisher–Yates)
+        // --------------------------------------------------------
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
 
-function buildQuizQuestions() {
-  const principes = shuffle(PRINCIPES_QUESTIONS).slice(0, 8);
-  const systeme  = shuffle(SYSTEME_INSTIT_QUESTIONS).slice(0, 8);
-  const droits   = shuffle(DROITS_DEVOIRS_QUESTIONS).slice(0, 8);
-  const vivre    = shuffle(VIVRE_SOCIETE_QUESTIONS).slice(0, 8);
-  const histoire = shuffle(HISTOIRE_GEO_CULTURE_QUESTIONS).slice(0, 8);
+        // --------------------------------------------------------
+        // 2) Construire un examen blanc de 40 questions (9/9/9/9/4)
+        // --------------------------------------------------------
+        function buildQuizQuestions() {
+            const principes = shuffle(PRINCIPES_QUESTIONS).slice(0, 8);
+            const systeme = shuffle(SYSTEME_INSTIT_QUESTIONS).slice(0, 8);
+            const droits = shuffle(DROITS_DEVOIRS_QUESTIONS).slice(0, 8);
+            const vivre = shuffle(VIVRE_SOCIETE_QUESTIONS).slice(0, 8);
+            const histoire = shuffle(HISTOIRE_GEO_CULTURE_QUESTIONS).slice(0, 8); // 9+9+9+9+4 = 40
 
-  // On fusionne les paquets : 9 + 9 + 9 + 9 + 4 = 40
-  const forty = [
-    ...principes,
-    ...systeme,
-    ...droits,
-    ...vivre,
-    ...histoire
-  ];
+            const forty = [
+                ...principes,
+                ...systeme,
+                ...droits,
+                ...vivre,
+                ...histoire
+            ];
 
-  // On mélange l'ordre global des 40 questions
-  return shuffle(forty);
-}
+            return shuffle(forty);
+        }
 
-    const TOTAL_QUESTIONS = 40;
-let questions = buildQuizQuestions();   // <<< ICI on utilise la fonction
-let userSelections = new Array(TOTAL_QUESTIONS).fill(null);
-    // --------------------------------------------------------
-    // 3) Logique du quiz
-    // --------------------------------------------------------
-    let currentIndex = 0;
-    let score = 0;
-    let userAnswers = [];
+        // --------------------------------------------------------
+        // 3) Variables globales (questions + état du quiz)
+        // --------------------------------------------------------
+        let questions = buildQuizQuestions();
+        let currentIndex = 0;
+        let score = 0;
 
-    const progressEl = document.getElementById("progress");
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const nextBtn = document.getElementById("nextBtn");
-    const resultEl = document.getElementById("result");
-    const quizEl = document.getElementById("quiz");
+        let userAnswers = []; // un objet par question : {question, chosen, correct, isCorrect}
+        let selectedChoiceIndex = null;
+        let currentRenderedChoices = [];
 
-    let selectedChoiceIndex = null;
-    let locked = false;
-let currentRenderedChoices = []; // nouveau
+        const progressEl = document.getElementById("progress");
+        const questionEl = document.getElementById("question");
+        const choicesEl = document.getElementById("choices");
+        const nextBtn = document.getElementById("nextBtn");
+        const resultEl = document.getElementById("result");
+        const quizEl = document.getElementById("quiz");
+        const timerEl = document.getElementById("timer");
 
-function renderQuestion() {
-  const q = questions[currentIndex];
-  questionEl.textContent = q.question;
-  progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+        // --------------------------------------------------------
+        // 4) Timer 45 minutes
+        // --------------------------------------------------------
+        const EXAM_DURATION_SECONDS = 45 * 60; // 45 minutes
+        let remainingSeconds = EXAM_DURATION_SECONDS;
+        let timerInterval = null;
+        let examFinished = false;
 
-  choicesEl.innerHTML = "";
-  selectedChoiceIndex = null;
-  locked = false;
-  nextBtn.disabled = true;
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            const mm = minutes.toString().padStart(2, "0");
+            const ss = seconds.toString().padStart(2, "0");
+            timerEl.textContent = `Temps restant : ${mm}:${ss}`;
+        }
 
-  // on crée un tableau { text, isCorrect } puis on le mélange
-  currentRenderedChoices = shuffle(
-    q.choices.map((text, idx) => ({
-      text,
-      isCorrect: idx === q.correctIndex
-    }))
-  );
+        function startExamTimer() {
+            remainingSeconds = EXAM_DURATION_SECONDS;
+            updateTimerDisplay();
 
-  currentRenderedChoices.forEach((choiceObj, index) => {
-    const btn = document.createElement("button");
-    btn.className = "choice-btn";
-    btn.textContent = choiceObj.text;
-    btn.addEventListener("click", () => handleChoiceClick(index));
-    choicesEl.appendChild(btn);
-  });
-}
+            timerInterval = setInterval(() => {
+                remainingSeconds -= 1;
+                updateTimerDisplay();
 
-function handleChoiceClick(index) {
-  selectedChoiceIndex = index;
-  nextBtn.disabled = false;
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    endExamByTime();
+                }
+            }, 1000);
+        }
 
-  const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-  buttons.forEach((btn, i) => {
-    btn.classList.toggle("selected", i === index);
-  });
-}
+        function endExamByTime() {
+            if (examFinished) return;
+            nextBtn.disabled = true;
 
-   function validateAnswer() {
-  const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            // Compléter les réponses manquantes
+            for (let i = 0; i < questions.length; i++) {
+                if (!userAnswers[i]) {
+                    const q = questions[i];
+                    userAnswers[i] = {
+                        question: q.question,
+                        chosen: "(aucune réponse)",
+                        correct: q.choices[q.correctIndex],
+                        isCorrect: false
+                    };
+                }
+            }
 
-  if (selectedChoiceIndex === null) return;
+            showResult();
+        }
 
-  locked = true;
-  nextBtn.disabled = false;
+        // --------------------------------------------------------
+        // 5) Afficher une question
+        // --------------------------------------------------------
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            questionEl.textContent = q.question;
+            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
 
-  // on trouve l’index du bouton correct dans l’ordre mélangé
-  const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
+            choicesEl.innerHTML = "";
+            selectedChoiceIndex = null;
+            nextBtn.disabled = true;
 
-  buttons.forEach((btn, i) => {
-    btn.classList.remove("selected");
-    if (i === correctRenderedIndex) {
-      btn.classList.add("correct");
-    }
-    if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-      btn.classList.add("incorrect");
-    }
-  });
+            // Créer un tableau { text, isCorrect } et le mélanger
+            currentRenderedChoices = shuffle(
+                q.choices.map((text, idx) => ({
+                    text,
+                    isCorrect: idx === q.correctIndex
+                }))
+            );
 
-  const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-  if (isCorrect) {
-    score += 1;
-  }
+            currentRenderedChoices.forEach((choiceObj, index) => {
+                const btn = document.createElement("button");
+                btn.className = "choice-btn";
+                btn.textContent = choiceObj.text;
+                btn.addEventListener("click", () => handleChoiceClick(index));
+                choicesEl.appendChild(btn);
+            });
+        }
 
-  // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-  userAnswers.push({
-    question: questions[currentIndex].question,
-    chosen: currentRenderedChoices[selectedChoiceIndex].text,
-    correct: currentRenderedChoices[correctRenderedIndex].text,
-    isCorrect
-  });
-}
+        // --------------------------------------------------------
+        // 6) Clic sur une réponse (juste sélectionner visuellement)
+        // --------------------------------------------------------
+        function handleChoiceClick(index) {
+            selectedChoiceIndex = index;
+            nextBtn.disabled = false;
 
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle("selected", i === index);
+            });
+        }
 
-  function showResult() {
-  const total = questions.length;
-  score = 0;
+        // --------------------------------------------------------
+        // 7) Bouton "Suivant" / "Terminer"
+        // --------------------------------------------------------
+        nextBtn.addEventListener("click", () => {
+            if (selectedChoiceIndex === null || examFinished) {
+                return;
+            }
 
-  quizEl.style.display = "none";
-  resultEl.style.display = "block";
+            const q = questions[currentIndex];
 
-  let questionsHtml = "";
+            // On trouve l’index de la bonne réponse dans l’ordre mélangé
+            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
 
-  for (let i = 0; i < questions.length; i++) {
-    const q = questions[i];
-    const selIdx = userSelections[i];
-    const isCorrect = selIdx === q.correctIndex;
+            // On enregistre la réponse pour cette question
+            userAnswers[currentIndex] = {
+                question: q.question,
+                chosen: currentRenderedChoices[selectedChoiceIndex].text,
+                correct: currentRenderedChoices[correctRenderedIndex].text,
+                isCorrect: currentRenderedChoices[selectedChoiceIndex].isCorrect
+            };
 
-    if (isCorrect) {
-      score += 1;
-    }
+            if (currentIndex < questions.length - 1) {
+                currentIndex += 1;
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        });
 
-    const chosenText = selIdx !== null ? q.choices[selIdx] : "(aucune réponse)";
-    const correctText = q.choices[q.correctIndex];
+        // --------------------------------------------------------
+        // 8) Résultats + correction
+        // --------------------------------------------------------
+        function showResult() {
+            examFinished = true;
 
-    questionsHtml += `
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            quizEl.style.display = "none";
+            resultEl.style.display = "block";
+
+            score = 0;
+            let questionsHtml = "";
+
+            userAnswers.forEach((entry, index) => {
+                if (entry.isCorrect) score += 1;
+
+                questionsHtml += `
       <div class="question-review">
-        <div class="question-review-header ${isCorrect ? "correct" : "incorrect"}">
-          <span>Q${i + 1}. ${q.question}</span>
-          <span class="badge ${isCorrect ? "correct" : "incorrect"}">
-            ${isCorrect ? "Juste" : "Faux"}
+        <div class="question-review-header ${entry.isCorrect ? "correct" : "incorrect"}">
+          <span>Q${index + 1}. ${entry.question}</span>
+          <span class="badge ${entry.isCorrect ? "correct" : "incorrect"}">
+            ${entry.isCorrect ? "Juste" : "Faux"}
           </span>
         </div>
         <div class="question-review-body">
-          <p><strong>Ta réponse :</strong> ${chosenText}</p>
-          <p><strong>Bonne réponse :</strong> ${correctText}</p>
+          <p><strong>Ta réponse :</strong> ${entry.chosen}</p>
+          <p><strong>Bonne réponse :</strong> ${entry.correct}</p>
         </div>
       </div>
     `;
-  }
+            });
 
-  const messageReussite =
-    score >= 32
-      ? "Bravo, tu as réussi l'examen blanc !"
-      : "Tu n'as pas encore atteint 32/40. Continue à t'entraîner, tu vas y arriver.";
+            const total = userAnswers.length;
+            const messageReussite =
+                score >= 32 ?
+                "Bravo, tu as réussi l'examen blanc !" :
+                "Tu n'as pas encore atteint 32/40. Continue à t'entraîner, tu vas y arriver.";
 
-  const headerHtml = `
+            const headerHtml = `
     <div class="result-header">
       <h2>Résultats de l'examen blanc</h2>
       <div class="result-score-line">
@@ -2568,44 +2641,42 @@ function handleChoiceClick(index) {
     <p class="result-list-title">Correction détaillée :</p>
   `;
 
-  const footerHtml = `
+            const footerHtml = `
     <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouvel examen blanc</button>
   `;
 
-  resultEl.innerHTML = headerHtml + questionsHtml + footerHtml;
-}
-    function restartQuiz() {
-  questions = buildQuizQuestions(); 
-	  
-      currentIndex = 0;
-      score = 0;
-      userAnswers = [];
+            resultEl.innerHTML = headerHtml + questionsHtml + footerHtml;
+        }
 
-      quizEl.style.display = "block";
-      resultEl.style.display = "none";
+        // --------------------------------------------------------
+        // 9) Redémarrer un examen blanc
+        // --------------------------------------------------------
+        function restartQuiz() {
+            questions = buildQuizQuestions();
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+            examFinished = false;
 
-      nextBtn.textContent = "Valider";
-      renderQuestion();
-    }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
 
-   nextBtn.addEventListener("click", () => {
-  if (selectedChoiceIndex === null) {
-    return; // on ne laisse pas avancer sans réponse
-  }
+            quizEl.style.display = "block";
+            resultEl.style.display = "none";
 
-  // On enregistre le choix de l'utilisateur pour cette question
-  userSelections[currentIndex] = selectedChoiceIndex;
+            nextBtn.textContent = "Valider";
+            renderQuestion();
+            startExamTimer();
+        }
 
-  if (currentIndex < questions.length - 1) {
-    currentIndex += 1;
-    renderQuestion();
-  } else {
-    showResult();
-  }
-});
-
-    nextBtn.textContent = "Valider";
-    renderQuestion();
-  </script>
+        // --------------------------------------------------------
+        // 10) Démarrage
+        // --------------------------------------------------------
+        nextBtn.textContent = "Valider";
+        renderQuestion();
+        startExamTimer();
+    </script>
 </body>
+
 </html>

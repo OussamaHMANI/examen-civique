@@ -1,689 +1,712 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>QCM – Principes et valeurs de la République</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    .quiz-container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      font-size: 1.6rem;
-      margin-top: 0;
-      text-align: center;
-    }
-    #progress {
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 12px;
-    }
-    #question {
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .choice-btn {
-      text-align: left;
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #f9f9f9;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .choice-btn:hover {
-      background: #f0f0f0;
-    }
-    .choice-btn.selected {
-      border-color: #2563eb;
-      background: #e0ecff;
-    }
-    .choice-btn.correct {
-      background: #16a34a;
-      color: #fff;
-      border-color: #15803d;
-    }
-    .choice-btn.incorrect {
-      background: #dc2626;
-      color: #fff;
-      border-color: #b91c1c;
-    }
-    #controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-    }
-    #nextBtn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #2563eb;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    #nextBtn:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-    #nextBtn:hover:not(:disabled) {
-      background: #1d4ed8;
-    }
-    #result {
-      display: none;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-    }
-    #result h2 {
-      margin-top: 0;
-    }
-    .summary-item {
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-    .tag-good {
-      color: #16a34a;
-      font-weight: 600;
-    }
-    .tag-bad {
-      color: #dc2626;
-      font-weight: 600;
-    }
-    .restart-btn {
-      margin-top: 12px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #6b7280;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-			.home-btn {
-  display: inline-block;
-  margin: 12px 16px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #f9fafb;
-  color: #111827;
-  font-size: 0.9rem;
-  text-decoration: none;
-  font-weight: 500;
-}
-.home-btn:hover {
-  background: #e5e7eb;
-}
-  </style>
+    <meta charset="UTF-8" />
+    <title>QCM – Principes et valeurs de la République</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        #progress {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        #question {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .choice-btn {
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .choice-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .choice-btn.selected {
+            border-color: #2563eb;
+            background: #e0ecff;
+        }
+
+        .choice-btn.correct {
+            background: #16a34a;
+            color: #fff;
+            border-color: #15803d;
+        }
+
+        .choice-btn.incorrect {
+            background: #dc2626;
+            color: #fff;
+            border-color: #b91c1c;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        #nextBtn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #nextBtn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #nextBtn:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
+
+        #result {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        #result h2 {
+            margin-top: 0;
+        }
+
+        .summary-item {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .tag-good {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .tag-bad {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #6b7280;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin: 12px 16px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .home-btn:hover {
+            background: #e5e7eb;
+        }
+    </style>
 </head>
+
 <body>
-<a href="index.html" class="home-btn">← Retour à l’accueil</a>
+    <a href="index.html" class="home-btn">← Retour à l’accueil</a>
 
-  <div class="quiz-container">
-    <h1>QCM – Principes et valeurs de la République</h1>
+    <div class="quiz-container">
+        <h1>QCM – Principes et valeurs de la République</h1>
 
-    <div id="quiz">
-      <div id="progress"></div>
-      <div id="question"></div>
-      <div id="choices" class="choices"></div>
-      <div id="controls">
-        <div></div>
-        <button id="nextBtn" disabled>Question suivante</button>
-      </div>
+        <div id="quiz">
+            <div id="progress"></div>
+            <div id="question"></div>
+            <div id="choices" class="choices"></div>
+            <div id="controls">
+                <div></div>
+                <button id="nextBtn" disabled>Question suivante</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
     </div>
 
-    <div id="result"></div>
-  </div>
+    <script>
+        // --------------------------------------------------------
+        // 1) Banque de questions : Principes et valeurs (40 questions)
+        // --------------------------------------------------------
+        const ALL_QUESTIONS = [{
+                question: "Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",
+                choices: [
+                    "Voter lors des élections",
+                    "Regarder les informations à la télévision",
+                    "Partir en vacances à l’étranger",
+                    "Faire ses courses au supermarché"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit la liberté d’expression ?",
+                choices: [
+                    "Le droit d’exprimer ses opinions dans le respect de la loi",
+                    "Le droit d’insulter les autres publiquement",
+                    "Le droit de publier n’importe quelle information, même mensongère",
+                    "Le droit d’appeler à la violence contre une personne ou un groupe"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À quoi sert un titre de séjour ?",
+                choices: [
+                    "À permettre à un étranger de résider légalement en France",
+                    "À voyager gratuitement en train",
+                    "À voter aux élections françaises",
+                    "À devenir automatiquement fonctionnaire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La liberté de circulation permet à toute personne de :",
+                choices: [
+                    "Se déplacer librement sur le territoire français dans le respect de la loi",
+                    "Refuser tout contrôle d’identité de la police",
+                    "Entrer partout sans autorisation, même dans les lieux privés",
+                    "Passer toutes les frontières sans passeport ni visa"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Sur quel site internet peut-on retrouver le symbole de la République française ?",
+                choices: [
+                    "Sur le site officiel de l’administration : www.service-public.fr",
+                    "Sur un site de petites annonces entre particuliers",
+                    "Sur un réseau social privé",
+                    "Uniquement sur le site d’un parti politique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Complétez ces paroles de la Marseillaise : \"Aux armes […] ! Formez vos bataillons\"",
+                choices: [
+                    "citoyens",
+                    "soldats",
+                    "Français",
+                    "amis"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Complétez les paroles de la Marseillaise : \"Allons enfants de la patrie […]\"",
+                choices: [
+                    "le jour de gloire est arrivé",
+                    "la France est notre pays",
+                    "marchons tous vers la victoire",
+                    "unis pour la liberté"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En application de la liberté individuelle, quelle proposition est correcte ? Une personne peut :",
+                choices: [
+                    "choisir librement son mode de vie tant qu’elle respecte la loi",
+                    "être arrêtée sans motif et sans décision de justice",
+                    "être mariée de force par sa famille",
+                    "être fouillée sans aucune raison par n’importe qui"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant la pratique de la religion, quelle proposition est correcte ?",
+                choices: [
+                    "Chacun est libre de croire ou de ne pas croire, dans le respect de la loi",
+                    "Tout le monde doit avoir une religion",
+                    "L’État impose une religion officielle à tous",
+                    "Seules certaines religions sont autorisées"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En tant que parent, peut-on refuser que son enfant participe aux cours de sport à l'école car ils sont mixtes ?",
+                choices: [
+                    "Non, la mixité fait partie des règles de l’école publique",
+                    "Oui, si on en informe le professeur",
+                    "Oui, si l’enfant n’aime pas le sport",
+                    "Oui, si on fournit un certificat de complaisance"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la devise de la France ?",
+                choices: [
+                    "Liberté, Égalité, Fraternité",
+                    "Paix, Travail, Justice",
+                    "Unité, Force, Progrès",
+                    "Travail, Famille, Patrie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La répudiation de sa femme est :",
+                choices: [
+                    "interdite par la loi française",
+                    "autorisée avec l’accord de la famille",
+                    "possible uniquement devant le maire",
+                    "tolérée dans certaines régions"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Les impôts permettent de financer les dépenses publiques. Quelle proposition est correcte ?",
+                choices: [
+                    "Ils servent notamment à financer les écoles, les hôpitaux, les routes et les services publics",
+                    "Ils vont directement sur le compte bancaire du président de la République",
+                    "Ils ne servent qu’à payer les retraites des fonctionnaires",
+                    "Ils sont facultatifs pour les personnes qui ne veulent pas les payer"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Peut-on brûler publiquement un drapeau français ?",
+                choices: [
+                    "Non, c’est un délit puni par la loi",
+                    "Oui, c’est une liberté sans limite",
+                    "Oui, mais seulement le 14 juillet",
+                    "Oui, si on demande l’autorisation au maire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que fait l’État pour lutter contre les discriminations ?",
+                choices: [
+                    "Il interdit les discriminations et peut sanctionner ceux qui les pratiquent",
+                    "Il laisse les entreprises décider librement",
+                    "Il autorise les discriminations dans certains métiers",
+                    "Il n’a aucun rôle dans ce domaine"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que représente Marianne ?",
+                choices: [
+                    "La République française et ses valeurs",
+                    "Une reine de France",
+                    "Une sainte protectrice",
+                    "Une héroïne de roman"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la liberté d'association ?",
+                choices: [
+                    "Le droit de créer ou de rejoindre une association dans le cadre de la loi",
+                    "L’obligation d’adhérer à une association",
+                    "Le droit de refuser la loi si on est dans une association",
+                    "Le droit de faire des réunions sans respecter aucune règle"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la liberté ?",
+                choices: [
+                    "Le droit de faire tout ce qui ne nuit pas à autrui",
+                    "Le droit de faire ce que l’on veut sans aucune limite",
+                    "Le droit de ne jamais obéir aux lois",
+                    "Le droit de ne pas respecter les autres"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la Marseillaise ?",
+                choices: [
+                    "L’hymne national français",
+                    "Le drapeau national français",
+                    "La devise nationale française",
+                    "Une ancienne monnaie française"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Sur quel document peut-on voir Marianne ?",
+                choices: [
+                    "Sur certains timbres-poste et pièces de monnaie",
+                    "Uniquement sur les billets de banque étrangers",
+                    "Seulement dans les livres d’histoire",
+                    "Uniquement sur les passeports étrangers"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Un employeur refuse d’embaucher des femmes dans son entreprise. Que dit la loi ?",
+                choices: [
+                    "C’est une discrimination interdite par la loi",
+                    "C’est acceptable si l’employeur le justifie",
+                    "C’est autorisé pour les petites entreprises",
+                    "C’est autorisé si les femmes sont d’accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une des valeurs de la devise républicaine est l'égalité. Qu'est-ce que cela signifie ?",
+                choices: [
+                    "Tous les citoyens ont les mêmes droits et les mêmes devoirs devant la loi",
+                    "Certains citoyens ont plus de droits que d’autres",
+                    "Les hommes ont plus de droits que les femmes",
+                    "Seuls les Français nés en France ont des droits"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la place de la langue française dans la République ?",
+                choices: [
+                    "C’est la langue officielle de la République",
+                    "C’est une langue régionale parmi d’autres",
+                    "Elle n’a aucun statut particulier",
+                    "Elle est seulement utilisée dans les tribunaux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quels sont des symboles officiels de la République française ?",
+                choices: [
+                    "Le drapeau tricolore, la Marseillaise, Marianne, la devise Liberté-Égalité-Fraternité",
+                    "Le coq, le franc, le château de Versailles",
+                    "La baguette, le fromage, le béret",
+                    "Le lion, la couronne, l’hymne européen"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "A-t-on le droit d'insulter publiquement quelqu’un parce qu’il est différent (handicap, apparence physique, sexe…) ?",
+                choices: [
+                    "Non, c’est interdit et puni par la loi",
+                    "Oui, c’est une liberté d’expression normale",
+                    "Oui, si c’est sur internet seulement",
+                    "Oui, si c’est dans une discussion privée"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le régime de la France est :",
+                choices: [
+                    "Une République démocratique",
+                    "Une monarchie absolue",
+                    "Une dictature militaire",
+                    "Un empire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
+                choices: [
+                    "Pour garantir la neutralité et le respect de toutes les convictions",
+                    "Pour obliger tous les élèves à avoir la même religion",
+                    "Pour interdire de parler de religion en France",
+                    "Pour privilégier une religion par rapport aux autres"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année la loi de séparation des Églises et de l'Etat a-t-elle été votée ?",
+                choices: [
+                    "1905",
+                    "1789",
+                    "1958",
+                    "1918"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
+                choices: [
+                    "Oui, c’est la liberté de conscience",
+                    "Non, tout le monde doit avoir une religion",
+                    "Oui, mais seulement à partir de 18 ans",
+                    "Oui, mais seulement si sa famille est d’accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel droit est garanti par la laïcité ?",
+                choices: [
+                    "La liberté de conscience et de religion",
+                    "L’obligation de pratiquer une religion",
+                    "Le droit pour l’État d’imposer une religion",
+                    "Le droit pour une religion de diriger l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À l'école publique, qui peut porter des signes religieux très visibles ?",
+                choices: [
+                    "Ni les élèves ni les personnels, car ils doivent respecter la neutralité religieuse",
+                    "Seuls les enseignants",
+                    "Tous les élèves sans restriction",
+                    "Tout le monde, sans aucune règle"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Selon le principe de laïcité, que signifie la neutralité de l’État ?",
+                choices: [
+                    "L’État ne favorise ni ne discrimine aucune religion",
+                    "L’État choisit une religion officielle",
+                    "L’État interdit toutes les religions",
+                    "L’État délègue les lois aux responsables religieux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que peut faire un usager du service public dans une mairie ?",
+                choices: [
+                    "Être traité de la même façon quels que soient sa religion ou ses opinions",
+                    "Exiger que le service public applique sa religion",
+                    "Refuser de parler avec un agent d’une autre origine",
+                    "Obliger les autres usagers à suivre sa religion"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",
+                choices: [
+                    "Tous les agents du service public",
+                    "Uniquement le préfet",
+                    "Uniquement les usagers étrangers",
+                    "Uniquement les agents croyants"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",
+                choices: [
+                    "Oui, ils ne doivent pas montrer de préférence religieuse",
+                    "Non, ils peuvent exprimer leur religion en priorité",
+                    "Oui, mais uniquement pendant les fêtes religieuses",
+                    "Non, cela ne concerne que les élus"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit le principe de laïcité ?",
+                choices: [
+                    "La liberté de croire ou de ne pas croire et l’égalité de tous devant la loi",
+                    "La supériorité d’une religion sur les autres",
+                    "L’interdiction de parler de religion dans la société",
+                    "Le pouvoir des religions sur l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "A-t-on le droit de changer de religion ?",
+                choices: [
+                    "Oui, chacun est libre de changer ou d’abandonner sa religion",
+                    "Non, on garde obligatoirement la religion de ses parents",
+                    "Oui, mais seulement une fois dans sa vie",
+                    "Oui, si l’État donne son autorisation"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que représente la laïcité ?",
+                choices: [
+                    "Un principe qui permet la coexistence de toutes les convictions dans le respect de la loi",
+                    "Une religion officielle de la France",
+                    "L’interdiction totale de toute religion",
+                    "Un simple conseil sans valeur juridique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est ce qui est interdit par la Charte de la laïcité à l'école ?",
+                choices: [
+                    "Le prosélytisme et l’imposition de sa religion aux autres à l’école",
+                    "L’enseignement de l’histoire des religions",
+                    "La discussion respectueuse sur les croyances",
+                    "La présence d’élèves de religions différentes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que dit l'article 1er de la Constitution française ?",
+                choices: [
+                    "Que la France est une République indivisible, laïque, démocratique et sociale",
+                    "Que la France est une monarchie parlementaire",
+                    "Que la France a une religion officielle",
+                    "Que seuls les hommes peuvent être citoyens"
+                ],
+                correctIndex: 0
+            }
+        ];
 
-  <script>
-    // --------------------------------------------------------
-    // 1) Banque de questions : Principes et valeurs (40 questions)
-    // --------------------------------------------------------
-    const ALL_QUESTIONS = [
-      {
-        question: "Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",
-        choices: [
-          "Voter lors des élections",
-          "Regarder les informations à la télévision",
-          "Partir en vacances à l’étranger",
-          "Faire ses courses au supermarché"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que garantit la liberté d’expression ?",
-        choices: [
-          "Le droit d’exprimer ses opinions dans le respect de la loi",
-          "Le droit d’insulter les autres publiquement",
-          "Le droit de publier n’importe quelle information, même mensongère",
-          "Le droit d’appeler à la violence contre une personne ou un groupe"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "À quoi sert un titre de séjour ?",
-        choices: [
-          "À permettre à un étranger de résider légalement en France",
-          "À voyager gratuitement en train",
-          "À voter aux élections françaises",
-          "À devenir automatiquement fonctionnaire"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "La liberté de circulation permet à toute personne de :",
-        choices: [
-          "Se déplacer librement sur le territoire français dans le respect de la loi",
-          "Refuser tout contrôle d’identité de la police",
-          "Entrer partout sans autorisation, même dans les lieux privés",
-          "Passer toutes les frontières sans passeport ni visa"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Sur quel site internet peut-on retrouver le symbole de la République française ?",
-        choices: [
-          "Sur le site officiel de l’administration : www.service-public.fr",
-          "Sur un site de petites annonces entre particuliers",
-          "Sur un réseau social privé",
-          "Uniquement sur le site d’un parti politique"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Complétez ces paroles de la Marseillaise : \"Aux armes […] ! Formez vos bataillons\"",
-        choices: [
-          "citoyens",
-          "soldats",
-          "Français",
-          "amis"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Complétez les paroles de la Marseillaise : \"Allons enfants de la patrie […]\"",
-        choices: [
-          "le jour de gloire est arrivé",
-          "la France est notre pays",
-          "marchons tous vers la victoire",
-          "unis pour la liberté"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "En application de la liberté individuelle, quelle proposition est correcte ? Une personne peut :",
-        choices: [
-          "choisir librement son mode de vie tant qu’elle respecte la loi",
-          "être arrêtée sans motif et sans décision de justice",
-          "être mariée de force par sa famille",
-          "être fouillée sans aucune raison par n’importe qui"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Concernant la pratique de la religion, quelle proposition est correcte ?",
-        choices: [
-          "Chacun est libre de croire ou de ne pas croire, dans le respect de la loi",
-          "Tout le monde doit avoir une religion",
-          "L’État impose une religion officielle à tous",
-          "Seules certaines religions sont autorisées"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "En tant que parent, peut-on refuser que son enfant participe aux cours de sport à l'école car ils sont mixtes ?",
-        choices: [
-          "Non, la mixité fait partie des règles de l’école publique",
-          "Oui, si on en informe le professeur",
-          "Oui, si l’enfant n’aime pas le sport",
-          "Oui, si on fournit un certificat de complaisance"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quelle est la devise de la France ?",
-        choices: [
-          "Liberté, Égalité, Fraternité",
-          "Paix, Travail, Justice",
-          "Unité, Force, Progrès",
-          "Travail, Famille, Patrie"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "La répudiation de sa femme est :",
-        choices: [
-          "interdite par la loi française",
-          "autorisée avec l’accord de la famille",
-          "possible uniquement devant le maire",
-          "tolérée dans certaines régions"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Les impôts permettent de financer les dépenses publiques. Quelle proposition est correcte ?",
-        choices: [
-          "Ils servent notamment à financer les écoles, les hôpitaux, les routes et les services publics",
-          "Ils vont directement sur le compte bancaire du président de la République",
-          "Ils ne servent qu’à payer les retraites des fonctionnaires",
-          "Ils sont facultatifs pour les personnes qui ne veulent pas les payer"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Peut-on brûler publiquement un drapeau français ?",
-        choices: [
-          "Non, c’est un délit puni par la loi",
-          "Oui, c’est une liberté sans limite",
-          "Oui, mais seulement le 14 juillet",
-          "Oui, si on demande l’autorisation au maire"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que fait l’État pour lutter contre les discriminations ?",
-        choices: [
-          "Il interdit les discriminations et peut sanctionner ceux qui les pratiquent",
-          "Il laisse les entreprises décider librement",
-          "Il autorise les discriminations dans certains métiers",
-          "Il n’a aucun rôle dans ce domaine"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que représente Marianne ?",
-        choices: [
-          "La République française et ses valeurs",
-          "Une reine de France",
-          "Une sainte protectrice",
-          "Une héroïne de roman"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est-ce que la liberté d'association ?",
-        choices: [
-          "Le droit de créer ou de rejoindre une association dans le cadre de la loi",
-          "L’obligation d’adhérer à une association",
-          "Le droit de refuser la loi si on est dans une association",
-          "Le droit de faire des réunions sans respecter aucune règle"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est-ce que la liberté ?",
-        choices: [
-          "Le droit de faire tout ce qui ne nuit pas à autrui",
-          "Le droit de faire ce que l’on veut sans aucune limite",
-          "Le droit de ne jamais obéir aux lois",
-          "Le droit de ne pas respecter les autres"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est-ce que la Marseillaise ?",
-        choices: [
-          "L’hymne national français",
-          "Le drapeau national français",
-          "La devise nationale française",
-          "Une ancienne monnaie française"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Sur quel document peut-on voir Marianne ?",
-        choices: [
-          "Sur certains timbres-poste et pièces de monnaie",
-          "Uniquement sur les billets de banque étrangers",
-          "Seulement dans les livres d’histoire",
-          "Uniquement sur les passeports étrangers"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Un employeur refuse d’embaucher des femmes dans son entreprise. Que dit la loi ?",
-        choices: [
-          "C’est une discrimination interdite par la loi",
-          "C’est acceptable si l’employeur le justifie",
-          "C’est autorisé pour les petites entreprises",
-          "C’est autorisé si les femmes sont d’accord"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Une des valeurs de la devise républicaine est l'égalité. Qu'est-ce que cela signifie ?",
-        choices: [
-          "Tous les citoyens ont les mêmes droits et les mêmes devoirs devant la loi",
-          "Certains citoyens ont plus de droits que d’autres",
-          "Les hommes ont plus de droits que les femmes",
-          "Seuls les Français nés en France ont des droits"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quelle est la place de la langue française dans la République ?",
-        choices: [
-          "C’est la langue officielle de la République",
-          "C’est une langue régionale parmi d’autres",
-          "Elle n’a aucun statut particulier",
-          "Elle est seulement utilisée dans les tribunaux"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quels sont des symboles officiels de la République française ?",
-        choices: [
-          "Le drapeau tricolore, la Marseillaise, Marianne, la devise Liberté-Égalité-Fraternité",
-          "Le coq, le franc, le château de Versailles",
-          "La baguette, le fromage, le béret",
-          "Le lion, la couronne, l’hymne européen"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "A-t-on le droit d'insulter publiquement quelqu’un parce qu’il est différent (handicap, apparence physique, sexe…) ?",
-        choices: [
-          "Non, c’est interdit et puni par la loi",
-          "Oui, c’est une liberté d’expression normale",
-          "Oui, si c’est sur internet seulement",
-          "Oui, si c’est dans une discussion privée"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Le régime de la France est :",
-        choices: [
-          "Une République démocratique",
-          "Une monarchie absolue",
-          "Une dictature militaire",
-          "Un empire"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
-        choices: [
-          "Pour garantir la neutralité et le respect de toutes les convictions",
-          "Pour obliger tous les élèves à avoir la même religion",
-          "Pour interdire de parler de religion en France",
-          "Pour privilégier une religion par rapport aux autres"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "En quelle année la loi de séparation des Églises et de l'Etat a-t-elle été votée ?",
-        choices: [
-          "1905",
-          "1789",
-          "1958",
-          "1918"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
-        choices: [
-          "Oui, c’est la liberté de conscience",
-          "Non, tout le monde doit avoir une religion",
-          "Oui, mais seulement à partir de 18 ans",
-          "Oui, mais seulement si sa famille est d’accord"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Quel droit est garanti par la laïcité ?",
-        choices: [
-          "La liberté de conscience et de religion",
-          "L’obligation de pratiquer une religion",
-          "Le droit pour l’État d’imposer une religion",
-          "Le droit pour une religion de diriger l’État"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "À l'école publique, qui peut porter des signes religieux très visibles ?",
-        choices: [
-          "Ni les élèves ni les personnels, car ils doivent respecter la neutralité religieuse",
-          "Seuls les enseignants",
-          "Tous les élèves sans restriction",
-          "Tout le monde, sans aucune règle"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Selon le principe de laïcité, que signifie la neutralité de l’État ?",
-        choices: [
-          "L’État ne favorise ni ne discrimine aucune religion",
-          "L’État choisit une religion officielle",
-          "L’État interdit toutes les religions",
-          "L’État délègue les lois aux responsables religieux"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que peut faire un usager du service public dans une mairie ?",
-        choices: [
-          "Être traité de la même façon quels que soient sa religion ou ses opinions",
-          "Exiger que le service public applique sa religion",
-          "Refuser de parler avec un agent d’une autre origine",
-          "Obliger les autres usagers à suivre sa religion"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",
-        choices: [
-          "Tous les agents du service public",
-          "Uniquement le préfet",
-          "Uniquement les usagers étrangers",
-          "Uniquement les agents croyants"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",
-        choices: [
-          "Oui, ils ne doivent pas montrer de préférence religieuse",
-          "Non, ils peuvent exprimer leur religion en priorité",
-          "Oui, mais uniquement pendant les fêtes religieuses",
-          "Non, cela ne concerne que les élus"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que garantit le principe de laïcité ?",
-        choices: [
-          "La liberté de croire ou de ne pas croire et l’égalité de tous devant la loi",
-          "La supériorité d’une religion sur les autres",
-          "L’interdiction de parler de religion dans la société",
-          "Le pouvoir des religions sur l’État"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "A-t-on le droit de changer de religion ?",
-        choices: [
-          "Oui, chacun est libre de changer ou d’abandonner sa religion",
-          "Non, on garde obligatoirement la religion de ses parents",
-          "Oui, mais seulement une fois dans sa vie",
-          "Oui, si l’État donne son autorisation"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que représente la laïcité ?",
-        choices: [
-          "Un principe qui permet la coexistence de toutes les convictions dans le respect de la loi",
-          "Une religion officielle de la France",
-          "L’interdiction totale de toute religion",
-          "Un simple conseil sans valeur juridique"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Qu'est ce qui est interdit par la Charte de la laïcité à l'école ?",
-        choices: [
-          "Le prosélytisme et l’imposition de sa religion aux autres à l’école",
-          "L’enseignement de l’histoire des religions",
-          "La discussion respectueuse sur les croyances",
-          "La présence d’élèves de religions différentes"
-        ],
-        correctIndex: 0
-      },
-      {
-        question: "Que dit l'article 1er de la Constitution française ?",
-        choices: [
-          "Que la France est une République indivisible, laïque, démocratique et sociale",
-          "Que la France est une monarchie parlementaire",
-          "Que la France a une religion officielle",
-          "Que seuls les hommes peuvent être citoyens"
-        ],
-        correctIndex: 0
-      }
-    ];
+        // --------------------------------------------------------
+        // 2) Mélange aléatoire (Fisher–Yates)
+        // --------------------------------------------------------
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
 
-    // --------------------------------------------------------
-    // 2) Mélange aléatoire (Fisher–Yates)
-    // --------------------------------------------------------
-    function shuffle(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
+        const TOTAL_QUESTIONS = 40;
+        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
 
-    const TOTAL_QUESTIONS = 40;
-    let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
+        // --------------------------------------------------------
+        // 3) Logique du quiz
+        // --------------------------------------------------------
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = [];
 
-    // --------------------------------------------------------
-    // 3) Logique du quiz
-    // --------------------------------------------------------
-    let currentIndex = 0;
-    let score = 0;
-    let userAnswers = [];
+        const progressEl = document.getElementById("progress");
+        const questionEl = document.getElementById("question");
+        const choicesEl = document.getElementById("choices");
+        const nextBtn = document.getElementById("nextBtn");
+        const resultEl = document.getElementById("result");
+        const quizEl = document.getElementById("quiz");
 
-    const progressEl = document.getElementById("progress");
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const nextBtn = document.getElementById("nextBtn");
-    const resultEl = document.getElementById("result");
-    const quizEl = document.getElementById("quiz");
+        let selectedChoiceIndex = null;
+        let locked = false;
+        let currentRenderedChoices = []; // nouveau
 
-    let selectedChoiceIndex = null;
-    let locked = false;
-let currentRenderedChoices = []; // nouveau
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            questionEl.textContent = q.question;
+            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
 
-function renderQuestion() {
-  const q = questions[currentIndex];
-  questionEl.textContent = q.question;
-  progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+            choicesEl.innerHTML = "";
+            selectedChoiceIndex = null;
+            locked = false;
+            nextBtn.disabled = true;
 
-  choicesEl.innerHTML = "";
-  selectedChoiceIndex = null;
-  locked = false;
-  nextBtn.disabled = true;
+            // on crée un tableau { text, isCorrect } puis on le mélange
+            currentRenderedChoices = shuffle(
+                q.choices.map((text, idx) => ({
+                    text,
+                    isCorrect: idx === q.correctIndex
+                }))
+            );
 
-  // on crée un tableau { text, isCorrect } puis on le mélange
-  currentRenderedChoices = shuffle(
-    q.choices.map((text, idx) => ({
-      text,
-      isCorrect: idx === q.correctIndex
-    }))
-  );
+            currentRenderedChoices.forEach((choiceObj, index) => {
+                const btn = document.createElement("button");
+                btn.className = "choice-btn";
+                btn.textContent = choiceObj.text;
+                btn.addEventListener("click", () => handleChoiceClick(index));
+                choicesEl.appendChild(btn);
+            });
+        }
 
-  currentRenderedChoices.forEach((choiceObj, index) => {
-    const btn = document.createElement("button");
-    btn.className = "choice-btn";
-    btn.textContent = choiceObj.text;
-    btn.addEventListener("click", () => handleChoiceClick(index));
-    choicesEl.appendChild(btn);
-  });
-}
+        function handleChoiceClick(index) {
+            if (locked) return;
 
-    function handleChoiceClick(index) {
-      if (locked) return;
+            selectedChoiceIndex = index;
+            nextBtn.disabled = false;
 
-      selectedChoiceIndex = index;
-      nextBtn.disabled = false;
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle("selected", i === index);
+            });
+        }
 
-      const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-      buttons.forEach((btn, i) => {
-        btn.classList.toggle("selected", i === index);
-      });
-    }
+        function validateAnswer() {
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
 
-   function validateAnswer() {
-  const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            if (selectedChoiceIndex === null) return;
 
-  if (selectedChoiceIndex === null) return;
+            locked = true;
+            nextBtn.disabled = false;
 
-  locked = true;
-  nextBtn.disabled = false;
+            // on trouve l’index du bouton correct dans l’ordre mélangé
+            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
 
-  // on trouve l’index du bouton correct dans l’ordre mélangé
-  const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
+            buttons.forEach((btn, i) => {
+                btn.classList.remove("selected");
+                if (i === correctRenderedIndex) {
+                    btn.classList.add("correct");
+                }
+                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
+                    btn.classList.add("incorrect");
+                }
+            });
 
-  buttons.forEach((btn, i) => {
-    btn.classList.remove("selected");
-    if (i === correctRenderedIndex) {
-      btn.classList.add("correct");
-    }
-    if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-      btn.classList.add("incorrect");
-    }
-  });
+            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
+            if (isCorrect) {
+                score += 1;
+            }
 
-  const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-  if (isCorrect) {
-    score += 1;
-  }
+            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
+            userAnswers.push({
+                question: questions[currentIndex].question,
+                chosen: currentRenderedChoices[selectedChoiceIndex].text,
+                correct: currentRenderedChoices[correctRenderedIndex].text,
+                isCorrect
+            });
+        }
 
-  // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-  userAnswers.push({
-    question: questions[currentIndex].question,
-    chosen: currentRenderedChoices[selectedChoiceIndex].text,
-    correct: currentRenderedChoices[correctRenderedIndex].text,
-    isCorrect
-  });
-}
+        function showResult() {
+            const total = questions.length;
+            const noteSur40 = score;
 
-    function showResult() {
-      const total = questions.length;
-      const noteSur40 = score;
+            quizEl.style.display = "none";
+            resultEl.style.display = "block";
 
-      quizEl.style.display = "none";
-      resultEl.style.display = "block";
-
-      let html = `
+            let html = `
         <h2>Résultats</h2>
         <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / 40</strong>.</p>
         <p>Résumé des réponses :</p>
       `;
 
-      userAnswers.forEach((entry, index) => {
-        html += `
+            userAnswers.forEach((entry, index) => {
+                html += `
           <div class="summary-item">
             <strong>Q${index + 1}.</strong> ${entry.question}<br>
             Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
@@ -692,50 +715,51 @@ function renderQuestion() {
             Bonne réponse : <strong>${entry.correct}</strong>
           </div>
         `;
-      });
+            });
 
-      html += `
+            html += `
         <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
       `;
 
-      resultEl.innerHTML = html;
-    }
-
-    function restartQuiz() {
-      questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-      currentIndex = 0;
-      score = 0;
-      userAnswers = [];
-
-      quizEl.style.display = "block";
-      resultEl.style.display = "none";
-
-      nextBtn.textContent = "Valider";
-      renderQuestion();
-    }
-
-    nextBtn.addEventListener("click", () => {
-      if (!locked) {
-        validateAnswer();
-        if (currentIndex < questions.length - 1) {
-          nextBtn.textContent = "Question suivante";
-        } else {
-          nextBtn.textContent = "Voir les résultats";
+            resultEl.innerHTML = html;
         }
-        return;
-      }
 
-      if (currentIndex < questions.length - 1) {
-        currentIndex += 1;
+        function restartQuiz() {
+            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+
+            quizEl.style.display = "block";
+            resultEl.style.display = "none";
+
+            nextBtn.textContent = "Valider";
+            renderQuestion();
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (!locked) {
+                validateAnswer();
+                if (currentIndex < questions.length - 1) {
+                    nextBtn.textContent = "Question suivante";
+                } else {
+                    nextBtn.textContent = "Voir les résultats";
+                }
+                return;
+            }
+
+            if (currentIndex < questions.length - 1) {
+                currentIndex += 1;
+                nextBtn.textContent = "Valider";
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        });
+
         nextBtn.textContent = "Valider";
         renderQuestion();
-      } else {
-        showResult();
-      }
-    });
-
-    nextBtn.textContent = "Valider";
-    renderQuestion();
-  </script>
+    </script>
 </body>
+
 </html>

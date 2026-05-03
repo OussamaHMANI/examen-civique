@@ -1,789 +1,812 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>QCM – Système institutionnel et politique</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    .quiz-container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      font-size: 1.6rem;
-      margin-top: 0;
-      text-align: center;
-    }
-    #progress {
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 12px;
-    }
-    #question {
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .choice-btn {
-      text-align: left;
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #f9f9f9;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .choice-btn:hover {
-      background: #f0f0f0;
-    }
-    .choice-btn.selected {
-      border-color: #2563eb;
-      background: #e0ecff;
-    }
-    .choice-btn.correct {
-      background: #16a34a;
-      color: #fff;
-      border-color: #15803d;
-    }
-    .choice-btn.incorrect {
-      background: #dc2626;
-      color: #fff;
-      border-color: #b91c1c;
-    }
-    #controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-    }
-    #nextBtn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #2563eb;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    #nextBtn:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-    #nextBtn:hover:not(:disabled) {
-      background: #1d4ed8;
-    }
-    #result {
-      display: none;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-    }
-    #result h2 {
-      margin-top: 0;
-    }
-    .summary-item {
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-    .tag-good {
-      color: #16a34a;
-      font-weight: 600;
-    }
-    .tag-bad {
-      color: #dc2626;
-      font-weight: 600;
-    }
-    .restart-btn {
-      margin-top: 12px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #6b7280;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-			.home-btn {
-  display: inline-block;
-  margin: 12px 16px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #f9fafb;
-  color: #111827;
-  font-size: 0.9rem;
-  text-decoration: none;
-  font-weight: 500;
-}
-.home-btn:hover {
-  background: #e5e7eb;
-}
-  </style>
+    <meta charset="UTF-8" />
+    <title>QCM – Système institutionnel et politique</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        #progress {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        #question {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .choice-btn {
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .choice-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .choice-btn.selected {
+            border-color: #2563eb;
+            background: #e0ecff;
+        }
+
+        .choice-btn.correct {
+            background: #16a34a;
+            color: #fff;
+            border-color: #15803d;
+        }
+
+        .choice-btn.incorrect {
+            background: #dc2626;
+            color: #fff;
+            border-color: #b91c1c;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        #nextBtn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #nextBtn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #nextBtn:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
+
+        #result {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        #result h2 {
+            margin-top: 0;
+        }
+
+        .summary-item {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .tag-good {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .tag-bad {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #6b7280;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin: 12px 16px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .home-btn:hover {
+            background: #e5e7eb;
+        }
+    </style>
 </head>
+
 <body>
-<a href="index.html" class="home-btn">← Retour à l’accueil</a>
+    <a href="index.html" class="home-btn">← Retour à l’accueil</a>
 
-  <div class="quiz-container">
-    <h1>QCM – Système institutionnel et politique :</h1>
+    <div class="quiz-container">
+        <h1>QCM – Système institutionnel et politique :</h1>
 
-    <div id="quiz">
-      <div id="progress"></div>
-      <div id="question"></div>
-      <div id="choices" class="choices"></div>
-      <div id="controls">
-        <div></div>
-        <button id="nextBtn" disabled>Question suivante</button>
-      </div>
+        <div id="quiz">
+            <div id="progress"></div>
+            <div id="question"></div>
+            <div id="choices" class="choices"></div>
+            <div id="controls">
+                <div></div>
+                <button id="nextBtn" disabled>Question suivante</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
     </div>
 
-    <div id="result"></div>
-  </div>
+    <script>
+        // --------------------------------------------------------
+        // 1) Banque de questions : Principes et valeurs (40 questions)
+        // --------------------------------------------------------
+        const ALL_QUESTIONS = [{
+                question: "Qu'est-ce que l'État de droit ?",
+                choices: [
+                    "Un système dans lequel tout le monde, y compris les gouvernants, est soumis à la loi",
+                    "Un État où le président décide de tout",
+                    "Un État où la police n’a pas besoin de respecter la loi",
+                    "Un système où seuls les riches ont des droits"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le président de la République a commis un crime. Quelle proposition est correcte ?",
+                choices: [
+                    "Il peut être jugé, car personne n’est au-dessus de la loi",
+                    "Il ne peut jamais être jugé pendant son mandat",
+                    "Il est protégé à vie contre toute poursuite",
+                    "Seul le Parlement peut le gronder mais pas le juger"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La loi est l'expression de :",
+                choices: [
+                    "la volonté générale",
+                    "la volonté du président",
+                    "la volonté des tribunaux",
+                    "la volonté des partis politiques"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la durée du mandat du conseil municipal et du maire ?",
+                choices: [
+                    "6 ans",
+                    "3 ans",
+                    "4 ans",
+                    "10 ans"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit l’État de droit ?",
+                choices: [
+                    "La protection des droits et libertés par des règles juridiques et des juges indépendants",
+                    "Le pouvoir illimité du gouvernement",
+                    "L’absence totale de lois",
+                    "Le droit de se faire justice soi-même"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une personne peut-elle voter à la place d'une autre ?",
+                choices: [
+                    "Non, c’est interdit : le vote est personnel et secret",
+                    "Oui, si c’est un membre de la famille",
+                    "Oui, si la personne est malade",
+                    "Oui, si le maire donne son accord"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Est-ce que le vote est obligatoire ?",
+                choices: [
+                    "Non, mais c’est un droit essentiel du citoyen",
+                    "Oui, sous peine de prison",
+                    "Oui, sous peine d’amende automatique",
+                    "Il n’existe pas de droit de vote en France"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À la fin de son mandat, le président de la République peut-il décider de rester au pouvoir ?",
+                choices: [
+                    "Non, il doit respecter la Constitution et les élections",
+                    "Oui, s’il le souhaite",
+                    "Oui, si le Parlement est d’accord",
+                    "Oui, si les sondages sont favorables"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui dirige l'action du Gouvernement ?",
+                choices: [
+                    "Le Premier ministre",
+                    "Le président du Sénat",
+                    "Le ministre de l’Intérieur",
+                    "Le président de l’Assemblée nationale"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui nomme le Premier ministre ?",
+                choices: [
+                    "Le président de la République",
+                    "Le Parlement",
+                    "Le Conseil constitutionnel",
+                    "Les maires"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l'organisation administrative de la France ?",
+                choices: [
+                    "L’État, les régions, les départements et les communes",
+                    "L’État, les royaumes et les colonies",
+                    "Uniquement l’État central sans aucune collectivité",
+                    "Des provinces autonomes indépendantes de l’État"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que le pouvoir législatif ? Le pouvoir :",
+                choices: [
+                    "d’adopter les lois",
+                    "de juger les citoyens",
+                    "de faire appliquer les lois",
+                    "de diriger les communes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi séparer les trois pouvoirs dans une démocratie ?",
+                choices: [
+                    "Pour éviter les abus de pouvoir et garantir l’équilibre des institutions",
+                    "Pour faire plaisir aux partis politiques",
+                    "Pour compliquer le fonctionnement de l’État",
+                    "Pour empêcher les citoyens de comprendre la politique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui sanctionne l'auteur d'un vol ?",
+                choices: [
+                    "Le juge, au sein des tribunaux",
+                    "Le maire",
+                    "Le président de la République",
+                    "Le préfet"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du gouvernement ?",
+                choices: [
+                    "Conduire la politique de la Nation et faire appliquer les lois",
+                    "Rédiger la Constitution",
+                    "Contrôler les juges",
+                    "Organiser uniquement les élections"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
+                choices: [
+                    "Il peut être jugé et sanctionné comme tout citoyen",
+                    "Il est protégé et ne risque rien",
+                    "Seul le président peut le punir sans juge",
+                    "Il perd automatiquement sa nationalité"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien de députés composent l’Assemblée nationale ?",
+                choices: [
+                    "577 députés",
+                    "350 députés",
+                    "750 députés",
+                    "120 députés"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui peut voter aux élections en France ?",
+                choices: [
+                    "Les citoyens français majeurs jouissant de leurs droits civiques",
+                    "Toutes les personnes vivant en France, quel que soit leur statut",
+                    "Uniquement les propriétaires",
+                    "Uniquement les fonctionnaires"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pour combien de temps sont élus les sénateurs ?",
+                choices: [
+                    "6 ans",
+                    "3 ans",
+                    "4 ans",
+                    "9 ans"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
+                choices: [
+                    "Législatif, exécutif et judiciaire",
+                    "Municipal, régional et national",
+                    "Politique, économique et religieux",
+                    "Présidentiel, militaire et religieux"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Est-ce que le président de la République a tous les pouvoirs ?",
+                choices: [
+                    "Non, ses pouvoirs sont limités par la Constitution et les autres institutions",
+                    "Oui, il décide seul de tout",
+                    "Oui, mais uniquement en temps de paix",
+                    "Oui, s’il est élu deux fois"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui est le préfet ?",
+                choices: [
+                    "Le représentant de l’État dans un département ou une région",
+                    "Le chef de la commune",
+                    "Le président du conseil régional",
+                    "Un juge du tribunal"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle condition est nécessaire pour voter aux élections ?",
+                choices: [
+                    "Être inscrit sur les listes électorales",
+                    "Avoir un permis de conduire",
+                    "Avoir un emploi stable",
+                    "Être propriétaire de son logement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui dirige la commune ?",
+                choices: [
+                    "Le maire",
+                    "Le préfet",
+                    "Le président de la République",
+                    "Le Premier ministre"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le régime politique de la France aujourd'hui ?",
+                choices: [
+                    "Une République démocratique",
+                    "Une monarchie absolue",
+                    "Une dictature militaire",
+                    "Un empire"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que l'Hôtel de Matignon ?",
+                choices: [
+                    "La résidence et le lieu de travail du Premier ministre",
+                    "La résidence du président de la République",
+                    "Le siège du Parlement",
+                    "Le siège du Conseil constitutionnel"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le Parlement est composé :",
+                choices: [
+                    "de l’Assemblée nationale et du Sénat",
+                    "du président de la République seul",
+                    "des maires de France",
+                    "des ministres du gouvernement"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du président de la République ?",
+                choices: [
+                    "Il garantit le fonctionnement régulier des pouvoirs publics et la continuité de l’État",
+                    "Il rédige seul toutes les lois",
+                    "Il juge les citoyens",
+                    "Il dirige chaque commune"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du Premier ministre ?",
+                choices: [
+                    "Diriger l’action du gouvernement et assurer l’exécution des lois",
+                    "Commander l’armée",
+                    "Organiser les élections municipales",
+                    "Rédiger la Constitution"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui est le chef du Gouvernement ?",
+                choices: [
+                    "Le Premier ministre",
+                    "Le président du Sénat",
+                    "Le président de la République",
+                    "Le président du Conseil constitutionnel"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien y a-t-il de régions en France ?",
+                choices: [
+                    "18 régions",
+                    "10 régions",
+                    "22 régions",
+                    "25 régions"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle du Défenseur des droits ?",
+                choices: [
+                    "Protéger les droits et libertés des personnes et lutter contre les discriminations",
+                    "Diriger les armées",
+                    "Écrire les lois",
+                    "Organiser les élections"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Depuis quand l'euro est-elle la monnaie unique en France (pièces et billets) ?",
+                choices: [
+                    "Depuis 2002",
+                    "Depuis 1990",
+                    "Depuis 1995",
+                    "Depuis 2010"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle principal du département ?",
+                choices: [
+                    "Gérer l’action sociale, les collèges et certaines routes",
+                    "Diriger les relations internationales",
+                    "Organiser les élections présidentielles",
+                    "Commander l’armée"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle principal des communes ?",
+                choices: [
+                    "Gérer les services de proximité (état civil, écoles primaires, voirie locale, etc.)",
+                    "Voter les lois nationales",
+                    "Contrôler les banques",
+                    "Rédiger la Constitution"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Combien de communes environ existe-t-il en France ?",
+                choices: [
+                    "Environ 35 000 communes",
+                    "Environ 5 000 communes",
+                    "Environ 100 000 communes",
+                    "Environ 500 communes"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel traité concerne la construction de l'Union européenne ?",
+                choices: [
+                    "Le traité de Maastricht",
+                    "Le traité de Versailles",
+                    "Le traité de Yalta",
+                    "Le traité de Genève"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel État a quitté l'Union européenne en 2020 ?",
+                choices: [
+                    "Le Royaume-Uni",
+                    "La Suisse",
+                    "La Norvège",
+                    "La Turquie"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est la devise de l’Union européenne ?",
+                choices: [
+                    "« Unie dans la diversité »",
+                    "« Liberté, Égalité, Fraternité »",
+                    "« In God We Trust »",
+                    "« E pluribus unum »"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est l'hymne de l'Union européenne ?",
+                choices: [
+                    "L’Ode à la joie de Beethoven",
+                    "La Marseillaise",
+                    "God Save the King",
+                    "L’hymne à la liberté"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "De quoi est composé le drapeau européen ?",
+                choices: [
+                    "Un cercle de 12 étoiles dorées sur fond bleu",
+                    "12 bandes horizontales bleues et jaunes",
+                    "Des étoiles rouges sur fond blanc",
+                    "Un aigle noir sur fond jaune"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "De quelle couleur est le drapeau européen ?",
+                choices: [
+                    "Bleu avec des étoiles jaunes",
+                    "Rouge avec des étoiles blanches",
+                    "Vert avec des étoiles rouges",
+                    "Blanc avec des rayures bleues"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "En quelle année le traité de Maastricht, qui marque la fondation de l'Union européenne, a-t-il été signé ?",
+                choices: [
+                    "En 1992",
+                    "En 1945",
+                    "En 1957",
+                    "En 2004"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où est le siège du Parlement européen (sessions plénières) ?",
+                choices: [
+                    "À Strasbourg",
+                    "À Paris",
+                    "À Rome",
+                    "À Madrid"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Où est le siège de la Commission européenne ?",
+                choices: [
+                    "À Bruxelles",
+                    "À Strasbourg",
+                    "À Luxembourg",
+                    "À Berlin"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel État n'est pas membre de l'Union européenne ?",
+                choices: [
+                    "La Suisse",
+                    "L’Allemagne",
+                    "L’Italie",
+                    "L’Espagne"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quand célèbre-t-on la journée de l'Europe ?",
+                choices: [
+                    "Le 9 mai",
+                    "Le 1er janvier",
+                    "Le 14 juillet",
+                    "Le 25 décembre"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "À quelle fréquence les élections européennes sont-elles organisées ?",
+                choices: [
+                    "Tous les 5 ans",
+                    "Tous les 2 ans",
+                    "Tous les 10 ans",
+                    "Chaque année"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
+                choices: [
+                    "Être citoyen d’un État membre de l’UE et inscrit sur les listes électorales",
+                    "Habiter en Europe depuis au moins 1 an",
+                    "Parler au moins trois langues européennes",
+                    "Avoir un passeport européen biométrique"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel pays est un pays fondateur de l'Union européenne ?",
+                choices: [
+                    "La France",
+                    "La Pologne",
+                    "La Suède",
+                    "La Bulgarie"
+                ],
+                correctIndex: 0
+            }
+        ];
 
-  <script>
-    // --------------------------------------------------------
-    // 1) Banque de questions : Principes et valeurs (40 questions)
-    // --------------------------------------------------------
-    const ALL_QUESTIONS  = [
-  {
-    question: "Qu'est-ce que l'État de droit ?",
-    choices: [
-      "Un système dans lequel tout le monde, y compris les gouvernants, est soumis à la loi",
-      "Un État où le président décide de tout",
-      "Un État où la police n’a pas besoin de respecter la loi",
-      "Un système où seuls les riches ont des droits"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Le président de la République a commis un crime. Quelle proposition est correcte ?",
-    choices: [
-      "Il peut être jugé, car personne n’est au-dessus de la loi",
-      "Il ne peut jamais être jugé pendant son mandat",
-      "Il est protégé à vie contre toute poursuite",
-      "Seul le Parlement peut le gronder mais pas le juger"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "La loi est l'expression de :",
-    choices: [
-      "la volonté générale",
-      "la volonté du président",
-      "la volonté des tribunaux",
-      "la volonté des partis politiques"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la durée du mandat du conseil municipal et du maire ?",
-    choices: [
-      "6 ans",
-      "3 ans",
-      "4 ans",
-      "10 ans"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que garantit l’État de droit ?",
-    choices: [
-      "La protection des droits et libertés par des règles juridiques et des juges indépendants",
-      "Le pouvoir illimité du gouvernement",
-      "L’absence totale de lois",
-      "Le droit de se faire justice soi-même"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Une personne peut-elle voter à la place d'une autre ?",
-    choices: [
-      "Non, c’est interdit : le vote est personnel et secret",
-      "Oui, si c’est un membre de la famille",
-      "Oui, si la personne est malade",
-      "Oui, si le maire donne son accord"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Est-ce que le vote est obligatoire ?",
-    choices: [
-      "Non, mais c’est un droit essentiel du citoyen",
-      "Oui, sous peine de prison",
-      "Oui, sous peine d’amende automatique",
-      "Il n’existe pas de droit de vote en France"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À la fin de son mandat, le président de la République peut-il décider de rester au pouvoir ?",
-    choices: [
-      "Non, il doit respecter la Constitution et les élections",
-      "Oui, s’il le souhaite",
-      "Oui, si le Parlement est d’accord",
-      "Oui, si les sondages sont favorables"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui dirige l'action du Gouvernement ?",
-    choices: [
-      "Le Premier ministre",
-      "Le président du Sénat",
-      "Le ministre de l’Intérieur",
-      "Le président de l’Assemblée nationale"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui nomme le Premier ministre ?",
-    choices: [
-      "Le président de la République",
-      "Le Parlement",
-      "Le Conseil constitutionnel",
-      "Les maires"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est l'organisation administrative de la France ?",
-    choices: [
-      "L’État, les régions, les départements et les communes",
-      "L’État, les royaumes et les colonies",
-      "Uniquement l’État central sans aucune collectivité",
-      "Des provinces autonomes indépendantes de l’État"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que le pouvoir législatif ? Le pouvoir :",
-    choices: [
-      "d’adopter les lois",
-      "de juger les citoyens",
-      "de faire appliquer les lois",
-      "de diriger les communes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pourquoi séparer les trois pouvoirs dans une démocratie ?",
-    choices: [
-      "Pour éviter les abus de pouvoir et garantir l’équilibre des institutions",
-      "Pour faire plaisir aux partis politiques",
-      "Pour compliquer le fonctionnement de l’État",
-      "Pour empêcher les citoyens de comprendre la politique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui sanctionne l'auteur d'un vol ?",
-    choices: [
-      "Le juge, au sein des tribunaux",
-      "Le maire",
-      "Le président de la République",
-      "Le préfet"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du gouvernement ?",
-    choices: [
-      "Conduire la politique de la Nation et faire appliquer les lois",
-      "Rédiger la Constitution",
-      "Contrôler les juges",
-      "Organiser uniquement les élections"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
-    choices: [
-      "Il peut être jugé et sanctionné comme tout citoyen",
-      "Il est protégé et ne risque rien",
-      "Seul le président peut le punir sans juge",
-      "Il perd automatiquement sa nationalité"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien de députés composent l’Assemblée nationale ?",
-    choices: [
-      "577 députés",
-      "350 députés",
-      "750 députés",
-      "120 députés"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui peut voter aux élections en France ?",
-    choices: [
-      "Les citoyens français majeurs jouissant de leurs droits civiques",
-      "Toutes les personnes vivant en France, quel que soit leur statut",
-      "Uniquement les propriétaires",
-      "Uniquement les fonctionnaires"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Pour combien de temps sont élus les sénateurs ?",
-    choices: [
-      "6 ans",
-      "3 ans",
-      "4 ans",
-      "9 ans"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
-    choices: [
-      "Législatif, exécutif et judiciaire",
-      "Municipal, régional et national",
-      "Politique, économique et religieux",
-      "Présidentiel, militaire et religieux"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Est-ce que le président de la République a tous les pouvoirs ?",
-    choices: [
-      "Non, ses pouvoirs sont limités par la Constitution et les autres institutions",
-      "Oui, il décide seul de tout",
-      "Oui, mais uniquement en temps de paix",
-      "Oui, s’il est élu deux fois"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui est le préfet ?",
-    choices: [
-      "Le représentant de l’État dans un département ou une région",
-      "Le chef de la commune",
-      "Le président du conseil régional",
-      "Un juge du tribunal"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle condition est nécessaire pour voter aux élections ?",
-    choices: [
-      "Être inscrit sur les listes électorales",
-      "Avoir un permis de conduire",
-      "Avoir un emploi stable",
-      "Être propriétaire de son logement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui dirige la commune ?",
-    choices: [
-      "Le maire",
-      "Le préfet",
-      "Le président de la République",
-      "Le Premier ministre"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le régime politique de la France aujourd'hui ?",
-    choices: [
-      "Une République démocratique",
-      "Une monarchie absolue",
-      "Une dictature militaire",
-      "Un empire"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qu'est-ce que l'Hôtel de Matignon ?",
-    choices: [
-      "La résidence et le lieu de travail du Premier ministre",
-      "La résidence du président de la République",
-      "Le siège du Parlement",
-      "Le siège du Conseil constitutionnel"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Le Parlement est composé :",
-    choices: [
-      "de l’Assemblée nationale et du Sénat",
-      "du président de la République seul",
-      "des maires de France",
-      "des ministres du gouvernement"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du président de la République ?",
-    choices: [
-      "Il garantit le fonctionnement régulier des pouvoirs publics et la continuité de l’État",
-      "Il rédige seul toutes les lois",
-      "Il juge les citoyens",
-      "Il dirige chaque commune"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du Premier ministre ?",
-    choices: [
-      "Diriger l’action du gouvernement et assurer l’exécution des lois",
-      "Commander l’armée",
-      "Organiser les élections municipales",
-      "Rédiger la Constitution"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Qui est le chef du Gouvernement ?",
-    choices: [
-      "Le Premier ministre",
-      "Le président du Sénat",
-      "Le président de la République",
-      "Le président du Conseil constitutionnel"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien y a-t-il de régions en France ?",
-    choices: [
-      "18 régions",
-      "10 régions",
-      "22 régions",
-      "25 régions"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle du Défenseur des droits ?",
-    choices: [
-      "Protéger les droits et libertés des personnes et lutter contre les discriminations",
-      "Diriger les armées",
-      "Écrire les lois",
-      "Organiser les élections"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Depuis quand l'euro est-elle la monnaie unique en France (pièces et billets) ?",
-    choices: [
-      "Depuis 2002",
-      "Depuis 1990",
-      "Depuis 1995",
-      "Depuis 2010"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle principal du département ?",
-    choices: [
-      "Gérer l’action sociale, les collèges et certaines routes",
-      "Diriger les relations internationales",
-      "Organiser les élections présidentielles",
-      "Commander l’armée"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est le rôle principal des communes ?",
-    choices: [
-      "Gérer les services de proximité (état civil, écoles primaires, voirie locale, etc.)",
-      "Voter les lois nationales",
-      "Contrôler les banques",
-      "Rédiger la Constitution"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Combien de communes environ existe-t-il en France ?",
-    choices: [
-      "Environ 35 000 communes",
-      "Environ 5 000 communes",
-      "Environ 100 000 communes",
-      "Environ 500 communes"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel traité concerne la construction de l'Union européenne ?",
-    choices: [
-      "Le traité de Maastricht",
-      "Le traité de Versailles",
-      "Le traité de Yalta",
-      "Le traité de Genève"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel État a quitté l'Union européenne en 2020 ?",
-    choices: [
-      "Le Royaume-Uni",
-      "La Suisse",
-      "La Norvège",
-      "La Turquie"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle est la devise de l’Union européenne ?",
-    choices: [
-      "« Unie dans la diversité »",
-      "« Liberté, Égalité, Fraternité »",
-      "« In God We Trust »",
-      "« E pluribus unum »"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel est l'hymne de l'Union européenne ?",
-    choices: [
-      "L’Ode à la joie de Beethoven",
-      "La Marseillaise",
-      "God Save the King",
-      "L’hymne à la liberté"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "De quoi est composé le drapeau européen ?",
-    choices: [
-      "Un cercle de 12 étoiles dorées sur fond bleu",
-      "12 bandes horizontales bleues et jaunes",
-      "Des étoiles rouges sur fond blanc",
-      "Un aigle noir sur fond jaune"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "De quelle couleur est le drapeau européen ?",
-    choices: [
-      "Bleu avec des étoiles jaunes",
-      "Rouge avec des étoiles blanches",
-      "Vert avec des étoiles rouges",
-      "Blanc avec des rayures bleues"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "En quelle année le traité de Maastricht, qui marque la fondation de l'Union européenne, a-t-il été signé ?",
-    choices: [
-      "En 1992",
-      "En 1945",
-      "En 1957",
-      "En 2004"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où est le siège du Parlement européen (sessions plénières) ?",
-    choices: [
-      "À Strasbourg",
-      "À Paris",
-      "À Rome",
-      "À Madrid"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Où est le siège de la Commission européenne ?",
-    choices: [
-      "À Bruxelles",
-      "À Strasbourg",
-      "À Luxembourg",
-      "À Berlin"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel État n'est pas membre de l'Union européenne ?",
-    choices: [
-      "La Suisse",
-      "L’Allemagne",
-      "L’Italie",
-      "L’Espagne"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quand célèbre-t-on la journée de l'Europe ?",
-    choices: [
-      "Le 9 mai",
-      "Le 1er janvier",
-      "Le 14 juillet",
-      "Le 25 décembre"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "À quelle fréquence les élections européennes sont-elles organisées ?",
-    choices: [
-      "Tous les 5 ans",
-      "Tous les 2 ans",
-      "Tous les 10 ans",
-      "Chaque année"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
-    choices: [
-      "Être citoyen d’un État membre de l’UE et inscrit sur les listes électorales",
-      "Habiter en Europe depuis au moins 1 an",
-      "Parler au moins trois langues européennes",
-      "Avoir un passeport européen biométrique"
-    ],
-    correctIndex: 0
-  },
-  {
-    question: "Quel pays est un pays fondateur de l'Union européenne ?",
-    choices: [
-      "La France",
-      "La Pologne",
-      "La Suède",
-      "La Bulgarie"
-    ],
-    correctIndex: 0
-  }
-];
+        // --------------------------------------------------------
+        // 2) Mélange aléatoire (Fisher–Yates)
+        // --------------------------------------------------------
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
 
-    // --------------------------------------------------------
-    // 2) Mélange aléatoire (Fisher–Yates)
-    // --------------------------------------------------------
-    function shuffle(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
+        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
 
-    const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
-    let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
+        // --------------------------------------------------------
+        // 3) Logique du quiz
+        // --------------------------------------------------------
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = [];
 
-    // --------------------------------------------------------
-    // 3) Logique du quiz
-    // --------------------------------------------------------
-    let currentIndex = 0;
-    let score = 0;
-    let userAnswers = [];
+        const progressEl = document.getElementById("progress");
+        const questionEl = document.getElementById("question");
+        const choicesEl = document.getElementById("choices");
+        const nextBtn = document.getElementById("nextBtn");
+        const resultEl = document.getElementById("result");
+        const quizEl = document.getElementById("quiz");
 
-    const progressEl = document.getElementById("progress");
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const nextBtn = document.getElementById("nextBtn");
-    const resultEl = document.getElementById("result");
-    const quizEl = document.getElementById("quiz");
+        let selectedChoiceIndex = null;
+        let locked = false;
+        let currentRenderedChoices = []; // nouveau
 
-    let selectedChoiceIndex = null;
-    let locked = false;
-let currentRenderedChoices = []; // nouveau
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            questionEl.textContent = q.question;
+            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
 
-function renderQuestion() {
-  const q = questions[currentIndex];
-  questionEl.textContent = q.question;
-  progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+            choicesEl.innerHTML = "";
+            selectedChoiceIndex = null;
+            locked = false;
+            nextBtn.disabled = true;
 
-  choicesEl.innerHTML = "";
-  selectedChoiceIndex = null;
-  locked = false;
-  nextBtn.disabled = true;
+            // on crée un tableau { text, isCorrect } puis on le mélange
+            currentRenderedChoices = shuffle(
+                q.choices.map((text, idx) => ({
+                    text,
+                    isCorrect: idx === q.correctIndex
+                }))
+            );
 
-  // on crée un tableau { text, isCorrect } puis on le mélange
-  currentRenderedChoices = shuffle(
-    q.choices.map((text, idx) => ({
-      text,
-      isCorrect: idx === q.correctIndex
-    }))
-  );
+            currentRenderedChoices.forEach((choiceObj, index) => {
+                const btn = document.createElement("button");
+                btn.className = "choice-btn";
+                btn.textContent = choiceObj.text;
+                btn.addEventListener("click", () => handleChoiceClick(index));
+                choicesEl.appendChild(btn);
+            });
+        }
 
-  currentRenderedChoices.forEach((choiceObj, index) => {
-    const btn = document.createElement("button");
-    btn.className = "choice-btn";
-    btn.textContent = choiceObj.text;
-    btn.addEventListener("click", () => handleChoiceClick(index));
-    choicesEl.appendChild(btn);
-  });
-}
+        function handleChoiceClick(index) {
+            if (locked) return;
 
-    function handleChoiceClick(index) {
-      if (locked) return;
+            selectedChoiceIndex = index;
+            nextBtn.disabled = false;
 
-      selectedChoiceIndex = index;
-      nextBtn.disabled = false;
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle("selected", i === index);
+            });
+        }
 
-      const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-      buttons.forEach((btn, i) => {
-        btn.classList.toggle("selected", i === index);
-      });
-    }
+        function validateAnswer() {
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
 
-   function validateAnswer() {
-  const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            if (selectedChoiceIndex === null) return;
 
-  if (selectedChoiceIndex === null) return;
+            locked = true;
+            nextBtn.disabled = false;
 
-  locked = true;
-  nextBtn.disabled = false;
+            // on trouve l’index du bouton correct dans l’ordre mélangé
+            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
 
-  // on trouve l’index du bouton correct dans l’ordre mélangé
-  const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
+            buttons.forEach((btn, i) => {
+                btn.classList.remove("selected");
+                if (i === correctRenderedIndex) {
+                    btn.classList.add("correct");
+                }
+                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
+                    btn.classList.add("incorrect");
+                }
+            });
 
-  buttons.forEach((btn, i) => {
-    btn.classList.remove("selected");
-    if (i === correctRenderedIndex) {
-      btn.classList.add("correct");
-    }
-    if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-      btn.classList.add("incorrect");
-    }
-  });
+            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
+            if (isCorrect) {
+                score += 1;
+            }
 
-  const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-  if (isCorrect) {
-    score += 1;
-  }
+            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
+            userAnswers.push({
+                question: questions[currentIndex].question,
+                chosen: currentRenderedChoices[selectedChoiceIndex].text,
+                correct: currentRenderedChoices[correctRenderedIndex].text,
+                isCorrect
+            });
+        }
 
-  // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-  userAnswers.push({
-    question: questions[currentIndex].question,
-    chosen: currentRenderedChoices[selectedChoiceIndex].text,
-    correct: currentRenderedChoices[correctRenderedIndex].text,
-    isCorrect
-  });
-}
+        function showResult() {
+            const total = questions.length;
+            const noteSur40 = score;
 
-    function showResult() {
-      const total = questions.length;
-      const noteSur40 = score;
+            quizEl.style.display = "none";
+            resultEl.style.display = "block";
 
-      quizEl.style.display = "none";
-      resultEl.style.display = "block";
-
-      let html = `
+            let html = `
         <h2>Résultats</h2>
         <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / {TOTAL_QUESTIONS.length}</strong>.</p>
         <p>Résumé des réponses :</p>
       `;
 
-      userAnswers.forEach((entry, index) => {
-        html += `
+            userAnswers.forEach((entry, index) => {
+                html += `
           <div class="summary-item">
             <strong>Q${index + 1}.</strong> ${entry.question}<br>
             Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
@@ -792,50 +815,51 @@ function renderQuestion() {
             Bonne réponse : <strong>${entry.correct}</strong>
           </div>
         `;
-      });
+            });
 
-      html += `
+            html += `
         <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
       `;
 
-      resultEl.innerHTML = html;
-    }
-
-    function restartQuiz() {
-      questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-      currentIndex = 0;
-      score = 0;
-      userAnswers = [];
-
-      quizEl.style.display = "block";
-      resultEl.style.display = "none";
-
-      nextBtn.textContent = "Valider";
-      renderQuestion();
-    }
-
-    nextBtn.addEventListener("click", () => {
-      if (!locked) {
-        validateAnswer();
-        if (currentIndex < questions.length - 1) {
-          nextBtn.textContent = "Question suivante";
-        } else {
-          nextBtn.textContent = "Voir les résultats";
+            resultEl.innerHTML = html;
         }
-        return;
-      }
 
-      if (currentIndex < questions.length - 1) {
-        currentIndex += 1;
+        function restartQuiz() {
+            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+
+            quizEl.style.display = "block";
+            resultEl.style.display = "none";
+
+            nextBtn.textContent = "Valider";
+            renderQuestion();
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (!locked) {
+                validateAnswer();
+                if (currentIndex < questions.length - 1) {
+                    nextBtn.textContent = "Question suivante";
+                } else {
+                    nextBtn.textContent = "Voir les résultats";
+                }
+                return;
+            }
+
+            if (currentIndex < questions.length - 1) {
+                currentIndex += 1;
+                nextBtn.textContent = "Valider";
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        });
+
         nextBtn.textContent = "Valider";
         renderQuestion();
-      } else {
-        showResult();
-      }
-    });
-
-    nextBtn.textContent = "Valider";
-    renderQuestion();
-  </script>
+    </script>
 </body>
+
 </html>
