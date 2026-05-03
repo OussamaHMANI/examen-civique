@@ -3,8 +3,13 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Examen civique carte de résident</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: #f4f4f4;
@@ -174,12 +179,10 @@
 
         .result-message.success {
             color: #bbf7d0;
-            /* vert pâle */
         }
 
         .result-message.fail {
             color: #fecaca;
-            /* rouge pâle */
         }
 
         /* Liste de correction */
@@ -285,9 +288,42 @@
             font-size: 1rem;
             font-weight: 600;
             color: #b91c1c;
-            /* rouge foncé */
             margin-bottom: 8px;
             text-align: right;
+        }
+
+        /* Responsive mobile */
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
+            .quiz-container {
+                padding: 16px 14px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            #timer {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .choice-btn {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+
+            #controls {
+                justify-content: center;
+            }
+
+            #nextBtn {
+                width: 100%;
+                border-radius: 999px;
+            }
         }
     </style>
 </head>

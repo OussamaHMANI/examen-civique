@@ -3,8 +3,13 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Histoire géographie et culture</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: #f4f4f4;
@@ -79,7 +84,7 @@
 
         #controls {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             margin-top: 8px;
         }
@@ -157,6 +162,35 @@
         .home-btn:hover {
             background: #e5e7eb;
         }
+
+        /* Responsive mobile */
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
+            .quiz-container {
+                padding: 16px 14px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .choice-btn {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+
+            #controls {
+                justify-content: center;
+            }
+
+            #nextBtn {
+                width: 100%;
+                border-radius: 999px;
+            }
+        }
     </style>
 </head>
 
@@ -178,7 +212,6 @@
 
         <div id="result"></div>
     </div>
-
     <script>
         // --------------------------------------------------------
         // 1) Banque de questions : Principes et valeurs (40 questions)
