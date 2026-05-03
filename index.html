@@ -64,22 +64,6 @@
             color: #4b5563;
         }
 
-        .card a {
-            align-self: flex-start;
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            background: #2563eb;
-            color: #ffffff;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: background 0.15s;
-        }
-
-        .card a:hover {
-            background: #1d4ed8;
-        }
-
         /* Section examen blanc */
         .exam-section {
             margin-top: 32px;
@@ -96,7 +80,6 @@
         .exam-card {
             max-width: 600px;
             margin: 0 auto;
-            /* centre la carte */
             background: #111827;
             color: #f9fafb;
             border-radius: 10px;
@@ -117,31 +100,44 @@
             color: #e5e7eb;
         }
 
-        .exam-card a {
-            display: inline-block;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 999px;
-            background: #facc15;
-            color: #111827;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            box-shadow: 0 3px 10px rgba(250, 204, 21, 0.5);
-            transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-        }
-
-        .exam-card a:hover {
-            background: #eab308;
-            transform: translateY(-1px);
-            box-shadow: 0 5px 14px rgba(250, 204, 21, 0.6);
-        }
-
         footer {
             text-align: center;
             font-size: 0.85rem;
             color: #6b7280;
             padding-bottom: 16px;
+        }
+
+        .exam-difficulty {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .exam-difficulty select {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 0.95rem;
+        }
+
+        .exam-difficulty button {
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: none;
+            background: #facc15;
+            color: #111827;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+
+        .exam-difficulty button:hover {
+            background: #eab308;
         }
     </style>
 </head>
@@ -155,34 +151,84 @@
     <main>
         <!-- Grille des quiz par thème -->
         <div class="grid">
+            <!-- Principes et valeurs -->
             <div class="card">
                 <h2>Principes et valeurs de la République</h2>
                 <p>Quiz sur les symboles, la laïcité, les libertés fondamentales et la devise de la République.</p>
-                <a href="index-principes-valeurs.html">Commencer ce quiz</a>
+
+                <div class="exam-difficulty theme-difficulty" data-base="index-principes-valeurs">
+                    <label><strong>Difficulté :</strong></label>
+                    <select>
+                        <option value="">-- Sélectionne une difficulté --</option>
+                        <option value="moyenne">Difficulté moyenne</option>
+                        <option value="difficile">Difficulté élevée</option>
+                    </select>
+                    <button>Commencer ce quiz</button>
+                </div>
             </div>
 
+            <!-- Système institutionnel et politique -->
             <div class="card">
                 <h2>Système institutionnel et politique</h2>
                 <p>Quiz sur l’État de droit, les pouvoirs, le rôle du président, du gouvernement et du Parlement.</p>
-                <a href="index-systeme-institutionnel.html">Commencer ce quiz</a>
+
+                <div class="exam-difficulty theme-difficulty" data-base="index-systeme-institutionnel">
+                    <label><strong>Difficulté :</strong></label>
+                    <select>
+                        <option value="">-- Sélectionne une difficulté --</option>
+                        <option value="moyenne">Difficulté moyenne</option>
+                        <option value="difficile">Difficulté élevée</option>
+                    </select>
+                    <button>Commencer ce quiz</button>
+                </div>
             </div>
 
+            <!-- Droits et devoirs -->
             <div class="card">
                 <h2>Droits et devoirs</h2>
                 <p>Quiz sur la Constitution, la liberté d’expression, la justice, les crimes et délits, l’environnement.</p>
-                <a href="index-droits-devoirs.html">Commencer ce quiz</a>
+
+                <div class="exam-difficulty theme-difficulty" data-base="index-droits-devoirs">
+                    <label><strong>Difficulté :</strong></label>
+                    <select>
+                        <option value="">-- Sélectionne une difficulté --</option>
+                        <option value="moyenne">Difficulté moyenne</option>
+                        <option value="difficile">Difficulté élevée</option>
+                    </select>
+                    <button>Commencer ce quiz</button>
+                </div>
             </div>
 
+            <!-- Histoire, géographie et culture -->
             <div class="card">
                 <h2>Histoire, géographie et culture</h2>
                 <p>Quiz sur les grandes dates, la géographie de la France, la francophonie et la vie culturelle.</p>
-                <a href="index-histoire-geo-culture.html">Commencer ce quiz</a>
+
+                <div class="exam-difficulty theme-difficulty" data-base="index-histoire-geo-culture">
+                    <label><strong>Difficulté :</strong></label>
+                    <select>
+                        <option value="">-- Sélectionne une difficulté --</option>
+                        <option value="moyenne">Difficulté moyenne</option>
+                        <option value="difficile">Difficulté élevée</option>
+                    </select>
+                    <button>Commencer ce quiz</button>
+                </div>
             </div>
 
+            <!-- Vivre dans la société française -->
             <div class="card">
                 <h2>Vivre dans la société française</h2>
                 <p>Quiz sur l’école, le travail, la santé, la famille, le logement et la vie quotidienne en France.</p>
-                <a href="index-vivre-societe.html">Commencer ce quiz</a>
+
+                <div class="exam-difficulty theme-difficulty" data-base="index-vivre-societe">
+                    <label><strong>Difficulté :</strong></label>
+                    <select>
+                        <option value="">-- Sélectionne une difficulté --</option>
+                        <option value="moyenne">Difficulté moyenne</option>
+                        <option value="difficile">Difficulté élevée</option>
+                    </select>
+                    <button>Commencer ce quiz</button>
+                </div>
             </div>
         </div>
 
@@ -192,10 +238,18 @@
             <div class="exam-card">
                 <h2>Examen blanc complet</h2>
                 <p>
-                    40 questions mélangées (8 principes, 8 institutions, 8 droits et devoirs,
-                    8 vie en France, 8 histoire/géographie/culture). Résultat et correction à la fin.
+                    40 questions mélangées par thème. Choisis une difficulté puis lance l’examen.
                 </p>
-                <a href="index-examen-carte-resident.html">Lancer l’examen blanc</a>
+
+                <div class="exam-difficulty">
+                    <label for="exam-difficulty-select"><strong>Difficulté :</strong></label>
+                    <select id="exam-difficulty-select">
+                        <option value="">-- Sélectionne une difficulté --</option>
+                        <option value="moyenne">Difficulté moyenne</option>
+                        <option value="difficile">Difficulté élevée</option>
+                    </select>
+                    <button id="start-exam-btn">Lancer l’examen blanc</button>
+                </div>
             </div>
         </section>
     </main>
@@ -203,6 +257,44 @@
     <footer>
         Préparation examen civique – Carte de résident • Outils de révision personnels
     </footer>
+
+    <script>
+        // Examen blanc complet
+        const difficultySelect = document.getElementById("exam-difficulty-select");
+        const startExamBtn = document.getElementById("start-exam-btn");
+
+        startExamBtn.addEventListener("click", () => {
+            const value = difficultySelect.value;
+
+            if (value === "moyenne") {
+                window.location.href = "index-examen-carte-resident.html";
+            } else if (value === "difficile") {
+                window.location.href = "index-examen-carte-resident-difficile.html";
+            } else {
+                alert("Merci de choisir une difficulté avant de lancer l’examen.");
+            }
+        });
+
+        // Gestion générique de la difficulté pour chaque thème
+        document.querySelectorAll(".theme-difficulty").forEach((block) => {
+            const base = block.dataset.base; // ex: "index-principes-valeurs"
+            const select = block.querySelector("select");
+            const button = block.querySelector("button");
+
+            button.addEventListener("click", () => {
+                const value = select.value;
+
+                if (value === "moyenne") {
+                    window.location.href = base + ".html";
+                } else if (value === "difficile") {
+                    window.location.href = base + "-difficile.html";
+                } else {
+                    alert("Merci de choisir une difficulté avant de commencer ce quiz.");
+                }
+            });
+        });
+    </script>
+
 </body>
 
 </html>

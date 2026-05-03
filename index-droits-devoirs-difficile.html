@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>QCM – Droits et devoirs</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        #progress {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        #question {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .choice-btn {
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .choice-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .choice-btn.selected {
+            border-color: #2563eb;
+            background: #e0ecff;
+        }
+
+        .choice-btn.correct {
+            background: #16a34a;
+            color: #fff;
+            border-color: #15803d;
+        }
+
+        .choice-btn.incorrect {
+            background: #dc2626;
+            color: #fff;
+            border-color: #b91c1c;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        #nextBtn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #nextBtn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #nextBtn:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
+
+        #result {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        #result h2 {
+            margin-top: 0;
+        }
+
+        .summary-item {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .tag-good {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .tag-bad {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #6b7280;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin: 12px 16px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .home-btn:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="home-btn">← Retour à l’accueil</a>
+    <div class="quiz-container">
+        <h1>QCM – Droits et devoirs :</h1>
+
+        <div id="quiz">
+            <div id="progress"></div>
+            <div id="question"></div>
+            <div id="choices" class="choices"></div>
+            <div id="controls">
+                <div></div>
+                <button id="nextBtn" disabled>Question suivante</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // --------------------------------------------------------
+        // 1) Banque de questions : Principes et valeurs (40 questions)
+        // --------------------------------------------------------
+        const ALL_QUESTIONS = [{
+                question: "À quelle liberté la PMA fait-elle référence ?",
+                choices: [
+                    "À la liberté de recourir à une aide médicale afin de concevoir un enfant et de fonder une famille, dans le cadre fixé par la loi.",
+                    "À la liberté de se déplacer et de s’installer sur le territoire français ou à l’étranger, sous réserve des règles en vigueur.",
+                    "À la liberté de mener une activité économique et de créer une entreprise dans le respect des obligations légales et sociales.",
+                    "À la liberté de diffuser des informations et des opinions par la presse ou les médias, dans les limites posées par la loi."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Au nom de quoi l'État justifie-t-il la restriction des droits ?",
+                choices: [
+                    "Au nom de la protection de l’ordre public, de la sécurité, de la santé et du respect des droits et libertés d’autrui.",
+                    "Au nom de la seule volonté du gouvernement en place, sans contrôle ni justification juridique préalable.",
+                    "Au nom des usages et des pratiques religieuses majoritaires, quelles que soient les règles de la République.",
+                    "Au nom de la majorité politique du moment, même lorsque les décisions ne respectent pas les principes constitutionnels."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant le droit de se marier, quelle proposition est correcte ?",
+                choices: [
+                    "Deux personnes majeures et consentantes peuvent se marier civilement, y compris lorsque les deux époux sont de même sexe.",
+                    "Seuls les couples composés d’un homme et d’une femme de nationalité française peuvent se marier devant l’officier d’état civil.",
+                    "Le mariage religieux célébré par un ministre de culte suffit à produire tous les effets d’un mariage reconnu par l’État.",
+                    "Le mariage est réservé aux personnes mariées pour la première fois et interdit en cas de divorce ou de veuvage antérieurs."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Est-il toujours possible de divorcer ?",
+                choices: [
+                    "Oui, le divorce est possible pour les époux dans les conditions prévues par la loi, sous le contrôle du juge ou par consentement mutuel.",
+                    "Non, le divorce est en principe interdit en France, sauf en cas de faute pénale grave reconnue par un tribunal.",
+                    "Oui, mais uniquement pour les couples mariés sans enfant et lorsque le mariage a duré moins de deux ans.",
+                    "Oui, mais seulement après l’autorisation expresse du maire de la commune où le mariage a été célébré."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "La peine de mort est :",
+                choices: [
+                    "Abolie en France depuis 1981 et interdite par la Constitution ainsi que par les engagements internationaux du pays.",
+                    "Maintenue pour certains crimes particulièrement graves, lorsqu’une loi spéciale le prévoit en temps de crise.",
+                    "Applicable uniquement pour les actes de terrorisme commis sur le territoire national ou à l’étranger.",
+                    "Prévue en théorie par le code pénal mais utilisée uniquement en temps de guerre ou d’état d’urgence."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Laquelle de ces citations est inscrite dans la Déclaration des Droits de l'homme et du Citoyen de 1789 ?",
+                choices: [
+                    "« Les hommes naissent et demeurent libres et égaux en droits. Les distinctions sociales ne peuvent être fondées que sur l’utilité commune. »",
+                    "« Liberté, Égalité, Fraternité » est la formule exacte qui apparaît comme devise dans la Déclaration de 1789.",
+                    "« Un pour tous, tous pour un » est la maxime utilisée pour résumer l’esprit de la Déclaration de 1789.",
+                    "« L’union fait la force » est la phrase solennelle qui ouvre le préambule de la Déclaration de 1789."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Le recours à l'avortement est-il autorisé ?",
+                choices: [
+                    "Oui, l’interruption volontaire de grossesse est un droit encadré par la loi et désormais garanti par la Constitution française.",
+                    "Non, l’avortement est totalement interdit en France, quel que soit le motif invoqué par la femme enceinte.",
+                    "Oui, mais uniquement lorsque la grossesse résulte d’un viol reconnu par une décision de justice définitive.",
+                    "Oui, mais seulement après accord d’un juge pénal et d’une commission médicale départementale spécialisée."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que contient la Constitution ?",
+                choices: [
+                    "Les règles fondamentales d’organisation des pouvoirs publics ainsi que la reconnaissance des droits et libertés essentiels.",
+                    "La liste détaillée des programmes d’enseignement et des horaires officiels de toutes les écoles publiques.",
+                    "L’ensemble des décisions individuelles de justice rendues par les tribunaux civils et pénaux du pays.",
+                    "La fixation précise des montants des impôts, des cotisations sociales et des tarifs des services publics."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que garantit la liberté de la presse ?",
+                choices: [
+                    "Le droit de rechercher, de produire et de diffuser des informations ou des opinions, sous réserve du respect de la loi.",
+                    "Le droit de publier tout contenu, y compris diffamatoire ou mensonger, sans jamais pouvoir être poursuivi.",
+                    "Le droit pour les autorités publiques de contrôler à l’avance les articles et de censurer ceux qui les critiquent.",
+                    "Le droit d’imposer aux médias de ne relayer que les informations officiellement validées par le gouvernement."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que prévoit la Charte de l'environnement ?",
+                choices: [
+                    "Le droit de chacun de vivre dans un environnement équilibré et respectueux de la santé, ainsi que des devoirs envers la nature.",
+                    "Le droit illimité d’exploiter les ressources naturelles dès lors que cela crée des emplois sur le territoire national.",
+                    "Le droit de construire librement sur tout terrain, y compris protégé, dès lors que le propriétaire est d’accord.",
+                    "Le droit de se désintéresser des enjeux environnementaux, l’État étant seul responsable de la protection de la nature."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que signifie la dignité humaine ?",
+                choices: [
+                    "Toute personne doit être respectée et ne pas subir de traitements humiliants, dégradants ou portant atteinte à son intégrité.",
+                    "La notion de respect ne bénéficie qu’aux personnes âgées, considérées comme plus vulnérables que les autres.",
+                    "La dignité est un principe réservé exclusivement aux citoyens français et ne concerne pas les étrangers.",
+                    "La dignité est un concept limité au milieu professionnel et ne s’applique pas à la vie privée ou familiale."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que signifie le droit de manifester ?",
+                choices: [
+                    "Le droit d’exprimer collectivement ses opinions sur la voie publique, dans le respect de la loi et des déclarations préalables.",
+                    "Le droit d’organiser des rassemblements violents et de dégrader volontairement les biens publics ou privés.",
+                    "Le droit de bloquer systématiquement toute circulation et d’empêcher les autres d’accéder aux services essentiels.",
+                    "Le droit de se réunir dans la rue sans aucune autorisation ni obligation de respecter les consignes de sécurité."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que signifie PMA ?",
+                choices: [
+                    "Procréation médicalement assistée, c’est-à-dire l’ensemble des techniques permettant d’aider à la conception d’un enfant.",
+                    "Prévention médicale avancée, c’est-à-dire un dispositif général de dépistage des maladies chroniques.",
+                    "Protection maternelle et alimentaire, c’est-à-dire l’ensemble des mesures de soutien aux familles modestes.",
+                    "Plan médical annuel, c’est-à-dire la programmation budgétaire des priorités de santé publique de l’État."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel texte est le plus difficile à modifier ?",
+                choices: [
+                    "La Constitution, dont la révision obéit à une procédure particulière et exige un accord politique renforcé.",
+                    "Un règlement intérieur d’entreprise, qui ne peut être adapté qu’avec l’accord de l’inspection du travail.",
+                    "Une circulaire administrative, qui fait l’objet systématique d’un référendum avant toute modification.",
+                    "Un arrêté municipal, qui nécessite l’unanimité du conseil municipal pour être amendé ou supprimé."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle liberté permet à une personne de croire en la religion de son choix ?",
+                choices: [
+                    "La liberté de conscience et de religion, qui garantit le droit de croire, de ne pas croire ou de changer de religion.",
+                    "La liberté d’entreprendre, qui concerne avant tout la création et la gestion d’activités économiques.",
+                    "La liberté de circulation, qui porte sur les déplacements et l’installation sur le territoire ou à l’étranger.",
+                    "La liberté de la presse, qui vise principalement la diffusion d’informations et d’opinions dans les médias."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que le droit de grève ?",
+                choices: [
+                    "La cessation collective, concertée et temporaire du travail par les salariés pour appuyer des revendications professionnelles.",
+                    "Le droit pour tout salarié de quitter définitivement son emploi sans respecter aucune procédure de démission.",
+                    "Le droit de ne jamais appliquer les clauses de son contrat de travail, quelles que soient les circonstances.",
+                    "Le droit de s’absenter de son poste pour convenance personnelle, sans en informer l’employeur ni se justifier."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qu'est-ce que la Constitution ?",
+                choices: [
+                    "La loi fondamentale de l’État qui fixe l’organisation des pouvoirs publics et consacre les droits et libertés essentiels.",
+                    "Un règlement intérieur adopté par le gouvernement pour organiser le travail des ministères au quotidien.",
+                    "Une loi ordinaire parmi d’autres, que le Parlement peut modifier à la majorité simple quand il le souhaite.",
+                    "Le document programmatique d’un parti politique, qui s’impose à tous les citoyens après les élections."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui peut demander à avorter ?",
+                choices: [
+                    "Toute femme enceinte, majeure ou mineure, qui ne souhaite pas poursuivre sa grossesse, dans les conditions prévues par la loi.",
+                    "Seules les femmes mariées, après accord écrit de leur conjoint et décision du juge aux affaires familiales.",
+                    "Uniquement les femmes majeures, à condition d’obtenir l’autorisation expresse de leurs parents ou de leur tuteur.",
+                    "Uniquement les femmes n’ayant pas encore d’enfant, afin de préserver leur première grossesse future."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Une femme majeure de nationalité française a-t-elle le droit de voter aux élections ?",
+                choices: [
+                    "Oui, elle dispose du droit de vote dans les mêmes conditions que les hommes, dès lors qu’elle est inscrite sur les listes électorales.",
+                    "Non, seules les femmes mariées et mères de famille bénéficient de ce droit de vote aux élections politiques.",
+                    "Non, seules les femmes n’ayant jamais été condamnées pénalement peuvent participer aux scrutins nationaux.",
+                    "Non, le droit de vote reste réservé aux hommes conformément aux traditions historiques de la République."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Concernant l'utilisation des réseaux sociaux, quelle proposition est correcte ?",
+                choices: [
+                    "Les propos publiés sont soumis à la loi : insultes, propos racistes, menaces ou diffamation peuvent être poursuivis pénalement.",
+                    "Internet constitue un espace totalement libre où l’on peut s’exprimer sans jamais risquer de sanction juridique.",
+                    "La loi ne s’applique pas aux messages publiés sur les réseaux sociaux, qui relèvent seulement des règles internes des plateformes.",
+                    "Seuls les journalistes professionnels sont responsables de ce qu’ils publient en ligne, les autres utilisateurs étant protégés."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Jeter un mégot par terre est :",
+                choices: [
+                    "Une atteinte à la propreté et à l’environnement, passible d’une amende prévue pour les dépôts de déchets sur la voie publique.",
+                    "Un geste sans importance qui n’a pas de conséquences juridiques dès lors que la rue est déjà sale.",
+                    "Autorisé dès lors que la municipalité a mis en place un service de nettoyage régulier de l’espace public.",
+                    "Toléré dans les zones urbaines les plus fréquentées, afin de ne pas surcharger les poubelles et les cendriers."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "L'État peut-il limiter les droits et libertés ?",
+                choices: [
+                    "Oui, pour protéger l’ordre public, la santé, la sécurité et les droits d’autrui, dans le respect du principe de proportionnalité.",
+                    "Non, en aucune circonstance, car toute limitation serait contraire aux principes mêmes de la démocratie.",
+                    "Oui, mais uniquement lorsqu’il s’agit de personnes étrangères et non de citoyens français.",
+                    "Oui, mais seulement pour les mineurs, les adultes bénéficiant toujours d’une liberté totale sans restriction."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Parmi ces actions, laquelle permet d'adopter une attitude respectueuse de l’environnement ?",
+                choices: [
+                    "Mettre en place le tri des déchets, limiter les consommations d’énergie et respecter les consignes locales de protection.",
+                    "Laisser systématiquement les lumières allumées et les appareils en veille, même en cas d’absence prolongée.",
+                    "Jeter ses déchets sur la chaussée ou par la fenêtre du véhicule, en comptant sur le nettoyage public.",
+                    "Arroser abondamment son jardin en période de restriction d’eau, dès lors que le sol en a besoin."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle proposition constitue une obligation ?",
+                choices: [
+                    "Respecter les lois en vigueur et s’acquitter de ses impôts et contributions lorsqu’on y est légalement tenu.",
+                    "Participer à toutes les manifestations qui sont organisées sur le territoire de sa commune de résidence.",
+                    "Adhérer à un parti politique ou à un syndicat afin de montrer son engagement en tant que citoyen.",
+                    "Lire quotidiennement la presse nationale afin d’être informé de l’ensemble de l’actualité politique."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pour quel motif peut-on limiter la liberté d'expression ?",
+                choices: [
+                    "Pour prévenir et sanctionner l’incitation à la haine, à la violence, au terrorisme ou à la discrimination envers des personnes ou des groupes.",
+                    "Pour empêcher toute critique publique de l’action du gouvernement ou des responsables politiques.",
+                    "Pour interdire toute prise de parole sur des sujets politiques ou religieux dans l’espace public.",
+                    "Pour restreindre la capacité des journalistes à enquêter sur les institutions ou sur les élus nationaux."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Pourquoi doit-on trier ses déchets ?",
+                choices: [
+                    "Pour permettre le recyclage des matériaux, réduire la pollution et contribuer à la protection durable de l’environnement.",
+                    "Pour obtenir automatiquement une rémunération financière en fonction du volume de déchets recyclés.",
+                    "Pour diminuer le nombre de poubelles visibles dans les rues et faciliter le travail des services municipaux.",
+                    "Uniquement pour répondre à une demande symbolique de la mairie, sans réel impact environnemental."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que doit faire une victime de violences ?",
+                choices: [
+                    "Se mettre en sécurité, contacter les secours ou la police, recueillir des preuves et déposer plainte si elle le souhaite.",
+                    "Garder le silence et tenter de régler seule la situation sans jamais solliciter l’aide de professionnels.",
+                    "Chercher à se venger personnellement de l’auteur des violences sans passer par les autorités compétentes.",
+                    "Attendre plusieurs années avant de parler des faits afin d’éviter d’impliquer son entourage ou les témoins."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Que doit-on faire face aux ordres des policiers ou gendarmes ?",
+                choices: [
+                    "Obéir calmement aux injonctions légales et, en cas de contestation, utiliser ensuite les voies de recours adaptées.",
+                    "Refuser systématiquement d’obtempérer dès lors que l’on estime que le contrôle est inutile ou injuste.",
+                    "Tenter de fuir pour éviter le contrôle et se soustraire à toute vérification de son identité ou de ses papiers.",
+                    "N’obéir qu’aux ordres qui nous paraissent acceptables, en ignorant ceux que l’on juge trop contraignants."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est le rôle de la police ?",
+                choices: [
+                    "Protéger les personnes et les biens, faire respecter la loi et contribuer au maintien de l’ordre public.",
+                    "Élaborer les lois et décider des politiques publiques en matière de sécurité intérieure.",
+                    "Prononcer les peines d’emprisonnement et exécuter les jugements rendus par les tribunaux.",
+                    "Organiser les élections, proclamer les résultats et contrôler le fonctionnement des partis politiques."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel est un exemple d’assistance à personne en danger ?",
+                choices: [
+                    "Alerter les secours ou la police lorsqu’on est témoin d’une personne en détresse ou d’une situation grave.",
+                    "Ignorer volontairement une personne blessée dans la rue afin de ne pas s’impliquer dans la situation.",
+                    "Filmer une agression pour la diffuser sur les réseaux sociaux sans prévenir les services de secours.",
+                    "Se moquer d’une personne en difficulté et décourager les autres de lui apporter une aide concrète."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quel exemple illustre une limitation de liberté pour protéger l'intérêt général ?",
+                choices: [
+                    "L’interdiction de fumer dans les lieux publics fermés afin de protéger la santé des autres usagers.",
+                    "L’interdiction de téléphoner depuis son domicile, même en cas d’urgence ou de nécessité personnelle.",
+                    "L’interdiction absolue d’exprimer une opinion politique, y compris dans la sphère privée.",
+                    "L’interdiction pour tous les habitants d’accéder aux parcs et jardins en toute circonstance."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l’attitude à avoir lorsque qu'on est témoin de violences ?",
+                choices: [
+                    "Ne pas se mettre soi-même en danger, alerter les secours et prévenir la police ou la gendarmerie.",
+                    "Intervenir physiquement dans tous les cas, même si la situation dépasse manifestement ses capacités.",
+                    "Ne rien faire, s’éloigner rapidement et considérer que la situation ne nous concerne pas directement.",
+                    "Filmer la scène pour la publier en ligne sans chercher à prévenir les services d’urgence compétents."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle est l'infraction la plus grave ?",
+                choices: [
+                    "Le crime, qui correspond aux infractions les plus graves et peut être puni de réclusion criminelle.",
+                    "Le délit, qui constitue toujours la forme la plus lourde de sanction dans le droit pénal français.",
+                    "La contravention, qui regroupe les infractions les plus graves jugées par la cour d’assises.",
+                    "La simple incivilité, qui est assimilée à une infraction criminelle en raison de sa gravité."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle obligation concerne toutes les personnes résidant en France quelle que soit leur nationalité ?",
+                choices: [
+                    "Respecter les lois françaises en vigueur sur le territoire, qu’elles soient de nationalité française ou étrangère.",
+                    "Participer à toutes les élections organisées en France, quel que soit leur statut administratif.",
+                    "Demander systématiquement la nationalité française après un certain nombre d’années de résidence.",
+                    "Adhérer à un parti politique ou à une association afin de montrer leur intégration dans la société."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle proposition représente un exemple de crime ?",
+                choices: [
+                    "Un meurtre commis volontairement à l’encontre d’une autre personne constitue un exemple typique de crime.",
+                    "Un stationnement gênant sur un emplacement réservé constitue un crime puni de réclusion criminelle.",
+                    "Un léger excès de vitesse constaté en agglomération constitue un crime relevant de la cour d’assises.",
+                    "Un retard de paiement d’une facture de téléphone constitue un crime passible d’une peine de prison."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Quelle proposition représente un exemple de délit ?",
+                choices: [
+                    "Un vol commis dans un magasin, comme la soustraction volontaire d’un objet, constitue un délit pénal.",
+                    "Une simple insulte échangée entre amis dans un cadre privé constitue toujours un délit correctionnel.",
+                    "Un bruit très ponctuel causé par un voisin à une heure autorisée est systématiquement qualifié de délit.",
+                    "Le fait de ne pas saluer une personne dans la rue est assimilé à un délit contre la dignité humaine."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Qui veille au maintien de l’ordre public ?",
+                choices: [
+                    "Les services de police et de gendarmerie, sous l’autorité des préfets, des maires et de l’État.",
+                    "Les seules associations de quartier, qui décident librement des règles de sécurité applicables.",
+                    "Les partis politiques, qui exercent directement la force publique sur le territoire national.",
+                    "Les directeurs d’établissement scolaire, qui disposent des pouvoirs de police sur la voie publique."
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "S'agissant des déchets, quelle proposition est correcte ?",
+                choices: [
+                    "Ils doivent être déposés dans les poubelles appropriées ou en déchetterie, en respectant le tri lorsque c’est possible.",
+                    "On peut les jeter sur la voie publique dès lors que l’on contribue déjà à financer le service de nettoyage.",
+                    "On peut les brûler en pleine forêt ou en plein air pour éviter d’encombrer les bennes à ordures ménagères.",
+                    "On peut les évacuer dans les toilettes ou les égouts, car ils seront automatiquement traités par les réseaux."
+                ],
+                correctIndex: 0
+            }
+        ];
+
+        // --------------------------------------------------------
+        // 2) Mélange aléatoire (Fisher–Yates)
+        // --------------------------------------------------------
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        const TOTAL_QUESTIONS = 40;
+        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
+
+        // --------------------------------------------------------
+        // 3) Logique du quiz
+        // --------------------------------------------------------
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        const progressEl = document.getElementById("progress");
+        const questionEl = document.getElementById("question");
+        const choicesEl = document.getElementById("choices");
+        const nextBtn = document.getElementById("nextBtn");
+        const resultEl = document.getElementById("result");
+        const quizEl = document.getElementById("quiz");
+
+        let selectedChoiceIndex = null;
+        let locked = false;
+        let currentRenderedChoices = []; // nouveau
+
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            questionEl.textContent = q.question;
+            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+
+            choicesEl.innerHTML = "";
+            selectedChoiceIndex = null;
+            locked = false;
+            nextBtn.disabled = true;
+
+            // on crée un tableau { text, isCorrect } puis on le mélange
+            currentRenderedChoices = shuffle(
+                q.choices.map((text, idx) => ({
+                    text,
+                    isCorrect: idx === q.correctIndex
+                }))
+            );
+
+            currentRenderedChoices.forEach((choiceObj, index) => {
+                const btn = document.createElement("button");
+                btn.className = "choice-btn";
+                btn.textContent = choiceObj.text;
+                btn.addEventListener("click", () => handleChoiceClick(index));
+                choicesEl.appendChild(btn);
+            });
+        }
+
+        function handleChoiceClick(index) {
+            if (locked) return;
+
+            selectedChoiceIndex = index;
+            nextBtn.disabled = false;
+
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle("selected", i === index);
+            });
+        }
+
+        function validateAnswer() {
+            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+
+            if (selectedChoiceIndex === null) return;
+
+            locked = true;
+            nextBtn.disabled = false;
+
+            // on trouve l’index du bouton correct dans l’ordre mélangé
+            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
+
+            buttons.forEach((btn, i) => {
+                btn.classList.remove("selected");
+                if (i === correctRenderedIndex) {
+                    btn.classList.add("correct");
+                }
+                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
+                    btn.classList.add("incorrect");
+                }
+            });
+
+            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
+            if (isCorrect) {
+                score += 1;
+            }
+
+            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
+            userAnswers.push({
+                question: questions[currentIndex].question,
+                chosen: currentRenderedChoices[selectedChoiceIndex].text,
+                correct: currentRenderedChoices[correctRenderedIndex].text,
+                isCorrect
+            });
+        }
+
+        function showResult() {
+            const total = questions.length;
+            const noteSur40 = score;
+
+            quizEl.style.display = "none";
+            resultEl.style.display = "block";
+
+            let html = `
+        <h2>Résultats</h2>
+        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / 40</strong>.</p>
+        <p>Résumé des réponses :</p>
+      `;
+
+            userAnswers.forEach((entry, index) => {
+                html += `
+          <div class="summary-item">
+            <strong>Q${index + 1}.</strong> ${entry.question}<br>
+            Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
+              ${entry.chosen} (${entry.isCorrect ? "Juste" : "Faux"})
+            </span><br>
+            Bonne réponse : <strong>${entry.correct}</strong>
+          </div>
+        `;
+            });
+
+            html += `
+        <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
+      `;
+
+            resultEl.innerHTML = html;
+        }
+
+        function restartQuiz() {
+            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+
+            quizEl.style.display = "block";
+            resultEl.style.display = "none";
+
+            nextBtn.textContent = "Valider";
+            renderQuestion();
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (!locked) {
+                validateAnswer();
+                if (currentIndex < questions.length - 1) {
+                    nextBtn.textContent = "Question suivante";
+                } else {
+                    nextBtn.textContent = "Voir les résultats";
+                }
+                return;
+            }
+
+            if (currentIndex < questions.length - 1) {
+                currentIndex += 1;
+                nextBtn.textContent = "Valider";
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        nextBtn.textContent = "Valider";
+        renderQuestion();
+    </script>
+</body>
+
+</html>
