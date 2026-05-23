@@ -641,7 +641,7 @@
             return arr;
         }
 
-        const TOTAL_QUESTIONS = 40;
+        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
         let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
 
         // --------------------------------------------------------
@@ -745,7 +745,7 @@
 
             let html = `
         <h2>Résultats</h2>
-        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / 40</strong>.</p>
+        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / {TOTAL_QUESTIONS.length}</strong>.</p>
         <p>Résumé des réponses :</p>
       `;
 
@@ -804,6 +804,34 @@
         nextBtn.textContent = "Valider";
         renderQuestion();
     </script>
+	<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ⚠️ même config que dans auth.html
+  const firebaseConfig = {
+    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
+    authDomain: "qcm-examen-civique-db.firebaseapp.com",
+    projectId: "qcm-examen-civique-db",
+    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
+    messagingSenderId: "899569839204",
+    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
+    measurementId: "G-S92WT27FBT"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Pas connecté -> retour à la page de connexion
+      window.location.href = "auth.html";
+    } else {
+      // Optionnel : tu peux afficher le mail ou autre
+      console.log("Connecté :", user.email);
+    }
+  });
+</script>
 </body>
 
 </html>

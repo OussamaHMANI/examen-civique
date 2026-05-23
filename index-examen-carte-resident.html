@@ -2066,6 +2066,448 @@
                 correctIndex: 0
             }
         ];
+		 const VIVRE_EN_FRANCE = [
+      {
+        question: "Votre enfant de 6 ans vient d’arriver en France. Pour l’inscrire à l’école primaire, vers qui vous tournez-vous ?",
+        choices: [
+          "La mairie de votre commune",
+          "Le commissariat de police",
+          "La CAF (Caisse d’allocations familiales)",
+          "Le consulat de votre pays d’origine"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous êtes témoin d’un accident grave sur la route avec des blessés. Quel numéro d’urgence pouvez-vous composer en priorité ?",
+        choices: [
+          "Le 112, numéro d’urgence européen",
+          "Le 3615",
+          "Le 118 218",
+          "Le 114, uniquement pour commander un taxi"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre médecin vous prescrit un traitement. Que devez-vous présenter à la pharmacie pour être remboursé par l’Assurance maladie ?",
+        choices: [
+          "Votre carte Vitale et l’ordonnance",
+          "Votre passeport uniquement",
+          "Votre contrat de travail",
+          "Votre carte bancaire uniquement"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous déménagez dans une nouvelle commune. Que devez-vous faire pour mettre à jour votre situation administrative ?",
+        choices: [
+          "Déclarer votre changement d’adresse auprès des principaux organismes (Impôts, CAF, CPAM, etc.)",
+          "Ne rien faire, le changement est automatique",
+          "Appeler la gendarmerie pour signaler votre nouvelle adresse",
+          "Faire une demande de naturalisation immédiatement"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre enfant est malade et l’école vous demande un justificatif. Que devez-vous fournir ?",
+        choices: [
+          "Un mot des parents et, si l’absence dure plusieurs jours, un certificat médical",
+          "Uniquement un message WhatsApp",
+          "Aucun document n’est nécessaire",
+          "Une attestation de votre employeur"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous cherchez un logement à louer. Quel document le propriétaire peut légitimement vous demander ?",
+        choices: [
+          "Vos fiches de paie ou justificatifs de ressources",
+          "Votre relevé de compte bancaire détaillé de plusieurs années",
+          "Votre mot de passe de messagerie",
+          "Votre appartenance à un parti politique"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous êtes au chômage et cherchez des aides pour retrouver un emploi. Vers quel organisme vous tournez-vous en priorité ?",
+        choices: [
+          "France Travail (ex-Pôle emploi)",
+          "La préfecture de police",
+          "Le tribunal administratif",
+          "La mairie uniquement"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre bail d’appartement prévoit de payer le loyer avant le 5 du mois. Que se passe-t-il si vous ne payez pas ?",
+        choices: [
+          "Vous risquez des relances, des pénalités et, à terme, une procédure d’expulsion",
+          "Vous perdez automatiquement votre nationalité",
+          "Vous êtes immédiatement expulsé sans procédure",
+          "Vous pouvez décider vous-même du montant à payer"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous avez reçu une convocation officielle d’un service public (préfecture, justice, etc.). Que devez-vous faire ?",
+        choices: [
+          "Vous présenter à la date et à l’heure indiquées ou prévenir en cas d’empêchement sérieux",
+          "Ignorer le courrier, ce n’est pas obligatoire",
+          "Attendre que l’administration vous relance plusieurs fois",
+          "Répondre uniquement par SMS"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "En cas d’incendie dans votre immeuble, quelle attitude est recommandée ?",
+        choices: [
+          "Prévenir les secours, ne pas prendre l’ascenseur et évacuer si possible par les escaliers",
+          "Prendre l’ascenseur pour descendre plus vite",
+          "Retourner chercher toutes vos affaires personnelles",
+          "Sauter par la fenêtre immédiatement"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre enfant subit du harcèlement à l’école. Quelle première démarche peut-être utile ?",
+        choices: [
+          "En parler à l’enseignant, au directeur et éventuellement au référent harcèlement de l’établissement",
+          "Dire à l’enfant de ne rien dire",
+          "Changer de pays immédiatement",
+          "Répondre par la violence sans prévenir l’école"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous devez prendre un arrêt maladie. Qui doit être informé en priorité ?",
+        choices: [
+          "Votre employeur et votre caisse d’Assurance maladie (CPAM)",
+          "Le maire de votre commune",
+          "La CAF uniquement",
+          "Votre banque"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous voyez une personne inconsciente dans la rue. Quel réflexe est correct ?",
+        choices: [
+          "Vérifier qu’elle respire et appeler les secours",
+          "La filmer pour les réseaux sociaux",
+          "La déplacer sans précaution pour la mettre sur un banc",
+          "La laisser au sol sans rien faire"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous recevez un courrier d’impôts que vous ne comprenez pas. Que pouvez-vous faire ?",
+        choices: [
+          "Contacter le service des impôts ou prendre rendez-vous pour demander des explications",
+          "Ignorer le courrier, ce n’est pas grave",
+          "Attendre une éventuelle relance sans jamais répondre",
+          "Demander conseil uniquement sur un groupe Facebook"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous arrivez en retard à un rendez-vous à la préfecture pour un titre de séjour. Que se passe-t-il souvent ?",
+        choices: [
+          "Vous pouvez perdre votre créneau et devoir reprendre un rendez-vous",
+          "Votre dossier est automatiquement accepté",
+          "Votre demande de naturalisation est refusée",
+          "Vous pouvez venir n’importe quand dans la journée"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous souhaitez vous inscrire sur les listes électorales de votre commune. Où faire la démarche ?",
+        choices: [
+          "À la mairie ou en ligne sur le site officiel",
+          "Au commissariat",
+          "Au supermarché",
+          "Uniquement à la préfecture de police"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre voisin fait du bruit très fort tous les soirs jusqu’à 2 heures du matin. Quelle est la meilleure première étape ?",
+        choices: [
+          "Aller lui parler calmement pour trouver une solution",
+          "Appeler directement la police sans jamais lui parler",
+          "Mettre de la musique encore plus forte",
+          "L’insulter sur les réseaux sociaux"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous devez emmener votre enfant pour un vaccin obligatoire. Qui peut le faire ?",
+        choices: [
+          "Un médecin ou une infirmière habilitée",
+          "Un ami qui sait faire des piqûres",
+          "Le directeur de l’école",
+          "Un pharmacien sans formation médicale"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous recevez une offre d’emploi qui vous demande de payer des “frais de dossier” avant d’être embauché. Que pensez-vous ?",
+        choices: [
+          "C’est probablement une arnaque, un employeur sérieux ne demande pas d’argent au candidat",
+          "C’est normal en France",
+          "C’est obligatoire pour tous les contrats",
+          "C’est réservé aux étrangers"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous souhaitez inscrire votre enfant à la cantine scolaire. À qui devez-vous vous adresser ?",
+        choices: [
+          "À la mairie ou au service scolaire de la commune",
+          "Au commissariat de police",
+          "Au tribunal",
+          "À la préfecture"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous avez perdu votre carte bancaire en France. Quel réflexe immédiat est recommandé ?",
+        choices: [
+          "Faire opposition auprès de votre banque dès que possible",
+          "Attendre quelques jours pour voir si elle réapparaît",
+          "Publier un message sur Facebook uniquement",
+          "Ne rien faire tant que personne ne vous appelle"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous changez de médecin traitant. Que devez-vous faire pour que vos remboursements restent optimaux ?",
+        choices: [
+          "Déclarer le nouveau médecin traitant auprès de l’Assurance maladie (en ligne ou avec un formulaire)",
+          "Ne rien faire, ce n’est pas nécessaire",
+          "Prévenir la mairie",
+          "Prévenir uniquement votre employeur"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre enfant est victime de discrimination à l’école (insultes racistes par exemple). Quel organisme extérieur peut aussi vous aider ?",
+        choices: [
+          "Le Défenseur des droits",
+          "La CAF",
+          "Le service des impôts",
+          "Le tribunal de commerce"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous voulez apprendre le français en France à moindre coût. Quelle solution existe-t-il souvent ?",
+        choices: [
+          "Des cours proposés par des associations, la mairie ou des organismes de formation",
+          "Uniquement des cours privés très chers",
+          "Il est interdit de suivre des cours de français",
+          "Seulement des cours obligatoires en préfecture"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous utilisez les transports en commun (métro, bus) sans ticket ni abonnement. Que risquez-vous ?",
+        choices: [
+          "Un contrôle et une amende en cas de fraude",
+          "Rien, ce n’est pas contrôlé",
+          "De perdre votre titre de séjour automatiquement",
+          "Une obligation de faire du bénévolat"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous avez un doute sur la légalité d’un contrat que vous avez signé. Où pouvez-vous obtenir un conseil juridique gratuit ou peu cher ?",
+        choices: [
+          "Dans une structure d’accès au droit (Maison de Justice et du Droit, Point-Justice, etc.)",
+          "Uniquement en appelant la police",
+          "Uniquement sur un groupe Facebook",
+          "Au guichet de la poste"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous êtes malade un dimanche et votre cabinet médical habituel est fermé. Quelle solution existe en France ?",
+        choices: [
+          "Appeler un numéro de régulation médicale ou un service de garde pour être orienté",
+          "Attendre le lundi sans rien faire",
+          "Aller directement au tribunal",
+          "Appeler seulement votre employeur"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre bail de location interdit clairement les animaux dangereux. Vous adoptez un chien de catégorie dangereuse. Que se passe-t-il ?",
+        choices: [
+          "Vous devez respecter les clauses du bail et les règles spécifiques sur les chiens dangereux",
+          "Vous pouvez ignorer le bail sans conséquence",
+          "Vous pouvez garder l’animal sans aucune règle",
+          "Le propriétaire doit partir du logement"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre employeur vous propose un travail non déclaré, payé uniquement en liquide. Que cela signifie-t-il ?",
+        choices: [
+          "C’est du travail dissimulé, interdit par la loi",
+          "C’est une pratique normale et légale",
+          "C’est réservé aux étudiants",
+          "C’est obligatoire pour les emplois à temps partiel"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous souhaitez vous marier en France. Quelle démarche est indispensable pour que le mariage soit reconnu par l’État ?",
+        choices: [
+          "Célébrer un mariage civil à la mairie",
+          "Faire uniquement une cérémonie religieuse",
+          "Signer un simple contrat entre familles",
+          "Se marier uniquement à l’étranger"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous arrivez en retard tous les jours au travail sans raison valable. Quelles conséquences possibles ?",
+        choices: [
+          "Des avertissements disciplinaires et des sanctions pouvant aller jusqu’au licenciement",
+          "Aucune conséquence, c’est un droit",
+          "Une augmentation automatique",
+          "Une obligation de partir à la retraite"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Votre enfant collégien ne respecte pas le règlement intérieur de l’établissement. Qu’est-ce que cela peut entraîner ?",
+        choices: [
+          "Des sanctions éducatives ou disciplinaires (avertissement, exclusion temporaire, etc.)",
+          "Le retrait automatique de votre titre de séjour",
+          "La suppression de votre droit de vote",
+          "Une obligation de changer de nationalité"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous êtes locataire et remarquez une fuite d’eau importante dans l’appartement. Que devez-vous faire en premier ?",
+        choices: [
+          "Prévenir rapidement le propriétaire ou l’agence, et si besoin couper l’eau",
+          "Ne rien dire pour ne pas déranger",
+          "Réparer vous-même sans prévenir personne",
+          "Attendre plusieurs mois avant de signaler"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous souhaitez ouvrir un compte bancaire en France. Que doit vérifier la banque ?",
+        choices: [
+          "Votre identité et votre domicile (pièce d’identité, justificatif de domicile, etc.)",
+          "Votre religion",
+          "Votre appartenance politique",
+          "Votre dossier médical complet"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous percevez une allocation (CAF, chômage…) et votre situation change (nouvel emploi, changement familial). Que devez-vous faire ?",
+        choices: [
+          "Déclarer rapidement le changement à l’organisme concerné",
+          "Ne rien dire pour conserver la même somme",
+          "Attendre que l’organisme s’en rende compte",
+          "Prévenir uniquement votre employeur"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous entendez dans votre immeuble des cris et des bruits laissant penser à des violences conjugales. Que pouvez-vous faire ?",
+        choices: [
+          "Appeler les forces de l’ordre pour signaler la situation sans vous mettre en danger",
+          "Filmer et publier sur les réseaux sociaux",
+          "Fermer les yeux car c’est une affaire privée",
+          "Aller frapper à la porte et menacer tout le monde"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous devez renouveler votre titre de séjour. Quand est-il conseillé de commencer les démarches ?",
+        choices: [
+          "Plusieurs semaines ou mois avant la date d’expiration",
+          "Le lendemain de la date d’expiration",
+          "Uniquement un an après l’expiration",
+          "Ce n’est pas nécessaire de renouveler"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous travaillez en contrat à durée déterminée (CDD). Que doit obligatoirement contenir votre contrat ?",
+        choices: [
+          "La durée, la rémunération, le poste et les principales conditions de travail",
+          "Votre religion et vos opinions politiques",
+          "Vos opinions sur le gouvernement",
+          "Le numéro de carte bancaire de vos proches"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Vous êtes malade et ne pouvez pas aller travailler. Que devez-vous faire vis-à-vis de votre employeur ?",
+        choices: [
+          "Le prévenir dans les délais prévus et envoyer un arrêt de travail si nécessaire",
+          "Ne rien dire et rester chez vous",
+          "Prévenir seulement un collègue par SMS",
+          "Attendre la fin de la semaine pour informer"
+        ],
+        correctIndex: 0
+      },
+	  {
+  question: "Tu vas faire une démarche à la mairie (état civil, logement...) et tu portes un signe religieux visible (voile, kippa, croix, turban). Que dit la loi pour les usagers du service public ?",
+  choices: [
+    "Tu as le droit de porter un signe religieux, à condition de respecter le fonctionnement du service et de ne pas faire de prosélytisme",
+    "Il est interdit de porter tout signe religieux à l’intérieur d’une mairie",
+    "Tu dois enlever tout signe religieux à l’entrée, même discret",
+    "Tu peux faire une prière à haute voix dans la salle d’attente"
+  ],
+  correctIndex: 0
+},
+{
+  question: "Tu travailles comme agent d’accueil dans une mairie. Peux-tu porter un signe religieux visible pendant ton service (voile, kippa, grande croix, etc.) ?",
+  choices: [
+    "Non, un agent du service public doit respecter la neutralité et ne pas afficher ses convictions religieuses pendant le travail",
+    "Oui, il peut porter tous les signes religieux qu’il souhaite",
+    "Oui, mais seulement le vendredi",
+    "Oui, à condition de demander l’autorisation aux usagers"
+  ],
+  correctIndex: 0
+},
+{
+  question: "Tu portes un voile qui couvre entièrement ton visage (yeux compris) dans la rue ou dans un centre commercial. Est-ce autorisé ?",
+  choices: [
+    "Non, la loi interdit de dissimuler son visage dans l’espace public, sauf exceptions prévues par la loi",
+    "Oui, c’est toujours autorisé sans aucune limite",
+    "C’est autorisé uniquement le week-end",
+    "C’est autorisé seulement si tu as un titre de séjour"
+  ],
+  correctIndex: 0
+},
+{
+  question: "Une élève d’un lycée public veut porter un signe religieux très visible (voile intégral, grande croix, kippa, turban) en classe. Que prévoit la loi de 2004 ?",
+  choices: [
+    "La loi interdit aux élèves des écoles, collèges et lycées publics de porter des signes religieux ostensibles",
+    "La loi autorise tous les signes religieux pour les élèves sans aucune limite",
+    "La loi concerne seulement les enseignants, pas les élèves",
+    "La loi ne s’applique que dans les universités"
+  ],
+  correctIndex: 0
+},
+{
+  question: "Un parent d’élève vient chercher son enfant à l’école publique en portant un signe religieux (voile, kippa, croix, turban). En tant qu’usager du service public, que peut-il faire ?",
+  choices: [
+    "Il peut porter un signe religieux, à condition de respecter les règles de l’école et de ne pas faire de prosélytisme",
+    "Il doit enlever tout signe religieux avant d’entrer dans la cour",
+    "Il n’a pas le droit d’entrer dans l’école",
+    "Il ne peut entrer qu’en cachant complètement son visage"
+  ],
+  correctIndex: 0
+}
+    ];
         const DROITS_DEVOIRS_QUESTIONS = [
 
             {
@@ -2465,18 +2907,20 @@
         // 2) Construire un examen blanc de 40 questions (9/9/9/9/4)
         // --------------------------------------------------------
         function buildQuizQuestions() {
-            const principes = shuffle(PRINCIPES_QUESTIONS).slice(0, 8);
-            const systeme = shuffle(SYSTEME_INSTIT_QUESTIONS).slice(0, 8);
-            const droits = shuffle(DROITS_DEVOIRS_QUESTIONS).slice(0, 8);
-            const vivre = shuffle(VIVRE_SOCIETE_QUESTIONS).slice(0, 8);
-            const histoire = shuffle(HISTOIRE_GEO_CULTURE_QUESTIONS).slice(0, 8); // 9+9+9+9+4 = 40
+            const principes = shuffle(PRINCIPES_QUESTIONS).slice(0, 6);
+            const systeme = shuffle(SYSTEME_INSTIT_QUESTIONS).slice(0, 6);
+            const droits = shuffle(DROITS_DEVOIRS_QUESTIONS).slice(0, 6);
+            const vivre = shuffle(VIVRE_SOCIETE_QUESTIONS).slice(0, 5);
+            const histoire = shuffle(HISTOIRE_GEO_CULTURE_QUESTIONS).slice(0, 5); // 9+9+9+9+4 = 40
+            const situation = shuffle(VIVRE_EN_FRANCE).slice(0, 12); // 9+9+9+9+4 = 40
 
             const forty = [
                 ...principes,
                 ...systeme,
                 ...droits,
                 ...vivre,
-                ...histoire
+                ...histoire,
+				...situation
             ];
 
             return shuffle(forty);
@@ -2713,6 +3157,34 @@
         renderQuestion();
         startExamTimer();
     </script>
+	<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ⚠️ même config que dans auth.html
+  const firebaseConfig = {
+    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
+    authDomain: "qcm-examen-civique-db.firebaseapp.com",
+    projectId: "qcm-examen-civique-db",
+    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
+    messagingSenderId: "899569839204",
+    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
+    measurementId: "G-S92WT27FBT"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Pas connecté -> retour à la page de connexion
+      window.location.href = "auth.html";
+    } else {
+      // Optionnel : tu peux afficher le mail ou autre
+      console.log("Connecté :", user.email);
+    }
+  });
+</script>
 </body>
 
 </html>
