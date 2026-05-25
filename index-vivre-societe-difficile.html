@@ -5,204 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Vivre dans la société française</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .quiz-container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #progress {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 12px;
-        }
-
-        #question {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .choice-btn {
-            text-align: left;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-            width: 100%;
-        }
-
-        .choice-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .choice-btn.selected {
-            border-color: #2563eb;
-            background: #e0ecff;
-        }
-
-        .choice-btn.correct {
-            background: #16a34a;
-            color: #fff;
-            border-color: #15803d;
-        }
-
-        .choice-btn.incorrect {
-            background: #dc2626;
-            color: #fff;
-            border-color: #b91c1c;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: 8px;
-        }
-
-        #nextBtn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        #nextBtn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        #nextBtn:hover:not(:disabled) {
-            background: #1d4ed8;
-        }
-
-        #result {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        #result h2 {
-            margin-top: 0;
-        }
-
-        .summary-item {
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-        }
-
-        .tag-good {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        .tag-bad {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .restart-btn {
-            margin-top: 12px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #6b7280;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .home-btn {
-            display: inline-block;
-            margin: 12px 16px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            color: #111827;
-            font-size: 0.9rem;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .home-btn:hover {
-            background: #e5e7eb;
-        }
-
-        /* Responsive mobile */
-        @media (max-width: 640px) {
-            body {
-                padding: 12px;
-            }
-
-            .quiz-container {
-                padding: 16px 14px;
-            }
-
-            h1 {
-                font-size: 1.25rem;
-            }
-
-            #question {
-                font-size: 1rem;
-            }
-
-            .choice-btn {
-                font-size: 0.9rem;
-                padding: 10px;
-            }
-
-            #controls {
-                justify-content: center;
-            }
-
-            #nextBtn {
-                width: 100%;
-                border-radius: 999px;
-            }
-
-            .home-btn {
-                margin: 10px 12px;
-                width: calc(100% - 24px);
-                text-align: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -224,535 +27,357 @@
         <div id="result"></div>
     </div>
 
-    <script>
-        // --------------------------------------------------------
-        // 1) Banque de questions : Principes et valeurs (40 questions)
-        // --------------------------------------------------------
-        const ALL_QUESTIONS = [{
-                question: "Quel mariage est reconnu par l'État ?",
-                choices: [
-                    "Le mariage civil célébré à la mairie par l’officier d’état civil, et enregistré dans les registres officiels.",
-                    "Le mariage religieux uniquement, dès lors qu’il est célébré par un ministre du culte et une assemblée.",
-                    "Le mariage traditionnel organisé par la famille selon les coutumes locales, sans aucune formalité.",
-                    "Le mariage célébré à l’étranger sans enregistrement ni transcription auprès des autorités françaises."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Auprès de quelle institution les parents peuvent-ils inscrire leur enfant à l'école publique ?",
-                choices: [
-                    "Auprès de la mairie de la commune de résidence ou directement auprès de l’école, selon l’organisation locale en vigueur.",
-                    "Auprès du commissariat de police, qui centralise les demandes d’inscription scolaire.",
-                    "Auprès de la préfecture, qui valide toutes les inscriptions dans les établissements publics.",
-                    "Auprès du tribunal judiciaire, qui décide de l’affectation des enfants dans les écoles."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En cas de divorce, qui exerce l'autorité parentale ?",
-                choices: [
-                    "En principe, les deux parents continuent à exercer conjointement l’autorité parentale sur leurs enfants.",
-                    "Uniquement la mère, qui obtient automatiquement la totalité de l’autorité parentale.",
-                    "Uniquement le père, qui devient seul responsable des décisions concernant les enfants.",
-                    "Les grands-parents, désignés systématiquement comme tuteurs en cas de séparation."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle aide permet aux personnes qui ont des difficultés financières d'avoir un avocat ?",
-                choices: [
-                    "L’aide juridictionnelle, qui prend en charge tout ou partie des frais de justice et d’avocat selon les ressources.",
-                    "L’aide au logement, qui permet uniquement de réduire le montant du loyer ou des charges.",
-                    "La bourse scolaire, qui concerne les frais liés à la scolarité des enfants.",
-                    "La réduction d’impôt, qui intervient seulement lors de la déclaration de revenus annuelle."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où faut-il déclarer la naissance d'un enfant ?",
-                choices: [
-                    "À la mairie du lieu de naissance, afin qu’un acte de naissance soit établi et inscrit sur les registres d’état civil.",
-                    "À la mairie du domicile des parents, quel que soit le lieu réel de naissance de l’enfant.",
-                    "Au commissariat de police, qui transmet ensuite la déclaration à la mairie compétente.",
-                    "À l’ambassade du pays d’origine des parents, même si l’enfant est né en France."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est l'une des conditions pour passer l'examen du permis de conduire ?",
-                choices: [
-                    "Avoir préalablement réussi l’examen théorique du code de la route, qui porte sur les règles de circulation.",
-                    "Être propriétaire d’une voiture et disposer de tous les documents du véhicule.",
-                    "Avoir un emploi à temps plein pour justifier de la nécessité d’utiliser une voiture.",
-                    "Avoir la nationalité française ou être né sur le territoire français uniquement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Un bail locatif est valide s'il est :",
-                choices: [
-                    "Écrit et signé par le bailleur et le locataire, en respectant les mentions obligatoires prévues par la loi.",
-                    "Demandé uniquement à l’oral au propriétaire, sans aucun document écrit ni justificatif.",
-                    "Affiché dans le hall de l’immeuble, sans signature ni accord explicite des parties.",
-                    "Signé uniquement par le locataire, sans engagement écrit de la part du bailleur."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où peut-on déposer un lave-vaisselle cassé ?",
-                choices: [
-                    "À la déchetterie ou dans un point de collecte spécialisé pour les encombrants et appareils ménagers.",
-                    "Dans la poubelle ordinaire de la rue, avec les déchets ménagers quotidiens.",
-                    "Dans la nature, en forêt ou en bord de route, pour s’en débarrasser rapidement.",
-                    "Dans les toilettes, afin qu’il soit évacué par les canalisations et égouts."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel numéro d'urgence permet d'appeler la police ?",
-                choices: [
-                    "Le 17, numéro d’appel d’urgence pour contacter la police ou la gendarmerie.",
-                    "Le 15, numéro d’urgence réservé aux appels vers le SAMU ou les urgences médicales.",
-                    "Le 18, numéro d’appel destiné aux sapeurs-pompiers en cas d’incendie ou d’accident.",
-                    "Le 3615, qui était un préfixe de service télématique et non un numéro d’urgence."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Concernant l'accès aux soins, quelle proposition est correcte ?",
-                choices: [
-                    "Toute personne peut être soignée, notamment en cas d’urgence, et les résidents sont couverts par l’Assurance maladie selon leur situation.",
-                    "Seuls les citoyens français peuvent consulter un médecin dans les établissements de santé.",
-                    "On ne peut pas être pris en charge médicalement si l’on ne possède pas de carte bancaire.",
-                    "Les soins sont gratuits uniquement pour les enfants, quel que soit le type de soins."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À qui est accessible la contraception ?",
-                choices: [
-                    "À toutes les personnes, y compris les mineur(e)s, qui peuvent y accéder dans le respect de la loi et du secret médical.",
-                    "Uniquement aux personnes mariées, sur présentation du livret de famille.",
-                    "Uniquement aux femmes majeures, après validation par un comité médical.",
-                    "Uniquement avec l’autorisation écrite des parents, même pour les personnes majeures."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu’est-ce que le principe de confidentialité dans le domaine de la santé ?",
-                choices: [
-                    "L’obligation pour les professionnels de santé de garder secrètes les informations concernant le patient.",
-                    "Le droit du médecin de parler librement de la maladie du patient à son entourage.",
-                    "L’obligation pour le patient de communiquer tous les détails de sa santé à ses voisins.",
-                    "Le fait pour le patient de ne jamais parler à son médecin de ses symptômes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "L'inscription à l'Assurance maladie est :",
-                choices: [
-                    "Un droit pour les personnes résidant de manière stable et régulière en France, sous certaines conditions.",
-                    "Réservée uniquement aux salariés en contrat à temps plein dans le secteur privé.",
-                    "Obligatoire uniquement après 30 ans, sans possibilité d’affiliation avant cet âge.",
-                    "Impossible pour les étrangers, même s’ils vivent durablement sur le territoire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui peut demander un congé parental d'éducation ?",
-                choices: [
-                    "Le père ou la mère salarié(e), ou les deux, après une naissance ou une adoption, selon les règles en vigueur.",
-                    "Uniquement la mère, quel que soit le statut professionnel du père.",
-                    "Uniquement le père, lorsqu’il est le seul à travailler dans le foyer.",
-                    "Uniquement les parents fonctionnaires, les autres salariés en étant exclus."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelles sont les affaires traitées par le conseil de prud'hommes ?",
-                choices: [
-                    "Les litiges individuels entre salariés et employeurs à propos du contrat de travail.",
-                    "Les conflits de voisinage liés aux limites de propriété et aux nuisances sonores.",
-                    "Les affaires pénales graves jugées en cour d’assises ou en tribunal correctionnel.",
-                    "Les questions de nationalité et d’obtention de la citoyenneté française."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Travailler sans être déclaré est :",
-                choices: [
-                    "Interdit et constitue du travail dissimulé, passible de sanctions pour l’employeur et le salarié.",
-                    "Autorisé si le salarié donne son accord verbal et renonce à ses droits sociaux.",
-                    "Autorisé pour les petits boulots de courte durée sans contrat de travail.",
-                    "Obligatoire dans certaines entreprises qui ne souhaitent pas faire de déclarations."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lorsqu'un employeur veut qu'un salarié travaille plus longtemps que la durée prévue dans le contrat de travail :",
-                choices: [
-                    "Il doit obtenir son accord et rémunérer les heures supplémentaires conformément aux règles applicables.",
-                    "Il peut imposer ces heures sans prévenir et sans rémunération supplémentaire.",
-                    "Il peut baisser le salaire en échange de l’augmentation du temps de travail.",
-                    "Il n’a aucune démarche à faire, le salarié devant accepter systématiquement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la mission de France Travail ?",
-                choices: [
-                    "Accompagner les personnes vers l’emploi, les orienter et gérer leurs droits aux allocations chômage.",
-                    "Attribuer directement les logements sociaux dans toutes les communes.",
-                    "Contrôler la qualité des enseignements dans les écoles publiques et privées.",
-                    "Gérer l’ensemble des hôpitaux publics et des services d’urgence médicale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Dans une entreprise, le droit syndical permet :",
-                choices: [
-                    "De se regrouper au sein de syndicats pour défendre collectivement les intérêts des salariés.",
-                    "D’imposer sa religion aux autres collègues dans les locaux de l’entreprise.",
-                    "De choisir quelles lois du travail seront appliquées ou non dans l’entreprise.",
-                    "De refuser toute règle de sécurité si elle est jugée contraignante par les salariés."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Dans une entreprise, le droit de grève autorise :",
-                choices: [
-                    "Les salariés à cesser collectivement et temporairement le travail pour soutenir des revendications professionnelles.",
-                    "Les salariés à ne plus jamais revenir travailler après avoir quitté leur poste.",
-                    "Les salariés à dégrader volontairement les locaux en signe de protestation.",
-                    "Les salariés à ignorer toutes les règles du règlement intérieur en permanence."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelles sont les conditions pour toucher les allocations chômage ?",
-                choices: [
-                    "Avoir suffisamment travaillé, être inscrit comme demandeur d’emploi et rechercher activement un travail.",
-                    "Être inscrit à l’université, quels que soient ses revenus ou son activité.",
-                    "Ne jamais avoir travaillé auparavant, quelle que soit sa situation.",
-                    "Refuser systématiquement toutes les offres d’emploi proposées par les services compétents."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est-ce que l'école maternelle ?",
-                choices: [
-                    "L’école publique qui accueille les jeunes enfants avant l’école élémentaire, généralement à partir de 3 ans.",
-                    "Une école réservée spécifiquement aux adultes souhaitant reprendre des études.",
-                    "Une école spécialisée uniquement pour les élèves rencontrant de grandes difficultés.",
-                    "Une école privée payante dont la fréquentation est obligatoire pour tous."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Comment s'appelle le diplôme passé par les élèves à la fin du collège ?",
-                choices: [
-                    "Le diplôme national du brevet, qui évalue les connaissances acquises au collège.",
-                    "Le baccalauréat, qui sanctionne la fin des études au lycée général ou technologique.",
-                    "Le CAP, qui est un diplôme professionnel préparé en lycée ou en CFA.",
-                    "Le master, qui correspond à un diplôme de niveau bac+5 à l’université."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Les parents d'élève ont le droit de :",
-                choices: [
-                    "Être informés de la scolarité de leur enfant et participer à la vie de l’école, notamment via les réunions et élections.",
-                    "Entrer dans la classe à tout moment sans autorisation ni respect du cadre scolaire.",
-                    "Décider seuls du contenu des cours dispensés par les enseignants.",
-                    "Choisir directement les notes qui seront inscrites sur les bulletins scolaires."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui peut manger à la cantine scolaire ?",
-                choices: [
-                    "Les élèves inscrits dans l’établissement, dans le respect des règles fixées par le règlement de la cantine.",
-                    "Uniquement les enseignants, quel que soit le nombre de places disponibles.",
-                    "Toutes les personnes du quartier, même si elles ne sont pas liées à l’école.",
-                    "Uniquement les enfants qui obtiennent de très bons résultats scolaires."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À quel âge commence l'instruction obligatoire des enfants ?",
-                choices: [
-                    "À 3 ans, âge à partir duquel l’instruction devient obligatoire en France.",
-                    "À 6 ans, uniquement pour les enfants scolarisés en école privée.",
-                    "À 10 ans, lorsque l’enfant entre au collège pour la première fois.",
-                    "À 16 ans, au moment où il peut commencer à travailler."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est l'âge de la majorité ?",
-                choices: [
-                    "18 ans, âge à partir duquel on devient majeur sur le plan civil en France.",
-                    "16 ans, âge auquel on peut voter à toutes les élections nationales.",
-                    "21 ans, âge minimum pour exercer l’ensemble des droits civiques.",
-                    "25 ans, âge où l’on obtient automatiquement la nationalité française."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À l'école, il est interdit aux parents de :",
-                choices: [
-                    "Insulter ou menacer les personnels et d’intervenir dans la classe sans autorisation.",
-                    "Assister aux réunions parents-professeurs organisées par l’établissement.",
-                    "Parler avec le directeur ou la direction de l’école en cas de besoin.",
-                    "Accompagner les sorties scolaires après accord de l’enseignant."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel motif d'absence est accepté par l'école ?",
-                choices: [
-                    "Une maladie justifiée ou un rendez-vous médical important confirmé par un justificatif.",
-                    "Une simple envie de rester à la maison sans prévenir l’établissement.",
-                    "Un voyage de plusieurs jours sans aucune information donnée à l’école.",
-                    "Le fait d’être en retard le matin, quel qu’en soit le motif."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Des parents ne respectent pas l'obligation d'instruction pour leurs enfants. Quelle sanction maximale risquent-ils ?",
-                choices: [
-                    "Une amende et, dans les cas les plus graves, éventuellement une peine de prison.",
-                    "Une simple remarque orale sans aucune suite ni inscription dans le dossier.",
-                    "La perte automatique de leur nationalité française, sans recours possible.",
-                    "La suppression définitive de leur droit de vote pour toutes les élections."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quand ont lieu les vacances scolaires de Noël ?",
-                choices: [
-                    "Généralement entre fin décembre et début janvier, selon le calendrier scolaire officiel.",
-                    "Au mois de mars, pendant les premiers jours du printemps.",
-                    "Uniquement en juillet-août, en même temps que les grandes vacances d’été.",
-                    "Au mois d’octobre uniquement, juste avant la Toussaint."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À l'école, un enfant en situation de handicap :",
-                choices: [
-                    "A droit à une scolarisation adaptée et à des aménagements, éventuellement avec l’aide d’un accompagnant.",
-                    "Ne peut pas être scolarisé dans une école ordinaire avec les autres enfants.",
-                    "Doit obligatoirement fréquenter une école totalement séparée des autres.",
-                    "N’a pas le droit de passer des examens ni d’obtenir de diplôme."
-                ],
-                correctIndex: 0
-            }
-        ];
-
-        // --------------------------------------------------------
-        // 2) Mélange aléatoire (Fisher–Yates)
-        // --------------------------------------------------------
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
-        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-
-        // --------------------------------------------------------
-        // 3) Logique du quiz
-        // --------------------------------------------------------
-        let currentIndex = 0;
-        let score = 0;
-        let userAnswers = [];
-
-        const progressEl = document.getElementById("progress");
-        const questionEl = document.getElementById("question");
-        const choicesEl = document.getElementById("choices");
-        const nextBtn = document.getElementById("nextBtn");
-        const resultEl = document.getElementById("result");
-        const quizEl = document.getElementById("quiz");
-
-        let selectedChoiceIndex = null;
-        let locked = false;
-        let currentRenderedChoices = []; // nouveau
-
-        function renderQuestion() {
-            const q = questions[currentIndex];
-            questionEl.textContent = q.question;
-            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
-
-            choicesEl.innerHTML = "";
-            selectedChoiceIndex = null;
-            locked = false;
-            nextBtn.disabled = true;
-
-            // on crée un tableau { text, isCorrect } puis on le mélange
-            currentRenderedChoices = shuffle(
-                q.choices.map((text, idx) => ({
-                    text,
-                    isCorrect: idx === q.correctIndex
-                }))
-            );
-
-            currentRenderedChoices.forEach((choiceObj, index) => {
-                const btn = document.createElement("button");
-                btn.className = "choice-btn";
-                btn.textContent = choiceObj.text;
-                btn.addEventListener("click", () => handleChoiceClick(index));
-                choicesEl.appendChild(btn);
-            });
-        }
-
-        function handleChoiceClick(index) {
-            if (locked) return;
-
-            selectedChoiceIndex = index;
-            nextBtn.disabled = false;
-
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-            buttons.forEach((btn, i) => {
-                btn.classList.toggle("selected", i === index);
-            });
-        }
-
-        function validateAnswer() {
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-
-            if (selectedChoiceIndex === null) return;
-
-            locked = true;
-            nextBtn.disabled = false;
-
-            // on trouve l’index du bouton correct dans l’ordre mélangé
-            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
-
-            buttons.forEach((btn, i) => {
-                btn.classList.remove("selected");
-                if (i === correctRenderedIndex) {
-                    btn.classList.add("correct");
-                }
-                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-                    btn.classList.add("incorrect");
-                }
-            });
-
-            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-            if (isCorrect) {
-                score += 1;
-            }
-
-            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-            userAnswers.push({
-                question: questions[currentIndex].question,
-                chosen: currentRenderedChoices[selectedChoiceIndex].text,
-                correct: currentRenderedChoices[correctRenderedIndex].text,
-                isCorrect
-            });
-        }
-
-        function showResult() {
-            const total = questions.length;
-            const noteSur40 = score;
-
-            quizEl.style.display = "none";
-            resultEl.style.display = "block";
-
-            let html = `
-        <h2>Résultats</h2>
-        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / ${TOTAL_QUESTIONS}</strong>.</p>
-        <p>Résumé des réponses :</p>
-      `;
-
-            userAnswers.forEach((entry, index) => {
-                html += `
-          <div class="summary-item">
-            <strong>Q${index + 1}.</strong> ${entry.question}<br>
-            Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
-              ${entry.chosen} (${entry.isCorrect ? "Juste" : "Faux"})
-            </span><br>
-            Bonne réponse : <strong>${entry.correct}</strong>
-          </div>
-        `;
-            });
-
-            html += `
-        <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
-      `;
-
-            resultEl.innerHTML = html;
-        }
-
-        function restartQuiz() {
-            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-            currentIndex = 0;
-            score = 0;
-            userAnswers = [];
-
-            quizEl.style.display = "block";
-            resultEl.style.display = "none";
-
-            nextBtn.textContent = "Valider";
-            renderQuestion();
-        }
-
-        nextBtn.addEventListener("click", () => {
-            if (!locked) {
-                validateAnswer();
-                if (currentIndex < questions.length - 1) {
-                    nextBtn.textContent = "Question suivante";
-                } else {
-                    nextBtn.textContent = "Voir les résultats";
-                }
-                return;
-            }
-
-            if (currentIndex < questions.length - 1) {
-                currentIndex += 1;
-                nextBtn.textContent = "Valider";
-                renderQuestion();
-            } else {
-                showResult();
-            }
-        });
-
-        nextBtn.textContent = "Valider";
-        renderQuestion();
-    </script>
-	<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  // ⚠️ même config que dans auth.html
-  const firebaseConfig = {
-    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
-    authDomain: "qcm-examen-civique-db.firebaseapp.com",
-    projectId: "qcm-examen-civique-db",
-    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
-    messagingSenderId: "899569839204",
-    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
-    measurementId: "G-S92WT27FBT"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // Pas connecté -> retour à la page de connexion
-      window.location.href = "auth.html";
-    } else {
-      // Optionnel : tu peux afficher le mail ou autre
-      console.log("Connecté :", user.email);
-    }
+    <script type="module">
+  import { initQuiz } from "./quiz-engine.js";
+  const ALL_QUESTIONS = [{
+                  question: "Quel mariage est reconnu par l'État ?",
+                  choices: [
+                      "Le mariage civil célébré à la mairie par l’officier d’état civil, et enregistré dans les registres officiels.",
+                      "Le mariage religieux uniquement, dès lors qu’il est célébré par un ministre du culte et une assemblée.",
+                      "Le mariage traditionnel organisé par la famille selon les coutumes locales, sans aucune formalité.",
+                      "Le mariage célébré à l’étranger sans enregistrement ni transcription auprès des autorités françaises."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Auprès de quelle institution les parents peuvent-ils inscrire leur enfant à l'école publique ?",
+                  choices: [
+                      "Auprès de la mairie de la commune de résidence ou directement auprès de l’école, selon l’organisation locale en vigueur.",
+                      "Auprès du commissariat de police, qui centralise les demandes d’inscription scolaire.",
+                      "Auprès de la préfecture, qui valide toutes les inscriptions dans les établissements publics.",
+                      "Auprès du tribunal judiciaire, qui décide de l’affectation des enfants dans les écoles."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En cas de divorce, qui exerce l'autorité parentale ?",
+                  choices: [
+                      "En principe, les deux parents continuent à exercer conjointement l’autorité parentale sur leurs enfants.",
+                      "Uniquement la mère, qui obtient automatiquement la totalité de l’autorité parentale.",
+                      "Uniquement le père, qui devient seul responsable des décisions concernant les enfants.",
+                      "Les grands-parents, désignés systématiquement comme tuteurs en cas de séparation."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle aide permet aux personnes qui ont des difficultés financières d'avoir un avocat ?",
+                  choices: [
+                      "L’aide juridictionnelle, qui prend en charge tout ou partie des frais de justice et d’avocat selon les ressources.",
+                      "L’aide au logement, qui permet uniquement de réduire le montant du loyer ou des charges.",
+                      "La bourse scolaire, qui concerne les frais liés à la scolarité des enfants.",
+                      "La réduction d’impôt, qui intervient seulement lors de la déclaration de revenus annuelle."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où faut-il déclarer la naissance d'un enfant ?",
+                  choices: [
+                      "À la mairie du lieu de naissance, afin qu’un acte de naissance soit établi et inscrit sur les registres d’état civil.",
+                      "À la mairie du domicile des parents, quel que soit le lieu réel de naissance de l’enfant.",
+                      "Au commissariat de police, qui transmet ensuite la déclaration à la mairie compétente.",
+                      "À l’ambassade du pays d’origine des parents, même si l’enfant est né en France."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est l'une des conditions pour passer l'examen du permis de conduire ?",
+                  choices: [
+                      "Avoir préalablement réussi l’examen théorique du code de la route, qui porte sur les règles de circulation.",
+                      "Être propriétaire d’une voiture et disposer de tous les documents du véhicule.",
+                      "Avoir un emploi à temps plein pour justifier de la nécessité d’utiliser une voiture.",
+                      "Avoir la nationalité française ou être né sur le territoire français uniquement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Un bail locatif est valide s'il est :",
+                  choices: [
+                      "Écrit et signé par le bailleur et le locataire, en respectant les mentions obligatoires prévues par la loi.",
+                      "Demandé uniquement à l’oral au propriétaire, sans aucun document écrit ni justificatif.",
+                      "Affiché dans le hall de l’immeuble, sans signature ni accord explicite des parties.",
+                      "Signé uniquement par le locataire, sans engagement écrit de la part du bailleur."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où peut-on déposer un lave-vaisselle cassé ?",
+                  choices: [
+                      "À la déchetterie ou dans un point de collecte spécialisé pour les encombrants et appareils ménagers.",
+                      "Dans la poubelle ordinaire de la rue, avec les déchets ménagers quotidiens.",
+                      "Dans la nature, en forêt ou en bord de route, pour s’en débarrasser rapidement.",
+                      "Dans les toilettes, afin qu’il soit évacué par les canalisations et égouts."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel numéro d'urgence permet d'appeler la police ?",
+                  choices: [
+                      "Le 17, numéro d’appel d’urgence pour contacter la police ou la gendarmerie.",
+                      "Le 15, numéro d’urgence réservé aux appels vers le SAMU ou les urgences médicales.",
+                      "Le 18, numéro d’appel destiné aux sapeurs-pompiers en cas d’incendie ou d’accident.",
+                      "Le 3615, qui était un préfixe de service télématique et non un numéro d’urgence."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Concernant l'accès aux soins, quelle proposition est correcte ?",
+                  choices: [
+                      "Toute personne peut être soignée, notamment en cas d’urgence, et les résidents sont couverts par l’Assurance maladie selon leur situation.",
+                      "Seuls les citoyens français peuvent consulter un médecin dans les établissements de santé.",
+                      "On ne peut pas être pris en charge médicalement si l’on ne possède pas de carte bancaire.",
+                      "Les soins sont gratuits uniquement pour les enfants, quel que soit le type de soins."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À qui est accessible la contraception ?",
+                  choices: [
+                      "À toutes les personnes, y compris les mineur(e)s, qui peuvent y accéder dans le respect de la loi et du secret médical.",
+                      "Uniquement aux personnes mariées, sur présentation du livret de famille.",
+                      "Uniquement aux femmes majeures, après validation par un comité médical.",
+                      "Uniquement avec l’autorisation écrite des parents, même pour les personnes majeures."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu’est-ce que le principe de confidentialité dans le domaine de la santé ?",
+                  choices: [
+                      "L’obligation pour les professionnels de santé de garder secrètes les informations concernant le patient.",
+                      "Le droit du médecin de parler librement de la maladie du patient à son entourage.",
+                      "L’obligation pour le patient de communiquer tous les détails de sa santé à ses voisins.",
+                      "Le fait pour le patient de ne jamais parler à son médecin de ses symptômes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "L'inscription à l'Assurance maladie est :",
+                  choices: [
+                      "Un droit pour les personnes résidant de manière stable et régulière en France, sous certaines conditions.",
+                      "Réservée uniquement aux salariés en contrat à temps plein dans le secteur privé.",
+                      "Obligatoire uniquement après 30 ans, sans possibilité d’affiliation avant cet âge.",
+                      "Impossible pour les étrangers, même s’ils vivent durablement sur le territoire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui peut demander un congé parental d'éducation ?",
+                  choices: [
+                      "Le père ou la mère salarié(e), ou les deux, après une naissance ou une adoption, selon les règles en vigueur.",
+                      "Uniquement la mère, quel que soit le statut professionnel du père.",
+                      "Uniquement le père, lorsqu’il est le seul à travailler dans le foyer.",
+                      "Uniquement les parents fonctionnaires, les autres salariés en étant exclus."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelles sont les affaires traitées par le conseil de prud'hommes ?",
+                  choices: [
+                      "Les litiges individuels entre salariés et employeurs à propos du contrat de travail.",
+                      "Les conflits de voisinage liés aux limites de propriété et aux nuisances sonores.",
+                      "Les affaires pénales graves jugées en cour d’assises ou en tribunal correctionnel.",
+                      "Les questions de nationalité et d’obtention de la citoyenneté française."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Travailler sans être déclaré est :",
+                  choices: [
+                      "Interdit et constitue du travail dissimulé, passible de sanctions pour l’employeur et le salarié.",
+                      "Autorisé si le salarié donne son accord verbal et renonce à ses droits sociaux.",
+                      "Autorisé pour les petits boulots de courte durée sans contrat de travail.",
+                      "Obligatoire dans certaines entreprises qui ne souhaitent pas faire de déclarations."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lorsqu'un employeur veut qu'un salarié travaille plus longtemps que la durée prévue dans le contrat de travail :",
+                  choices: [
+                      "Il doit obtenir son accord et rémunérer les heures supplémentaires conformément aux règles applicables.",
+                      "Il peut imposer ces heures sans prévenir et sans rémunération supplémentaire.",
+                      "Il peut baisser le salaire en échange de l’augmentation du temps de travail.",
+                      "Il n’a aucune démarche à faire, le salarié devant accepter systématiquement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la mission de France Travail ?",
+                  choices: [
+                      "Accompagner les personnes vers l’emploi, les orienter et gérer leurs droits aux allocations chômage.",
+                      "Attribuer directement les logements sociaux dans toutes les communes.",
+                      "Contrôler la qualité des enseignements dans les écoles publiques et privées.",
+                      "Gérer l’ensemble des hôpitaux publics et des services d’urgence médicale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Dans une entreprise, le droit syndical permet :",
+                  choices: [
+                      "De se regrouper au sein de syndicats pour défendre collectivement les intérêts des salariés.",
+                      "D’imposer sa religion aux autres collègues dans les locaux de l’entreprise.",
+                      "De choisir quelles lois du travail seront appliquées ou non dans l’entreprise.",
+                      "De refuser toute règle de sécurité si elle est jugée contraignante par les salariés."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Dans une entreprise, le droit de grève autorise :",
+                  choices: [
+                      "Les salariés à cesser collectivement et temporairement le travail pour soutenir des revendications professionnelles.",
+                      "Les salariés à ne plus jamais revenir travailler après avoir quitté leur poste.",
+                      "Les salariés à dégrader volontairement les locaux en signe de protestation.",
+                      "Les salariés à ignorer toutes les règles du règlement intérieur en permanence."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelles sont les conditions pour toucher les allocations chômage ?",
+                  choices: [
+                      "Avoir suffisamment travaillé, être inscrit comme demandeur d’emploi et rechercher activement un travail.",
+                      "Être inscrit à l’université, quels que soient ses revenus ou son activité.",
+                      "Ne jamais avoir travaillé auparavant, quelle que soit sa situation.",
+                      "Refuser systématiquement toutes les offres d’emploi proposées par les services compétents."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est-ce que l'école maternelle ?",
+                  choices: [
+                      "L’école publique qui accueille les jeunes enfants avant l’école élémentaire, généralement à partir de 3 ans.",
+                      "Une école réservée spécifiquement aux adultes souhaitant reprendre des études.",
+                      "Une école spécialisée uniquement pour les élèves rencontrant de grandes difficultés.",
+                      "Une école privée payante dont la fréquentation est obligatoire pour tous."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Comment s'appelle le diplôme passé par les élèves à la fin du collège ?",
+                  choices: [
+                      "Le diplôme national du brevet, qui évalue les connaissances acquises au collège.",
+                      "Le baccalauréat, qui sanctionne la fin des études au lycée général ou technologique.",
+                      "Le CAP, qui est un diplôme professionnel préparé en lycée ou en CFA.",
+                      "Le master, qui correspond à un diplôme de niveau bac+5 à l’université."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Les parents d'élève ont le droit de :",
+                  choices: [
+                      "Être informés de la scolarité de leur enfant et participer à la vie de l’école, notamment via les réunions et élections.",
+                      "Entrer dans la classe à tout moment sans autorisation ni respect du cadre scolaire.",
+                      "Décider seuls du contenu des cours dispensés par les enseignants.",
+                      "Choisir directement les notes qui seront inscrites sur les bulletins scolaires."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui peut manger à la cantine scolaire ?",
+                  choices: [
+                      "Les élèves inscrits dans l’établissement, dans le respect des règles fixées par le règlement de la cantine.",
+                      "Uniquement les enseignants, quel que soit le nombre de places disponibles.",
+                      "Toutes les personnes du quartier, même si elles ne sont pas liées à l’école.",
+                      "Uniquement les enfants qui obtiennent de très bons résultats scolaires."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À quel âge commence l'instruction obligatoire des enfants ?",
+                  choices: [
+                      "À 3 ans, âge à partir duquel l’instruction devient obligatoire en France.",
+                      "À 6 ans, uniquement pour les enfants scolarisés en école privée.",
+                      "À 10 ans, lorsque l’enfant entre au collège pour la première fois.",
+                      "À 16 ans, au moment où il peut commencer à travailler."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est l'âge de la majorité ?",
+                  choices: [
+                      "18 ans, âge à partir duquel on devient majeur sur le plan civil en France.",
+                      "16 ans, âge auquel on peut voter à toutes les élections nationales.",
+                      "21 ans, âge minimum pour exercer l’ensemble des droits civiques.",
+                      "25 ans, âge où l’on obtient automatiquement la nationalité française."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À l'école, il est interdit aux parents de :",
+                  choices: [
+                      "Insulter ou menacer les personnels et d’intervenir dans la classe sans autorisation.",
+                      "Assister aux réunions parents-professeurs organisées par l’établissement.",
+                      "Parler avec le directeur ou la direction de l’école en cas de besoin.",
+                      "Accompagner les sorties scolaires après accord de l’enseignant."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel motif d'absence est accepté par l'école ?",
+                  choices: [
+                      "Une maladie justifiée ou un rendez-vous médical important confirmé par un justificatif.",
+                      "Une simple envie de rester à la maison sans prévenir l’établissement.",
+                      "Un voyage de plusieurs jours sans aucune information donnée à l’école.",
+                      "Le fait d’être en retard le matin, quel qu’en soit le motif."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Des parents ne respectent pas l'obligation d'instruction pour leurs enfants. Quelle sanction maximale risquent-ils ?",
+                  choices: [
+                      "Une amende et, dans les cas les plus graves, éventuellement une peine de prison.",
+                      "Une simple remarque orale sans aucune suite ni inscription dans le dossier.",
+                      "La perte automatique de leur nationalité française, sans recours possible.",
+                      "La suppression définitive de leur droit de vote pour toutes les élections."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quand ont lieu les vacances scolaires de Noël ?",
+                  choices: [
+                      "Généralement entre fin décembre et début janvier, selon le calendrier scolaire officiel.",
+                      "Au mois de mars, pendant les premiers jours du printemps.",
+                      "Uniquement en juillet-août, en même temps que les grandes vacances d’été.",
+                      "Au mois d’octobre uniquement, juste avant la Toussaint."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À l'école, un enfant en situation de handicap :",
+                  choices: [
+                      "A droit à une scolarisation adaptée et à des aménagements, éventuellement avec l’aide d’un accompagnant.",
+                      "Ne peut pas être scolarisé dans une école ordinaire avec les autres enfants.",
+                      "Doit obligatoirement fréquenter une école totalement séparée des autres.",
+                      "N’a pas le droit de passer des examens ni d’obtenir de diplôme."
+                  ],
+                  correctIndex: 0
+              }
+          ];
+  
+          // --------------------------------------------------------
+          // 2) Mélange aléatoire (Fisher–Yates)
+          // --------------------------------------------------------
+          function shuffle(array) {
+              const arr = [...array];
+              for (let i = arr.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [arr[i], arr[j]] = [arr[j], arr[i]];
+              }
+              return arr;
+          }
+  
+          const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+  initQuiz({
+    questionsBank: ALL_QUESTIONS,
+    totalQuestions: TOTAL_QUESTIONS,
+    selectors: {
+      quiz: "#quiz",
+      progress: "#progress",
+      question: "#question",
+      choices: "#choices",
+      nextBtn: "#nextBtn",
+      result: "#result",
+    },
   });
 </script>
+	<script type="module" src="auth-guard.js"></script>
 </body>
 
 </html>

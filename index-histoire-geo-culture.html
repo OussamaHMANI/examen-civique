@@ -5,193 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Histoire géographie et culture</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .quiz-container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #progress {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 12px;
-        }
-
-        #question {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .choice-btn {
-            text-align: left;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-        }
-
-        .choice-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .choice-btn.selected {
-            border-color: #2563eb;
-            background: #e0ecff;
-        }
-
-        .choice-btn.correct {
-            background: #16a34a;
-            color: #fff;
-            border-color: #15803d;
-        }
-
-        .choice-btn.incorrect {
-            background: #dc2626;
-            color: #fff;
-            border-color: #b91c1c;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: 8px;
-        }
-
-        #nextBtn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        #nextBtn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        #nextBtn:hover:not(:disabled) {
-            background: #1d4ed8;
-        }
-
-        #result {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        #result h2 {
-            margin-top: 0;
-        }
-
-        .summary-item {
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-        }
-
-        .tag-good {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        .tag-bad {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .restart-btn {
-            margin-top: 12px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #6b7280;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .home-btn {
-            display: inline-block;
-            margin: 12px 16px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            color: #111827;
-            font-size: 0.9rem;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .home-btn:hover {
-            background: #e5e7eb;
-        }
-
-        /* Responsive mobile */
-        @media (max-width: 640px) {
-            body {
-                padding: 12px;
-            }
-
-            .quiz-container {
-                padding: 16px 14px;
-            }
-
-            h1 {
-                font-size: 1.3rem;
-            }
-
-            .choice-btn {
-                font-size: 0.9rem;
-                padding: 10px;
-            }
-
-            #controls {
-                justify-content: center;
-            }
-
-            #nextBtn {
-                width: 100%;
-                border-radius: 999px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -212,705 +26,527 @@
 
         <div id="result"></div>
     </div>
-    <script>
-        // --------------------------------------------------------
-        // 1) Banque de questions : Principes et valeurs (40 questions)
-        // --------------------------------------------------------
-        const ALL_QUESTIONS = [{
-                question: "Quel était le surnom de Louis XIV ?",
-                choices: [
-                    "Le Roi-Soleil",
-                    "Le Bon Roi",
-                    "Le Conquérant",
-                    "Le Sage"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel roi de France a été exécuté pendant la Révolution française ?",
-                choices: [
-                    "Louis XVI",
-                    "Louis XV",
-                    "Louis XIV",
-                    "Charles X"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année Napoléon Ier est-il devenu empereur ?",
-                choices: [
-                    "1804",
-                    "1789",
-                    "1815",
-                    "1792"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lequel de ces personnages a un lien avec la République française ?",
-                choices: [
-                    "Marianne",
-                    "Jeanne d’Arc",
-                    "Louis XIV",
-                    "Charlemagne"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "De quand date l'appel à la résistance du général de Gaulle ?",
-                choices: [
-                    "18 juin 1940",
-                    "11 novembre 1918",
-                    "8 mai 1945",
-                    "14 juillet 1789"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Pourquoi la Shoah est-elle étudiée à l'école ?",
-                choices: [
-                    "Pour rappeler les crimes nazis et lutter contre l’antisémitisme et toutes les formes de racisme",
-                    "Pour apprendre des stratégies militaires",
-                    "Pour étudier la religion juive",
-                    "Pour justifier les guerres"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays a été colonisé par la France ?",
-                choices: [
-                    "L’Algérie",
-                    "Le Portugal",
-                    "La Suède",
-                    "Le Japon"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Depuis quand les Français élisent-ils le président de la République au suffrage universel direct ?",
-                choices: [
-                    "Depuis l’élection de 1965",
-                    "Depuis 1789",
-                    "Depuis 1945",
-                    "Depuis 2002"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la première étape de la construction européenne en 1951 ?",
-                choices: [
-                    "La création de la CECA (Communauté européenne du charbon et de l’acier)",
-                    "La création de l’euro",
-                    "La création de l’OTAN",
-                    "La création de l’ONU"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Durant le mandat de quel président la peine de mort a-t-elle été abolie ?",
-                choices: [
-                    "François Mitterrand",
-                    "Charles de Gaulle",
-                    "Valéry Giscard d’Estaing",
-                    "Jacques Chirac"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel régime politique a été mis en place pendant la Révolution française en 1792 ?",
-                choices: [
-                    "La Première République",
-                    "La Première Monarchie constitutionnelle",
-                    "Le Second Empire",
-                    "La Cinquième République"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était une figure de la Résistance française pendant la Seconde Guerre mondiale ?",
-                choices: [
-                    "Jean Moulin",
-                    "Louis XIV",
-                    "Napoléon III",
-                    "Philippe Pétain"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
-                choices: [
-                    "Elles ont obtenu le droit de vote",
-                    "Elles ont été obligées de travailler",
-                    "Elles ont perdu le droit de se marier",
-                    "Elles ont obtenu la gratuité des transports"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle organisation internationale a été créée en 1945 après la Seconde Guerre mondiale ?",
-                choices: [
-                    "L’Organisation des Nations unies (ONU)",
-                    "L’Union européenne",
-                    "L’OTAN",
-                    "La Banque mondiale"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle peine a été supprimée en 1981 en France ?",
-                choices: [
-                    "La peine de mort",
-                    "La prison à vie",
-                    "Les amendes",
-                    "Les travaux d’intérêt général"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année l'euro est-elle devenue la monnaie utilisée en France (pièces et billets) ?",
-                choices: [
-                    "2002",
-                    "1999",
-                    "1990",
-                    "2010"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année a commencé la Première Guerre mondiale ?",
-                choices: [
-                    "1914",
-                    "1918",
-                    "1939",
-                    "1945"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où a eu lieu le débarquement en 1944 ?",
-                choices: [
-                    "En Normandie",
-                    "En Provence",
-                    "En Corse",
-                    "En Bretagne"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel continent a été le plus concerné par la décolonisation française après la Seconde Guerre mondiale ?",
-                choices: [
-                    "L’Afrique",
-                    "L’Asie",
-                    "L’Amérique du Sud",
-                    "L’Océanie"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que fête-t-on le 8 mai en France ?",
-                choices: [
-                    "La fin de la Seconde Guerre mondiale en Europe (Victoire de 1945)",
-                    "La fin de la Première Guerre mondiale",
-                    "La prise de la Bastille",
-                    "La fondation de la République"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle mer ou océan borde la France métropolitaine ?",
-                choices: [
-                    "L’océan Atlantique",
-                    "La mer Noire",
-                    "La mer Caspienne",
-                    "L’océan Indien"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays a une frontière terrestre avec la France métropolitaine ?",
-                choices: [
-                    "L’Espagne",
-                    "Le Danemark",
-                    "La Pologne",
-                    "La Grèce"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle ville française est un port maritime ?",
-                choices: [
-                    "Marseille",
-                    "Lyon",
-                    "Toulouse",
-                    "Clermont-Ferrand"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle mer se situe entre la France et l'Angleterre ?",
-                choices: [
-                    "La Manche",
-                    "La mer Noire",
-                    "La mer Baltique",
-                    "La mer Rouge"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est ce que la France d'outre-mer ?",
-                choices: [
-                    "Des territoires français situés en dehors de l’Europe",
-                    "Des régions françaises très éloignées de Paris mais en Europe",
-                    "Des anciennes colonies devenues indépendantes",
-                    "Des bases militaires à l’étranger"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle chaîne de montagnes est située entre la France et l’Espagne ?",
-                choices: [
-                    "Les Pyrénées",
-                    "Les Alpes",
-                    "Le Jura",
-                    "Le Massif central"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle île française se trouve dans l'océan Indien ?",
-                choices: [
-                    "La Réunion",
-                    "La Corse",
-                    "La Guadeloupe",
-                    "La Martinique"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la population approximative de la France en 2025 ?",
-                choices: [
-                    "Environ 68 millions d’habitants",
-                    "Environ 10 millions d’habitants",
-                    "Environ 120 millions d’habitants",
-                    "Environ 30 millions d’habitants"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel fleuve traverse Paris ?",
-                choices: [
-                    "La Seine",
-                    "La Loire",
-                    "Le Rhône",
-                    "La Garonne"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lequel de ces pays partage des frontières terrestres avec la France ?",
-                choices: [
-                    "L’Allemagne",
-                    "Le Portugal",
-                    "La Suède",
-                    "La Finlande"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays a une frontière avec la France métropolitaine au nord-est ?",
-                choices: [
-                    "L’Allemagne",
-                    "L’Espagne",
-                    "L’Italie",
-                    "La Suisse"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où se trouvent les principales activités économiques en France ?",
-                choices: [
-                    "Dans les grandes villes et les régions urbaines (comme l’Île-de-France)",
-                    "Uniquement dans les campagnes",
-                    "Seulement dans les ports",
-                    "Exclusivement dans les montagnes"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Parmi ces pays, lequel attire le plus de visiteurs chaque année ?",
-                choices: [
-                    "La France",
-                    "La Norvège",
-                    "La Roumanie",
-                    "La Bulgarie"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où habite la majorité des Français ?",
-                choices: [
-                    "En ville ou en zone urbaine",
-                    "À la campagne isolée",
-                    "En montagne",
-                    "En bord de mer"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle région est la plus peuplée ?",
-                choices: [
-                    "L’Île-de-France",
-                    "La Bretagne",
-                    "La Corse",
-                    "La Bourgogne-Franche-Comté"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle ville française fait partie des 10 plus grandes métropoles du pays ?",
-                choices: [
-                    "Lyon",
-                    "Biarritz",
-                    "Calais",
-                    "Bastia"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lequel de ces départements de France est le plus touristique ?",
-                choices: [
-                    "Paris",
-                    "La Creuse",
-                    "La Meuse",
-                    "La Haute-Marne"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quand peut-on visiter gratuitement des lieux culturels en France (musées nationaux, dans certains cas) ?",
-                choices: [
-                    "Le premier dimanche de certains mois, selon les musées",
-                    "Uniquement le 25 décembre",
-                    "Jamais, c’est toujours payant",
-                    "Seulement la nuit"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Combien de personnes parlent français dans le monde (ordre de grandeur) ?",
-                choices: [
-                    "Environ 320 millions de personnes",
-                    "Environ 10 millions de personnes",
-                    "Environ 50 millions de personnes",
-                    "Plus d’un milliard de personnes"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était Marguerite Yourcenar ?",
-                choices: [
-                    "Une écrivaine française, première femme élue à l’Académie française",
-                    "Une femme politique française",
-                    "Une actrice française célèbre",
-                    "Une scientifique française"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel peintre est français ?",
-                choices: [
-                    "Claude Monet",
-                    "Pablo Picasso",
-                    "Vincent Van Gogh",
-                    "Salvador Dalí"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel musée est situé à Paris ?",
-                choices: [
-                    "Le musée du Louvre",
-                    "Le musée du Prado",
-                    "Le British Museum",
-                    "Le Rijksmuseum"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était Auguste Rodin ?",
-                choices: [
-                    "Un sculpteur français",
-                    "Un écrivain français",
-                    "Un musicien français",
-                    "Un homme politique français"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le classement de la langue française parmi les langues les plus parlées dans le monde (en 2020–2026 environ) ?",
-                choices: [
-                    "Elle fait partie des 5 langues les plus parlées au monde (environ 4ᵉ)",
-                    "Elle est la 20ᵉ langue la plus parlée",
-                    "Elle est la langue la plus parlée au monde",
-                    "Elle n’est parlée que par quelques millions de personnes"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle cathédrale célèbre a été en partie détruite par un incendie en 2019 ?",
-                choices: [
-                    "Notre-Dame de Paris",
-                    "La cathédrale de Chartres",
-                    "La cathédrale de Reims",
-                    "La cathédrale de Strasbourg"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était une écrivaine française célèbre ?",
-                choices: [
-                    "Simone de Beauvoir",
-                    "Victor Hugo",
-                    "Georges Brassens",
-                    "Claude Debussy"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était un célèbre musicien français ?",
-                choices: [
-                    "Claude Debussy",
-                    "Ludwig van Beethoven",
-                    "Wolfgang Amadeus Mozart",
-                    "Frederic Chopin (Polonais)"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était Auguste Renoir ?",
-                choices: [
-                    "Un peintre français impressionniste",
-                    "Un écrivain français",
-                    "Un architecte français",
-                    "Un homme politique français"
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle fête est française ?",
-                choices: [
-                    "La fête nationale du 14 juillet",
-                    "Thanksgiving",
-                    "La fête de la Saint-Patrick",
-                    "La fête de la Mi-Automne"
-                ],
-                correctIndex: 0
-            }
-        ];
-
-        // --------------------------------------------------------
-        // 2) Mélange aléatoire (Fisher–Yates)
-        // --------------------------------------------------------
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
-        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-
-        // --------------------------------------------------------
-        // 3) Logique du quiz
-        // --------------------------------------------------------
-        let currentIndex = 0;
-        let score = 0;
-        let userAnswers = [];
-
-        const progressEl = document.getElementById("progress");
-        const questionEl = document.getElementById("question");
-        const choicesEl = document.getElementById("choices");
-        const nextBtn = document.getElementById("nextBtn");
-        const resultEl = document.getElementById("result");
-        const quizEl = document.getElementById("quiz");
-
-        let selectedChoiceIndex = null;
-        let locked = false;
-        let currentRenderedChoices = []; // nouveau
-
-        function renderQuestion() {
-            const q = questions[currentIndex];
-            questionEl.textContent = q.question;
-            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
-
-            choicesEl.innerHTML = "";
-            selectedChoiceIndex = null;
-            locked = false;
-            nextBtn.disabled = true;
-
-            // on crée un tableau { text, isCorrect } puis on le mélange
-            currentRenderedChoices = shuffle(
-                q.choices.map((text, idx) => ({
-                    text,
-                    isCorrect: idx === q.correctIndex
-                }))
-            );
-
-            currentRenderedChoices.forEach((choiceObj, index) => {
-                const btn = document.createElement("button");
-                btn.className = "choice-btn";
-                btn.textContent = choiceObj.text;
-                btn.addEventListener("click", () => handleChoiceClick(index));
-                choicesEl.appendChild(btn);
-            });
-        }
-
-        function handleChoiceClick(index) {
-            if (locked) return;
-
-            selectedChoiceIndex = index;
-            nextBtn.disabled = false;
-
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-            buttons.forEach((btn, i) => {
-                btn.classList.toggle("selected", i === index);
-            });
-        }
-
-        function validateAnswer() {
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-
-            if (selectedChoiceIndex === null) return;
-
-            locked = true;
-            nextBtn.disabled = false;
-
-            // on trouve l’index du bouton correct dans l’ordre mélangé
-            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
-
-            buttons.forEach((btn, i) => {
-                btn.classList.remove("selected");
-                if (i === correctRenderedIndex) {
-                    btn.classList.add("correct");
-                }
-                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-                    btn.classList.add("incorrect");
-                }
-            });
-
-            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-            if (isCorrect) {
-                score += 1;
-            }
-
-            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-            userAnswers.push({
-                question: questions[currentIndex].question,
-                chosen: currentRenderedChoices[selectedChoiceIndex].text,
-                correct: currentRenderedChoices[correctRenderedIndex].text,
-                isCorrect
-            });
-        }
-
-        function showResult() {
-            const total = questions.length;
-            const noteSur40 = score;
-
-            quizEl.style.display = "none";
-            resultEl.style.display = "block";
-
-            let html = `
-        <h2>Résultats</h2>
-        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / ${TOTAL_QUESTIONS}</strong>.</p>
-        <p>Résumé des réponses :</p>
-      `;
-
-            userAnswers.forEach((entry, index) => {
-                html += `
-          <div class="summary-item">
-            <strong>Q${index + 1}.</strong> ${entry.question}<br>
-            Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
-              ${entry.chosen} (${entry.isCorrect ? "Juste" : "Faux"})
-            </span><br>
-            Bonne réponse : <strong>${entry.correct}</strong>
-          </div>
-        `;
-            });
-
-            html += `
-        <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
-      `;
-
-            resultEl.innerHTML = html;
-        }
-
-        function restartQuiz() {
-            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-            currentIndex = 0;
-            score = 0;
-            userAnswers = [];
-
-            quizEl.style.display = "block";
-            resultEl.style.display = "none";
-
-            nextBtn.textContent = "Valider";
-            renderQuestion();
-        }
-
-        nextBtn.addEventListener("click", () => {
-            if (!locked) {
-                validateAnswer();
-                if (currentIndex < questions.length - 1) {
-                    nextBtn.textContent = "Question suivante";
-                } else {
-                    nextBtn.textContent = "Voir les résultats";
-                }
-                return;
-            }
-
-            if (currentIndex < questions.length - 1) {
-                currentIndex += 1;
-                nextBtn.textContent = "Valider";
-                renderQuestion();
-            } else {
-                showResult();
-            }
-        });
-
-        nextBtn.textContent = "Valider";
-        renderQuestion();
-    </script>
-	<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  // ⚠️ même config que dans auth.html
-  const firebaseConfig = {
-    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
-    authDomain: "qcm-examen-civique-db.firebaseapp.com",
-    projectId: "qcm-examen-civique-db",
-    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
-    messagingSenderId: "899569839204",
-    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
-    measurementId: "G-S92WT27FBT"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // Pas connecté -> retour à la page de connexion
-      window.location.href = "auth.html";
-    } else {
-      // Optionnel : tu peux afficher le mail ou autre
-      console.log("Connecté :", user.email);
-    }
+    <script type="module">
+  import { initQuiz } from "./quiz-engine.js";
+  const ALL_QUESTIONS = [{
+                  question: "Quel était le surnom de Louis XIV ?",
+                  choices: [
+                      "Le Roi-Soleil",
+                      "Le Bon Roi",
+                      "Le Conquérant",
+                      "Le Sage"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel roi de France a été exécuté pendant la Révolution française ?",
+                  choices: [
+                      "Louis XVI",
+                      "Louis XV",
+                      "Louis XIV",
+                      "Charles X"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année Napoléon Ier est-il devenu empereur ?",
+                  choices: [
+                      "1804",
+                      "1789",
+                      "1815",
+                      "1792"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lequel de ces personnages a un lien avec la République française ?",
+                  choices: [
+                      "Marianne",
+                      "Jeanne d’Arc",
+                      "Louis XIV",
+                      "Charlemagne"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "De quand date l'appel à la résistance du général de Gaulle ?",
+                  choices: [
+                      "18 juin 1940",
+                      "11 novembre 1918",
+                      "8 mai 1945",
+                      "14 juillet 1789"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Pourquoi la Shoah est-elle étudiée à l'école ?",
+                  choices: [
+                      "Pour rappeler les crimes nazis et lutter contre l’antisémitisme et toutes les formes de racisme",
+                      "Pour apprendre des stratégies militaires",
+                      "Pour étudier la religion juive",
+                      "Pour justifier les guerres"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays a été colonisé par la France ?",
+                  choices: [
+                      "L’Algérie",
+                      "Le Portugal",
+                      "La Suède",
+                      "Le Japon"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Depuis quand les Français élisent-ils le président de la République au suffrage universel direct ?",
+                  choices: [
+                      "Depuis l’élection de 1965",
+                      "Depuis 1789",
+                      "Depuis 1945",
+                      "Depuis 2002"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la première étape de la construction européenne en 1951 ?",
+                  choices: [
+                      "La création de la CECA (Communauté européenne du charbon et de l’acier)",
+                      "La création de l’euro",
+                      "La création de l’OTAN",
+                      "La création de l’ONU"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Durant le mandat de quel président la peine de mort a-t-elle été abolie ?",
+                  choices: [
+                      "François Mitterrand",
+                      "Charles de Gaulle",
+                      "Valéry Giscard d’Estaing",
+                      "Jacques Chirac"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel régime politique a été mis en place pendant la Révolution française en 1792 ?",
+                  choices: [
+                      "La Première République",
+                      "La Première Monarchie constitutionnelle",
+                      "Le Second Empire",
+                      "La Cinquième République"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était une figure de la Résistance française pendant la Seconde Guerre mondiale ?",
+                  choices: [
+                      "Jean Moulin",
+                      "Louis XIV",
+                      "Napoléon III",
+                      "Philippe Pétain"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
+                  choices: [
+                      "Elles ont obtenu le droit de vote",
+                      "Elles ont été obligées de travailler",
+                      "Elles ont perdu le droit de se marier",
+                      "Elles ont obtenu la gratuité des transports"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle organisation internationale a été créée en 1945 après la Seconde Guerre mondiale ?",
+                  choices: [
+                      "L’Organisation des Nations unies (ONU)",
+                      "L’Union européenne",
+                      "L’OTAN",
+                      "La Banque mondiale"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle peine a été supprimée en 1981 en France ?",
+                  choices: [
+                      "La peine de mort",
+                      "La prison à vie",
+                      "Les amendes",
+                      "Les travaux d’intérêt général"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année l'euro est-elle devenue la monnaie utilisée en France (pièces et billets) ?",
+                  choices: [
+                      "2002",
+                      "1999",
+                      "1990",
+                      "2010"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année a commencé la Première Guerre mondiale ?",
+                  choices: [
+                      "1914",
+                      "1918",
+                      "1939",
+                      "1945"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où a eu lieu le débarquement en 1944 ?",
+                  choices: [
+                      "En Normandie",
+                      "En Provence",
+                      "En Corse",
+                      "En Bretagne"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel continent a été le plus concerné par la décolonisation française après la Seconde Guerre mondiale ?",
+                  choices: [
+                      "L’Afrique",
+                      "L’Asie",
+                      "L’Amérique du Sud",
+                      "L’Océanie"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que fête-t-on le 8 mai en France ?",
+                  choices: [
+                      "La fin de la Seconde Guerre mondiale en Europe (Victoire de 1945)",
+                      "La fin de la Première Guerre mondiale",
+                      "La prise de la Bastille",
+                      "La fondation de la République"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle mer ou océan borde la France métropolitaine ?",
+                  choices: [
+                      "L’océan Atlantique",
+                      "La mer Noire",
+                      "La mer Caspienne",
+                      "L’océan Indien"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays a une frontière terrestre avec la France métropolitaine ?",
+                  choices: [
+                      "L’Espagne",
+                      "Le Danemark",
+                      "La Pologne",
+                      "La Grèce"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle ville française est un port maritime ?",
+                  choices: [
+                      "Marseille",
+                      "Lyon",
+                      "Toulouse",
+                      "Clermont-Ferrand"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle mer se situe entre la France et l'Angleterre ?",
+                  choices: [
+                      "La Manche",
+                      "La mer Noire",
+                      "La mer Baltique",
+                      "La mer Rouge"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est ce que la France d'outre-mer ?",
+                  choices: [
+                      "Des territoires français situés en dehors de l’Europe",
+                      "Des régions françaises très éloignées de Paris mais en Europe",
+                      "Des anciennes colonies devenues indépendantes",
+                      "Des bases militaires à l’étranger"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle chaîne de montagnes est située entre la France et l’Espagne ?",
+                  choices: [
+                      "Les Pyrénées",
+                      "Les Alpes",
+                      "Le Jura",
+                      "Le Massif central"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle île française se trouve dans l'océan Indien ?",
+                  choices: [
+                      "La Réunion",
+                      "La Corse",
+                      "La Guadeloupe",
+                      "La Martinique"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la population approximative de la France en 2025 ?",
+                  choices: [
+                      "Environ 68 millions d’habitants",
+                      "Environ 10 millions d’habitants",
+                      "Environ 120 millions d’habitants",
+                      "Environ 30 millions d’habitants"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel fleuve traverse Paris ?",
+                  choices: [
+                      "La Seine",
+                      "La Loire",
+                      "Le Rhône",
+                      "La Garonne"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lequel de ces pays partage des frontières terrestres avec la France ?",
+                  choices: [
+                      "L’Allemagne",
+                      "Le Portugal",
+                      "La Suède",
+                      "La Finlande"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays a une frontière avec la France métropolitaine au nord-est ?",
+                  choices: [
+                      "L’Allemagne",
+                      "L’Espagne",
+                      "L’Italie",
+                      "La Suisse"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où se trouvent les principales activités économiques en France ?",
+                  choices: [
+                      "Dans les grandes villes et les régions urbaines (comme l’Île-de-France)",
+                      "Uniquement dans les campagnes",
+                      "Seulement dans les ports",
+                      "Exclusivement dans les montagnes"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Parmi ces pays, lequel attire le plus de visiteurs chaque année ?",
+                  choices: [
+                      "La France",
+                      "La Norvège",
+                      "La Roumanie",
+                      "La Bulgarie"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où habite la majorité des Français ?",
+                  choices: [
+                      "En ville ou en zone urbaine",
+                      "À la campagne isolée",
+                      "En montagne",
+                      "En bord de mer"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle région est la plus peuplée ?",
+                  choices: [
+                      "L’Île-de-France",
+                      "La Bretagne",
+                      "La Corse",
+                      "La Bourgogne-Franche-Comté"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle ville française fait partie des 10 plus grandes métropoles du pays ?",
+                  choices: [
+                      "Lyon",
+                      "Biarritz",
+                      "Calais",
+                      "Bastia"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lequel de ces départements de France est le plus touristique ?",
+                  choices: [
+                      "Paris",
+                      "La Creuse",
+                      "La Meuse",
+                      "La Haute-Marne"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quand peut-on visiter gratuitement des lieux culturels en France (musées nationaux, dans certains cas) ?",
+                  choices: [
+                      "Le premier dimanche de certains mois, selon les musées",
+                      "Uniquement le 25 décembre",
+                      "Jamais, c’est toujours payant",
+                      "Seulement la nuit"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Combien de personnes parlent français dans le monde (ordre de grandeur) ?",
+                  choices: [
+                      "Environ 320 millions de personnes",
+                      "Environ 10 millions de personnes",
+                      "Environ 50 millions de personnes",
+                      "Plus d’un milliard de personnes"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était Marguerite Yourcenar ?",
+                  choices: [
+                      "Une écrivaine française, première femme élue à l’Académie française",
+                      "Une femme politique française",
+                      "Une actrice française célèbre",
+                      "Une scientifique française"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel peintre est français ?",
+                  choices: [
+                      "Claude Monet",
+                      "Pablo Picasso",
+                      "Vincent Van Gogh",
+                      "Salvador Dalí"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel musée est situé à Paris ?",
+                  choices: [
+                      "Le musée du Louvre",
+                      "Le musée du Prado",
+                      "Le British Museum",
+                      "Le Rijksmuseum"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était Auguste Rodin ?",
+                  choices: [
+                      "Un sculpteur français",
+                      "Un écrivain français",
+                      "Un musicien français",
+                      "Un homme politique français"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le classement de la langue française parmi les langues les plus parlées dans le monde (en 2020–2026 environ) ?",
+                  choices: [
+                      "Elle fait partie des 5 langues les plus parlées au monde (environ 4ᵉ)",
+                      "Elle est la 20ᵉ langue la plus parlée",
+                      "Elle est la langue la plus parlée au monde",
+                      "Elle n’est parlée que par quelques millions de personnes"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle cathédrale célèbre a été en partie détruite par un incendie en 2019 ?",
+                  choices: [
+                      "Notre-Dame de Paris",
+                      "La cathédrale de Chartres",
+                      "La cathédrale de Reims",
+                      "La cathédrale de Strasbourg"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était une écrivaine française célèbre ?",
+                  choices: [
+                      "Simone de Beauvoir",
+                      "Victor Hugo",
+                      "Georges Brassens",
+                      "Claude Debussy"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était un célèbre musicien français ?",
+                  choices: [
+                      "Claude Debussy",
+                      "Ludwig van Beethoven",
+                      "Wolfgang Amadeus Mozart",
+                      "Frederic Chopin (Polonais)"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était Auguste Renoir ?",
+                  choices: [
+                      "Un peintre français impressionniste",
+                      "Un écrivain français",
+                      "Un architecte français",
+                      "Un homme politique français"
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle fête est française ?",
+                  choices: [
+                      "La fête nationale du 14 juillet",
+                      "Thanksgiving",
+                      "La fête de la Saint-Patrick",
+                      "La fête de la Mi-Automne"
+                  ],
+                  correctIndex: 0
+              }
+          ];
+  
+          // --------------------------------------------------------
+          // 2) Mélange aléatoire (Fisher–Yates)
+          // --------------------------------------------------------
+          function shuffle(array) {
+              const arr = [...array];
+              for (let i = arr.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [arr[i], arr[j]] = [arr[j], arr[i]];
+              }
+              return arr;
+          }
+  
+          const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+  initQuiz({
+    questionsBank: ALL_QUESTIONS,
+    totalQuestions: TOTAL_QUESTIONS,
+    selectors: {
+      quiz: "#quiz",
+      progress: "#progress",
+      question: "#question",
+      choices: "#choices",
+      nextBtn: "#nextBtn",
+      result: "#result",
+    },
   });
 </script>
+	<script type="module" src="auth-guard.js"></script>
 </body>
 
 </html>

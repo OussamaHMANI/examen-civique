@@ -5,193 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Histoire géographie et culture</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .quiz-container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #progress {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 12px;
-        }
-
-        #question {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .choice-btn {
-            text-align: left;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-        }
-
-        .choice-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .choice-btn.selected {
-            border-color: #2563eb;
-            background: #e0ecff;
-        }
-
-        .choice-btn.correct {
-            background: #16a34a;
-            color: #fff;
-            border-color: #15803d;
-        }
-
-        .choice-btn.incorrect {
-            background: #dc2626;
-            color: #fff;
-            border-color: #b91c1c;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: 8px;
-        }
-
-        #nextBtn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        #nextBtn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        #nextBtn:hover:not(:disabled) {
-            background: #1d4ed8;
-        }
-
-        #result {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        #result h2 {
-            margin-top: 0;
-        }
-
-        .summary-item {
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-        }
-
-        .tag-good {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        .tag-bad {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .restart-btn {
-            margin-top: 12px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #6b7280;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .home-btn {
-            display: inline-block;
-            margin: 12px 16px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            color: #111827;
-            font-size: 0.9rem;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .home-btn:hover {
-            background: #e5e7eb;
-        }
-
-        /* Responsive mobile */
-        @media (max-width: 640px) {
-            body {
-                padding: 12px;
-            }
-
-            .quiz-container {
-                padding: 16px 14px;
-            }
-
-            h1 {
-                font-size: 1.3rem;
-            }
-
-            .choice-btn {
-                font-size: 0.9rem;
-                padding: 10px;
-            }
-
-            #controls {
-                justify-content: center;
-            }
-
-            #nextBtn {
-                width: 100%;
-                border-radius: 999px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -213,705 +27,527 @@
         <div id="result"></div>
     </div>
 
-    <script>
-		// --------------------------------------------------------
-        // 1) Banque de questions : Principes et valeurs (40 questions)
-        // --------------------------------------------------------
-        const ALL_QUESTIONS = [{
-                question: "Quel était le surnom de Louis XIV ?",
-                choices: [
-                    "Le Roi-Soleil, en référence à son pouvoir central et à la grandeur de son règne en Europe.",
-                    "Le Bon Roi, en référence à sa proximité supposée avec le peuple et à sa politique généreuse.",
-                    "Le Conquérant, en référence à ses nombreuses campagnes militaires victorieuses hors d’Europe.",
-                    "Le Sage, en référence à son retrait du pouvoir et à son rôle de conseiller des autres monarques."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel roi de France a été exécuté pendant la Révolution française ?",
-                choices: [
-                    "Louis XVI, condamné à mort et guillotiné en 1793 après la chute de la monarchie.",
-                    "Louis XV, déposé par l’Assemblée et exécuté publiquement pour haute trahison.",
-                    "Louis XIV, renversé par les révolutionnaires au début de la Révolution française.",
-                    "Charles X, jugé par le peuple parisien et exécuté à la fin de son règne."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année Napoléon Ier est-il devenu empereur ?",
-                choices: [
-                    "En 1804, lors de son sacre à Notre-Dame de Paris qui marque la naissance du Premier Empire.",
-                    "En 1789, à la suite des événements de la Révolution qui le portent au pouvoir suprême.",
-                    "En 1815, après son retour de l’île d’Elbe et sa victoire définitive sur les monarchies européennes.",
-                    "En 1792, lorsque la République le désigne comme chef d’État avec le titre d’empereur."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lequel de ces personnages a un lien direct avec la République française ?",
-                choices: [
-                    "Marianne, figure allégorique qui incarne la République et ses valeurs de liberté et de citoyenneté.",
-                    "Jeanne d’Arc, héroïne médiévale liée principalement à la monarchie et à la guerre de Cent Ans.",
-                    "Louis XIV, monarque absolu dont le règne précède la naissance des institutions républicaines.",
-                    "Charlemagne, souverain du Moyen Âge associé à l’Empire carolingien et à l’unité chrétienne."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "De quand date l'appel à la résistance du général de Gaulle ?",
-                choices: [
-                    "Du 18 juin 1940, date symbolique à laquelle il invite les Français à poursuivre le combat depuis Londres.",
-                    "Du 11 novembre 1918, au moment de l’armistice mettant fin à la Première Guerre mondiale.",
-                    "Du 8 mai 1945, jour de la capitulation de l’Allemagne nazie en Europe et de la fin des combats.",
-                    "Du 14 juillet 1789, en lien avec la prise de la Bastille et le début de la Révolution française."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Pourquoi la Shoah est-elle étudiée à l'école ?",
-                choices: [
-                    "Pour rappeler les crimes nazis, comprendre le génocide des Juifs et lutter contre l’antisémitisme et toutes les formes de racisme.",
-                    "Pour analyser principalement les tactiques militaires utilisées par les armées pendant la Seconde Guerre mondiale.",
-                    "Pour présenter de manière détaillée les rites et les pratiques religieuses propres au judaïsme.",
-                    "Pour justifier le recours à la guerre comme moyen légitime de résoudre les conflits internationaux."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays a été colonisé par la France ?",
-                choices: [
-                    "L’Algérie, qui a été colonisée au XIXᵉ siècle et a obtenu son indépendance en 1962 après une guerre violente.",
-                    "Le Portugal, intégré de force à l’Empire colonial français au début du XXᵉ siècle.",
-                    "La Suède, annexée par la France à l’époque de la Révolution et de l’Empire napoléonien.",
-                    "Le Japon, placé sous administration coloniale française à la suite de la Seconde Guerre mondiale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Depuis quand les Français élisent-ils le président de la République au suffrage universel direct ?",
-                choices: [
-                    "Depuis l’élection de 1965, à la suite d’une réforme voulue sous la présidence du général de Gaulle.",
-                    "Depuis 1789, dès la mise en place des premières institutions issues de la Révolution française.",
-                    "Depuis 1945, au lendemain de la Seconde Guerre mondiale et de la Libération du territoire.",
-                    "Depuis 2002, lorsqu’a été instauré le quinquennat et le nouveau mode de scrutin présidentiel."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la première étape de la construction européenne en 1951 ?",
-                choices: [
-                    "La création de la CECA, qui met en commun la production de charbon et d’acier entre plusieurs pays européens.",
-                    "La création de l’euro, monnaie unique adoptée immédiatement par l’ensemble des États de l’Union.",
-                    "La création de l’OTAN, alliance militaire transatlantique tournée vers la défense collective.",
-                    "La création de l’ONU, organisation chargée de maintenir la paix et la sécurité internationale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Durant le mandat de quel président la peine de mort a-t-elle été abolie ?",
-                choices: [
-                    "François Mitterrand, sous la présidence duquel la loi de 1981 met fin à la peine capitale en France.",
-                    "Charles de Gaulle, qui a supprimé la peine de mort dès la mise en place de la Cinquième République.",
-                    "Valéry Giscard d’Estaing, qui a fait voter l’abolition à la fin de son septennat présidentiel.",
-                    "Jacques Chirac, qui a rétabli puis à nouveau aboli la peine de mort au cours de ses deux mandats."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel régime politique a été mis en place pendant la Révolution française en 1792 ?",
-                choices: [
-                    "La Première République, proclamée après la chute de la monarchie et le renversement de Louis XVI.",
-                    "La première monarchie constitutionnelle, qui instaure immédiatement un roi élu par les citoyens.",
-                    "Le Second Empire, établi par Napoléon III à la suite d’un plébiscite national favorable.",
-                    "La Cinquième République, fondée pour répondre à la crise politique liée à la guerre d’Algérie."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était une figure majeure de la Résistance française pendant la Seconde Guerre mondiale ?",
-                choices: [
-                    "Jean Moulin, chargé d’unifier les mouvements de résistance intérieure sous l’autorité de la France libre.",
-                    "Louis XIV, souverain qui a dirigé la France à l’époque de la guerre de Trente Ans et des guerres de religion.",
-                    "Napoléon III, empereur qui a mené une politique d’expansion mais avant la Première Guerre mondiale.",
-                    "Philippe Pétain, chef de l’État français de Vichy, qui a collaboré avec l’Allemagne nazie."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
-                choices: [
-                    "Elles ont obtenu le droit de vote et d’éligibilité, droit qui sera exercé pour la première fois en 1945.",
-                    "Elles ont été légalement obligées de travailler à plein temps dans l’industrie de guerre.",
-                    "Elles ont perdu la possibilité de se marier sans l’accord préalable des autorités militaires.",
-                    "Elles ont bénéficié d’une gratuité permanente des transports publics sur l’ensemble du territoire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle organisation internationale a été créée en 1945 après la Seconde Guerre mondiale ?",
-                choices: [
-                    "L’Organisation des Nations unies (ONU), chargée de favoriser la paix, la coopération et la sécurité internationales.",
-                    "L’Union européenne, regroupant immédiatement tous les États d’Europe dans une union politique complète.",
-                    "L’OTAN, alliance militaire qui s’est constituée avant la guerre pour empêcher tout conflit mondial.",
-                    "La Banque mondiale, établissement chargé exclusivement de la reconstruction de la France après la guerre."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle peine a été supprimée en 1981 en France ?",
-                choices: [
-                    "La peine de mort, définitivement abolie par la loi et ensuite inscrite dans la Constitution.",
-                    "La prison à vie, remplacée par des peines uniquement limitées dans le temps pour tous les crimes.",
-                    "Les amendes pénales, jugées contraires aux principes de la Déclaration des droits de l’homme.",
-                    "Les travaux d’intérêt général, supprimés au profit de peines exclusivement privatives de liberté."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année l'euro est-elle devenue la monnaie utilisée en France sous forme de pièces et de billets ?",
-                choices: [
-                    "En 2002, année de la mise en circulation concrète de l’euro dans la vie quotidienne des citoyens.",
-                    "En 1999, année où les pièces et les billets en euro ont été tout de suite distribués au public.",
-                    "En 1990, année de la décision politique d’abandonner le franc pour adopter une monnaie commune.",
-                    "En 2010, année à partir de laquelle tous les pays du monde ont adopté l’euro comme référence."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année a commencé la Première Guerre mondiale ?",
-                choices: [
-                    "En 1914, à la suite de l’assassinat de l’archiduc François-Ferdinand et du jeu des alliances.",
-                    "En 1918, avec la reprise des combats après une période de trêve imposée par les belligérants.",
-                    "En 1939, lorsque l’Allemagne envahit la Pologne et déclenche la Seconde Guerre mondiale.",
-                    "En 1945, au moment de la capitulation du Japon et de la fin du conflit mondial."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où a eu lieu le débarquement allié en 1944 ?",
-                choices: [
-                    "En Normandie, sur les plages de la Manche, lors de l’opération Overlord du 6 juin 1944.",
-                    "En Provence uniquement, lors d’une opération maritime destinée à remonter vers le nord de la France.",
-                    "En Corse, qui a servi de principal point d’appui logistique pour toutes les opérations en Europe.",
-                    "En Bretagne, sur toute la côte atlantique, afin de libérer directement les grands ports français."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel continent a été le plus concerné par la décolonisation française après la Seconde Guerre mondiale ?",
-                choices: [
-                    "L’Afrique, où de nombreux territoires autrefois colonisés par la France sont devenus indépendants.",
-                    "L’Asie, où la plupart des anciennes colonies françaises sont restées durablement sous tutelle.",
-                    "L’Amérique du Sud, qui regroupait l’essentiel des possessions coloniales françaises historiques.",
-                    "L’Océanie, qui concentrait la majorité des départements et territoires français à décoloniser."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que fête-t-on le 8 mai en France ?",
-                choices: [
-                    "La fin de la Seconde Guerre mondiale en Europe, marquée par la capitulation de l’Allemagne en 1945.",
-                    "La fin de la Première Guerre mondiale et la signature de l’armistice de 1918.",
-                    "La prise de la Bastille et le début des événements de la Révolution française.",
-                    "La fondation officielle de la République française moderne par la Constitution de 1958."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle mer ou océan borde la France métropolitaine ?",
-                choices: [
-                    "L’océan Atlantique, qui longe la façade ouest de la France de la Bretagne au Pays basque.",
-                    "La mer Noire, qui sépare directement la France de plusieurs pays d’Europe de l’Est.",
-                    "La mer Caspienne, située entre la France et les États du Caucase et d’Asie centrale.",
-                    "L’océan Indien, qui entoure la France métropolitaine par sa façade méridionale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays a une frontière terrestre avec la France métropolitaine ?",
-                choices: [
-                    "L’Espagne, qui partage une frontière avec la France au niveau de la chaîne des Pyrénées.",
-                    "Le Danemark, relié à la France par une frontière directe au nord de l’Allemagne.",
-                    "La Pologne, qui possède une limite terrestre commune avec la France en Europe de l’Est.",
-                    "La Grèce, qui borde la France sur sa façade méditerranéenne par une frontière terrestre."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle ville française est un important port maritime ?",
-                choices: [
-                    "Marseille, grand port de commerce et de passagers sur la Méditerranée.",
-                    "Lyon, située à l’intérieur des terres au confluent du Rhône et de la Saône.",
-                    "Toulouse, implantée près de la Garonne mais sans accès direct à la mer.",
-                    "Clermont-Ferrand, ville au cœur du Massif central éloignée de tout littoral."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle mer se situe entre la France et l'Angleterre ?",
-                choices: [
-                    "La Manche, bras de mer qui sépare la France du Royaume-Uni au nord-ouest.",
-                    "La mer Noire, située entre l’Europe orientale et le Caucase.",
-                    "La mer Baltique, située au nord de l’Europe entre les pays scandinaves.",
-                    "La mer Rouge, qui relie la Méditerranée à l’océan Indien via le canal de Suez."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'appelle-t-on la France d'outre-mer ?",
-                choices: [
-                    "Des territoires français situés en dehors du continent européen, répartis dans différents océans.",
-                    "Des régions françaises très éloignées de Paris mais situées intégralement en Europe.",
-                    "Des anciennes colonies devenues indépendantes et n’ayant plus aucun lien juridique avec la France.",
-                    "Des bases militaires françaises installées temporairement à l’étranger pour des opérations."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle chaîne de montagnes est située entre la France et l’Espagne ?",
-                choices: [
-                    "Les Pyrénées, massif qui forme une barrière naturelle entre les deux pays.",
-                    "Les Alpes, qui séparent principalement la France de l’Italie et de la Suisse.",
-                    "Le Jura, qui constitue une frontière naturelle entre la France et l’Allemagne.",
-                    "Le Massif central, situé au cœur de la France loin des frontières."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle île française se trouve dans l'océan Indien ?",
-                choices: [
-                    "La Réunion, département français situé à l’est de Madagascar dans l’océan Indien.",
-                    "La Corse, île française située en Méditerranée occidentale, proche de l’Italie.",
-                    "La Guadeloupe, archipel français situé dans la mer des Caraïbes, près des Amériques.",
-                    "La Martinique, département français situé dans les Antilles, en mer des Caraïbes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la population approximative de la France en 2025 ?",
-                choices: [
-                    "Environ 68 millions d’habitants, selon les estimations démographiques récentes.",
-                    "Environ 10 millions d’habitants, après une forte baisse de la population.",
-                    "Environ 120 millions d’habitants, la France étant devenue l’État le plus peuplé d’Europe.",
-                    "Environ 30 millions d’habitants, la moitié de la population ayant quitté le territoire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel fleuve traverse Paris ?",
-                choices: [
-                    "La Seine, qui coule à travers la capitale avant de se jeter dans la Manche.",
-                    "La Loire, qui traverse surtout le centre de la France en passant par Orléans et Nantes.",
-                    "Le Rhône, qui prend sa source en Suisse et traverse Lyon avant de rejoindre la Méditerranée.",
-                    "La Garonne, qui passe notamment par Toulouse et Bordeaux avant d’atteindre l’océan Atlantique."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lequel de ces pays partage une frontière terrestre avec la France ?",
-                choices: [
-                    "L’Allemagne, qui borde la France à l’est en particulier en Alsace et en Lorraine.",
-                    "Le Portugal, qui est séparé de la France par l’Espagne et n’a pas de frontière directe.",
-                    "La Suède, qui se situe en Scandinavie sans frontière terrestre avec la France.",
-                    "La Finlande, qui se trouve au nord de l’Europe à distance de la France."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays a une frontière avec la France métropolitaine au nord-est ?",
-                choices: [
-                    "L’Allemagne, qui partage une frontière avec la France dans la région du Grand Est.",
-                    "L’Espagne, qui est frontalière de la France principalement au sud-ouest.",
-                    "L’Italie, qui est frontalière de la France au niveau des Alpes.",
-                    "La Suisse, qui a une frontière avec la France mais plus au centre-est."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où se concentrent les principales activités économiques en France ?",
-                choices: [
-                    "Dans les grandes villes et les régions fortement urbanisées, comme l’Île-de-France et les grandes métropoles.",
-                    "Uniquement dans les zones rurales et les villages isolés, loin des centres urbains.",
-                    "Exclusivement dans les ports maritimes, qui concentrent toute l’activité industrielle.",
-                    "Principalement dans les zones de montagne, qui regroupent l’essentiel des emplois."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Parmi ces pays, lequel attire le plus de visiteurs chaque année ?",
-                choices: [
-                    "La France, qui est l’un des pays les plus visités au monde pour ses paysages et son patrimoine.",
-                    "La Norvège, qui accueille beaucoup plus de touristes que tous les autres pays européens.",
-                    "La Roumanie, qui est devenue la première destination mondiale pour le tourisme de masse.",
-                    "La Bulgarie, qui concentre la majorité des flux touristiques internationaux sur ses côtes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où habite la majorité des Français ?",
-                choices: [
-                    "En ville ou en zone urbaine, dans des agglomérations de tailles différentes.",
-                    "À la campagne isolée, loin de toute agglomération ou service public.",
-                    "En montagne, dans de petits villages situés en altitude toute l’année.",
-                    "En bord de mer, dans les stations balnéaires sur l’ensemble du littoral."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle région est la plus peuplée de France ?",
-                choices: [
-                    "L’Île-de-France, qui comprend notamment Paris et sa grande agglomération.",
-                    "La Bretagne, qui concentre la majorité de la population française actuelle.",
-                    "La Corse, qui est devenue la région la plus densément peuplée du pays.",
-                    "La Bourgogne-Franche-Comté, qui regroupe la majorité des grandes villes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle ville française fait partie des 10 plus grandes métropoles du pays ?",
-                choices: [
-                    "Lyon, grande métropole située au confluent du Rhône et de la Saône.",
-                    "Biarritz, petite station balnéaire de la côte basque avec une population réduite.",
-                    "Calais, port de la Manche mais de taille plus modeste en nombre d’habitants.",
-                    "Bastia, ville de Corse dont la population reste limitée à l’échelle nationale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Lequel de ces départements de France est l’un des plus touristiques ?",
-                choices: [
-                    "Paris, qui accueille de très nombreux visiteurs français et étrangers chaque année.",
-                    "La Creuse, département rural peu peuplé et peu fréquenté par les touristes.",
-                    "La Meuse, principalement marquée par les sites de mémoire de la Grande Guerre.",
-                    "La Haute-Marne, territoire rural avec un tourisme beaucoup plus limité."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quand peut-on visiter gratuitement certains lieux culturels en France (musées nationaux, selon les cas) ?",
-                choices: [
-                    "Le premier dimanche de certains mois, selon la politique de chaque musée ou période de l’année.",
-                    "Uniquement le 25 décembre, jour où tous les musées nationaux ouvrent gratuitement leurs portes.",
-                    "Jamais, l’accès aux musées nationaux étant systématiquement payant pour tous les publics.",
-                    "Seulement la nuit, lorsque les musées organisent des visites obligatoires pour les habitants."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Combien de personnes parlent français dans le monde (ordre de grandeur) ?",
-                choices: [
-                    "Environ 320 millions de personnes, en tenant compte des locuteurs sur plusieurs continents.",
-                    "Environ 10 millions de personnes, concentrées essentiellement en Europe occidentale.",
-                    "Environ 50 millions de personnes, la langue étant très peu diffusée hors de la France.",
-                    "Plus d’un milliard de personnes, ce qui en fait la langue la plus parlée au monde."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était Marguerite Yourcenar ?",
-                choices: [
-                    "Une écrivaine française, première femme élue à l’Académie française en 1980.",
-                    "Une femme politique française, qui a occupé la fonction de Première ministre.",
-                    "Une actrice française, connue principalement pour son rôle dans le cinéma muet.",
-                    "Une scientifique française, célèbre pour ses travaux sur la physique nucléaire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel peintre est français ?",
-                choices: [
-                    "Claude Monet, l’un des principaux représentants du mouvement impressionniste.",
-                    "Pablo Picasso, artiste d’origine espagnole associé à la naissance du cubisme.",
-                    "Vincent Van Gogh, peintre néerlandais ayant séjourné en France mais resté hollandais.",
-                    "Salvador Dalí, peintre surréaliste espagnol connu pour ses œuvres oniriques."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel musée est situé à Paris ?",
-                choices: [
-                    "Le musée du Louvre, l’un des plus grands musées d’art au monde, situé au cœur de la capitale.",
-                    "Le musée du Prado, grand musée national installé dans la capitale espagnole Madrid.",
-                    "Le British Museum, important musée d’histoire et d’art situé à Londres, au Royaume-Uni.",
-                    "Le Rijksmuseum, grand musée national néerlandais situé à Amsterdam."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était Auguste Rodin ?",
-                choices: [
-                    "Un sculpteur français, auteur notamment de « Le Penseur » et « Le Baiser ».",
-                    "Un écrivain français, connu surtout pour ses romans du XIXᵉ siècle.",
-                    "Un musicien français, célèbre pour ses œuvres symphoniques romantiques.",
-                    "Un homme politique français, qui a exercé les fonctions de président de la République."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le classement approximatif de la langue française parmi les langues les plus parlées dans le monde (vers 2020–2026) ?",
-                choices: [
-                    "Elle fait partie des cinq langues les plus parlées au monde, se situant autour de la quatrième place.",
-                    "Elle se situe autour de la vingtième place, loin derrière la plupart des langues régionales.",
-                    "Elle est la première langue la plus parlée au monde, devant l’anglais et le mandarin.",
-                    "Elle n’est parlée que par quelques millions de personnes, principalement en France métropolitaine."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle cathédrale célèbre a été en partie détruite par un incendie en 2019 ?",
-                choices: [
-                    "Notre-Dame de Paris, dont la charpente et la flèche ont été gravement endommagées.",
-                    "La cathédrale de Chartres, entièrement détruite par le feu avant d’être reconstruite.",
-                    "La cathédrale de Reims, qui a été ravagée par un incendie à la fin du XXᵉ siècle.",
-                    "La cathédrale de Strasbourg, entièrement fermée depuis l’incendie de 2019."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était une écrivaine française célèbre ?",
-                choices: [
-                    "Simone de Beauvoir, philosophe et romancière engagée, figure du mouvement féministe.",
-                    "Victor Hugo, auteur de nombreux romans et poèmes, mais connu comme écrivain masculin.",
-                    "Georges Brassens, poète et chanteur français reconnu pour ses chansons engagées.",
-                    "Claude Debussy, compositeur français associé au courant musical impressionniste."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était un célèbre musicien français ?",
-                choices: [
-                    "Claude Debussy, compositeur français dont l’œuvre marque profondément la musique du XXᵉ siècle.",
-                    "Ludwig van Beethoven, compositeur allemand emblématique de la période classique.",
-                    "Wolfgang Amadeus Mozart, compositeur autrichien prolifique de la période classique.",
-                    "Frédéric Chopin, compositeur et pianiste d’origine polonaise, associé à la musique romantique."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui était Auguste Renoir ?",
-                choices: [
-                    "Un peintre français impressionniste, connu pour ses scènes de la vie quotidienne et ses portraits.",
-                    "Un écrivain français symboliste, principalement connu pour ses essais philosophiques.",
-                    "Un architecte français, auteur de la plupart des grands monuments parisiens du XIXᵉ siècle.",
-                    "Un homme politique français, qui a joué un rôle majeur dans la fondation de la Cinquième République."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle fête est spécifiquement liée à l’histoire de la France ?",
-                choices: [
-                    "La fête nationale du 14 juillet, qui commémore la prise de la Bastille et la Révolution française.",
-                    "Thanksgiving, fête traditionnelle célébrée principalement aux États-Unis et au Canada.",
-                    "La fête de la Saint-Patrick, célébration associée à la culture irlandaise et à ses traditions.",
-                    "La fête de la Mi-Automne, célébration traditionnelle dans plusieurs pays d’Asie de l’Est."
-                ],
-                correctIndex: 0
-            }
-        ];
-
-        // --------------------------------------------------------
-        // 2) Mélange aléatoire (Fisher–Yates)
-        // --------------------------------------------------------
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
-        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-
-        // --------------------------------------------------------
-        // 3) Logique du quiz
-        // --------------------------------------------------------
-        let currentIndex = 0;
-        let score = 0;
-        let userAnswers = [];
-
-        const progressEl = document.getElementById("progress");
-        const questionEl = document.getElementById("question");
-        const choicesEl = document.getElementById("choices");
-        const nextBtn = document.getElementById("nextBtn");
-        const resultEl = document.getElementById("result");
-        const quizEl = document.getElementById("quiz");
-
-        let selectedChoiceIndex = null;
-        let locked = false;
-        let currentRenderedChoices = []; // nouveau
-
-        function renderQuestion() {
-            const q = questions[currentIndex];
-            questionEl.textContent = q.question;
-            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
-
-            choicesEl.innerHTML = "";
-            selectedChoiceIndex = null;
-            locked = false;
-            nextBtn.disabled = true;
-
-            // on crée un tableau { text, isCorrect } puis on le mélange
-            currentRenderedChoices = shuffle(
-                q.choices.map((text, idx) => ({
-                    text,
-                    isCorrect: idx === q.correctIndex
-                }))
-            );
-
-            currentRenderedChoices.forEach((choiceObj, index) => {
-                const btn = document.createElement("button");
-                btn.className = "choice-btn";
-                btn.textContent = choiceObj.text;
-                btn.addEventListener("click", () => handleChoiceClick(index));
-                choicesEl.appendChild(btn);
-            });
-        }
-
-        function handleChoiceClick(index) {
-            if (locked) return;
-
-            selectedChoiceIndex = index;
-            nextBtn.disabled = false;
-
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-            buttons.forEach((btn, i) => {
-                btn.classList.toggle("selected", i === index);
-            });
-        }
-
-        function validateAnswer() {
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-
-            if (selectedChoiceIndex === null) return;
-
-            locked = true;
-            nextBtn.disabled = false;
-
-            // on trouve l’index du bouton correct dans l’ordre mélangé
-            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
-
-            buttons.forEach((btn, i) => {
-                btn.classList.remove("selected");
-                if (i === correctRenderedIndex) {
-                    btn.classList.add("correct");
-                }
-                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-                    btn.classList.add("incorrect");
-                }
-            });
-
-            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-            if (isCorrect) {
-                score += 1;
-            }
-
-            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-            userAnswers.push({
-                question: questions[currentIndex].question,
-                chosen: currentRenderedChoices[selectedChoiceIndex].text,
-                correct: currentRenderedChoices[correctRenderedIndex].text,
-                isCorrect
-            });
-        }
-
-        function showResult() {
-            const total = questions.length;
-            const noteSur40 = score;
-
-            quizEl.style.display = "none";
-            resultEl.style.display = "block";
-
-            let html = `
-        <h2>Résultats</h2>
-        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / ${TOTAL_QUESTIONS}</strong>.</p>
-        <p>Résumé des réponses :</p>
-      `;
-
-            userAnswers.forEach((entry, index) => {
-                html += `
-          <div class="summary-item">
-            <strong>Q${index + 1}.</strong> ${entry.question}<br>
-            Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
-              ${entry.chosen} (${entry.isCorrect ? "Juste" : "Faux"})
-            </span><br>
-            Bonne réponse : <strong>${entry.correct}</strong>
-          </div>
-        `;
-            });
-
-            html += `
-        <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
-      `;
-
-            resultEl.innerHTML = html;
-        }
-
-        function restartQuiz() {
-            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-            currentIndex = 0;
-            score = 0;
-            userAnswers = [];
-
-            quizEl.style.display = "block";
-            resultEl.style.display = "none";
-
-            nextBtn.textContent = "Valider";
-            renderQuestion();
-        }
-
-        nextBtn.addEventListener("click", () => {
-            if (!locked) {
-                validateAnswer();
-                if (currentIndex < questions.length - 1) {
-                    nextBtn.textContent = "Question suivante";
-                } else {
-                    nextBtn.textContent = "Voir les résultats";
-                }
-                return;
-            }
-
-            if (currentIndex < questions.length - 1) {
-                currentIndex += 1;
-                nextBtn.textContent = "Valider";
-                renderQuestion();
-            } else {
-                showResult();
-            }
-        });
-
-        nextBtn.textContent = "Valider";
-        renderQuestion();
-    </script>
-	<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  // ⚠️ même config que dans auth.html
-  const firebaseConfig = {
-    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
-    authDomain: "qcm-examen-civique-db.firebaseapp.com",
-    projectId: "qcm-examen-civique-db",
-    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
-    messagingSenderId: "899569839204",
-    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
-    measurementId: "G-S92WT27FBT"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // Pas connecté -> retour à la page de connexion
-      window.location.href = "auth.html";
-    } else {
-      // Optionnel : tu peux afficher le mail ou autre
-      console.log("Connecté :", user.email);
-    }
+    <script type="module">
+  import { initQuiz } from "./quiz-engine.js";
+  const ALL_QUESTIONS = [{
+                  question: "Quel était le surnom de Louis XIV ?",
+                  choices: [
+                      "Le Roi-Soleil, en référence à son pouvoir central et à la grandeur de son règne en Europe.",
+                      "Le Bon Roi, en référence à sa proximité supposée avec le peuple et à sa politique généreuse.",
+                      "Le Conquérant, en référence à ses nombreuses campagnes militaires victorieuses hors d’Europe.",
+                      "Le Sage, en référence à son retrait du pouvoir et à son rôle de conseiller des autres monarques."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel roi de France a été exécuté pendant la Révolution française ?",
+                  choices: [
+                      "Louis XVI, condamné à mort et guillotiné en 1793 après la chute de la monarchie.",
+                      "Louis XV, déposé par l’Assemblée et exécuté publiquement pour haute trahison.",
+                      "Louis XIV, renversé par les révolutionnaires au début de la Révolution française.",
+                      "Charles X, jugé par le peuple parisien et exécuté à la fin de son règne."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année Napoléon Ier est-il devenu empereur ?",
+                  choices: [
+                      "En 1804, lors de son sacre à Notre-Dame de Paris qui marque la naissance du Premier Empire.",
+                      "En 1789, à la suite des événements de la Révolution qui le portent au pouvoir suprême.",
+                      "En 1815, après son retour de l’île d’Elbe et sa victoire définitive sur les monarchies européennes.",
+                      "En 1792, lorsque la République le désigne comme chef d’État avec le titre d’empereur."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lequel de ces personnages a un lien direct avec la République française ?",
+                  choices: [
+                      "Marianne, figure allégorique qui incarne la République et ses valeurs de liberté et de citoyenneté.",
+                      "Jeanne d’Arc, héroïne médiévale liée principalement à la monarchie et à la guerre de Cent Ans.",
+                      "Louis XIV, monarque absolu dont le règne précède la naissance des institutions républicaines.",
+                      "Charlemagne, souverain du Moyen Âge associé à l’Empire carolingien et à l’unité chrétienne."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "De quand date l'appel à la résistance du général de Gaulle ?",
+                  choices: [
+                      "Du 18 juin 1940, date symbolique à laquelle il invite les Français à poursuivre le combat depuis Londres.",
+                      "Du 11 novembre 1918, au moment de l’armistice mettant fin à la Première Guerre mondiale.",
+                      "Du 8 mai 1945, jour de la capitulation de l’Allemagne nazie en Europe et de la fin des combats.",
+                      "Du 14 juillet 1789, en lien avec la prise de la Bastille et le début de la Révolution française."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Pourquoi la Shoah est-elle étudiée à l'école ?",
+                  choices: [
+                      "Pour rappeler les crimes nazis, comprendre le génocide des Juifs et lutter contre l’antisémitisme et toutes les formes de racisme.",
+                      "Pour analyser principalement les tactiques militaires utilisées par les armées pendant la Seconde Guerre mondiale.",
+                      "Pour présenter de manière détaillée les rites et les pratiques religieuses propres au judaïsme.",
+                      "Pour justifier le recours à la guerre comme moyen légitime de résoudre les conflits internationaux."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays a été colonisé par la France ?",
+                  choices: [
+                      "L’Algérie, qui a été colonisée au XIXᵉ siècle et a obtenu son indépendance en 1962 après une guerre violente.",
+                      "Le Portugal, intégré de force à l’Empire colonial français au début du XXᵉ siècle.",
+                      "La Suède, annexée par la France à l’époque de la Révolution et de l’Empire napoléonien.",
+                      "Le Japon, placé sous administration coloniale française à la suite de la Seconde Guerre mondiale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Depuis quand les Français élisent-ils le président de la République au suffrage universel direct ?",
+                  choices: [
+                      "Depuis l’élection de 1965, à la suite d’une réforme voulue sous la présidence du général de Gaulle.",
+                      "Depuis 1789, dès la mise en place des premières institutions issues de la Révolution française.",
+                      "Depuis 1945, au lendemain de la Seconde Guerre mondiale et de la Libération du territoire.",
+                      "Depuis 2002, lorsqu’a été instauré le quinquennat et le nouveau mode de scrutin présidentiel."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la première étape de la construction européenne en 1951 ?",
+                  choices: [
+                      "La création de la CECA, qui met en commun la production de charbon et d’acier entre plusieurs pays européens.",
+                      "La création de l’euro, monnaie unique adoptée immédiatement par l’ensemble des États de l’Union.",
+                      "La création de l’OTAN, alliance militaire transatlantique tournée vers la défense collective.",
+                      "La création de l’ONU, organisation chargée de maintenir la paix et la sécurité internationale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Durant le mandat de quel président la peine de mort a-t-elle été abolie ?",
+                  choices: [
+                      "François Mitterrand, sous la présidence duquel la loi de 1981 met fin à la peine capitale en France.",
+                      "Charles de Gaulle, qui a supprimé la peine de mort dès la mise en place de la Cinquième République.",
+                      "Valéry Giscard d’Estaing, qui a fait voter l’abolition à la fin de son septennat présidentiel.",
+                      "Jacques Chirac, qui a rétabli puis à nouveau aboli la peine de mort au cours de ses deux mandats."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel régime politique a été mis en place pendant la Révolution française en 1792 ?",
+                  choices: [
+                      "La Première République, proclamée après la chute de la monarchie et le renversement de Louis XVI.",
+                      "La première monarchie constitutionnelle, qui instaure immédiatement un roi élu par les citoyens.",
+                      "Le Second Empire, établi par Napoléon III à la suite d’un plébiscite national favorable.",
+                      "La Cinquième République, fondée pour répondre à la crise politique liée à la guerre d’Algérie."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était une figure majeure de la Résistance française pendant la Seconde Guerre mondiale ?",
+                  choices: [
+                      "Jean Moulin, chargé d’unifier les mouvements de résistance intérieure sous l’autorité de la France libre.",
+                      "Louis XIV, souverain qui a dirigé la France à l’époque de la guerre de Trente Ans et des guerres de religion.",
+                      "Napoléon III, empereur qui a mené une politique d’expansion mais avant la Première Guerre mondiale.",
+                      "Philippe Pétain, chef de l’État français de Vichy, qui a collaboré avec l’Allemagne nazie."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
+                  choices: [
+                      "Elles ont obtenu le droit de vote et d’éligibilité, droit qui sera exercé pour la première fois en 1945.",
+                      "Elles ont été légalement obligées de travailler à plein temps dans l’industrie de guerre.",
+                      "Elles ont perdu la possibilité de se marier sans l’accord préalable des autorités militaires.",
+                      "Elles ont bénéficié d’une gratuité permanente des transports publics sur l’ensemble du territoire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle organisation internationale a été créée en 1945 après la Seconde Guerre mondiale ?",
+                  choices: [
+                      "L’Organisation des Nations unies (ONU), chargée de favoriser la paix, la coopération et la sécurité internationales.",
+                      "L’Union européenne, regroupant immédiatement tous les États d’Europe dans une union politique complète.",
+                      "L’OTAN, alliance militaire qui s’est constituée avant la guerre pour empêcher tout conflit mondial.",
+                      "La Banque mondiale, établissement chargé exclusivement de la reconstruction de la France après la guerre."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle peine a été supprimée en 1981 en France ?",
+                  choices: [
+                      "La peine de mort, définitivement abolie par la loi et ensuite inscrite dans la Constitution.",
+                      "La prison à vie, remplacée par des peines uniquement limitées dans le temps pour tous les crimes.",
+                      "Les amendes pénales, jugées contraires aux principes de la Déclaration des droits de l’homme.",
+                      "Les travaux d’intérêt général, supprimés au profit de peines exclusivement privatives de liberté."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année l'euro est-elle devenue la monnaie utilisée en France sous forme de pièces et de billets ?",
+                  choices: [
+                      "En 2002, année de la mise en circulation concrète de l’euro dans la vie quotidienne des citoyens.",
+                      "En 1999, année où les pièces et les billets en euro ont été tout de suite distribués au public.",
+                      "En 1990, année de la décision politique d’abandonner le franc pour adopter une monnaie commune.",
+                      "En 2010, année à partir de laquelle tous les pays du monde ont adopté l’euro comme référence."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année a commencé la Première Guerre mondiale ?",
+                  choices: [
+                      "En 1914, à la suite de l’assassinat de l’archiduc François-Ferdinand et du jeu des alliances.",
+                      "En 1918, avec la reprise des combats après une période de trêve imposée par les belligérants.",
+                      "En 1939, lorsque l’Allemagne envahit la Pologne et déclenche la Seconde Guerre mondiale.",
+                      "En 1945, au moment de la capitulation du Japon et de la fin du conflit mondial."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où a eu lieu le débarquement allié en 1944 ?",
+                  choices: [
+                      "En Normandie, sur les plages de la Manche, lors de l’opération Overlord du 6 juin 1944.",
+                      "En Provence uniquement, lors d’une opération maritime destinée à remonter vers le nord de la France.",
+                      "En Corse, qui a servi de principal point d’appui logistique pour toutes les opérations en Europe.",
+                      "En Bretagne, sur toute la côte atlantique, afin de libérer directement les grands ports français."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel continent a été le plus concerné par la décolonisation française après la Seconde Guerre mondiale ?",
+                  choices: [
+                      "L’Afrique, où de nombreux territoires autrefois colonisés par la France sont devenus indépendants.",
+                      "L’Asie, où la plupart des anciennes colonies françaises sont restées durablement sous tutelle.",
+                      "L’Amérique du Sud, qui regroupait l’essentiel des possessions coloniales françaises historiques.",
+                      "L’Océanie, qui concentrait la majorité des départements et territoires français à décoloniser."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que fête-t-on le 8 mai en France ?",
+                  choices: [
+                      "La fin de la Seconde Guerre mondiale en Europe, marquée par la capitulation de l’Allemagne en 1945.",
+                      "La fin de la Première Guerre mondiale et la signature de l’armistice de 1918.",
+                      "La prise de la Bastille et le début des événements de la Révolution française.",
+                      "La fondation officielle de la République française moderne par la Constitution de 1958."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle mer ou océan borde la France métropolitaine ?",
+                  choices: [
+                      "L’océan Atlantique, qui longe la façade ouest de la France de la Bretagne au Pays basque.",
+                      "La mer Noire, qui sépare directement la France de plusieurs pays d’Europe de l’Est.",
+                      "La mer Caspienne, située entre la France et les États du Caucase et d’Asie centrale.",
+                      "L’océan Indien, qui entoure la France métropolitaine par sa façade méridionale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays a une frontière terrestre avec la France métropolitaine ?",
+                  choices: [
+                      "L’Espagne, qui partage une frontière avec la France au niveau de la chaîne des Pyrénées.",
+                      "Le Danemark, relié à la France par une frontière directe au nord de l’Allemagne.",
+                      "La Pologne, qui possède une limite terrestre commune avec la France en Europe de l’Est.",
+                      "La Grèce, qui borde la France sur sa façade méditerranéenne par une frontière terrestre."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle ville française est un important port maritime ?",
+                  choices: [
+                      "Marseille, grand port de commerce et de passagers sur la Méditerranée.",
+                      "Lyon, située à l’intérieur des terres au confluent du Rhône et de la Saône.",
+                      "Toulouse, implantée près de la Garonne mais sans accès direct à la mer.",
+                      "Clermont-Ferrand, ville au cœur du Massif central éloignée de tout littoral."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle mer se situe entre la France et l'Angleterre ?",
+                  choices: [
+                      "La Manche, bras de mer qui sépare la France du Royaume-Uni au nord-ouest.",
+                      "La mer Noire, située entre l’Europe orientale et le Caucase.",
+                      "La mer Baltique, située au nord de l’Europe entre les pays scandinaves.",
+                      "La mer Rouge, qui relie la Méditerranée à l’océan Indien via le canal de Suez."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'appelle-t-on la France d'outre-mer ?",
+                  choices: [
+                      "Des territoires français situés en dehors du continent européen, répartis dans différents océans.",
+                      "Des régions françaises très éloignées de Paris mais situées intégralement en Europe.",
+                      "Des anciennes colonies devenues indépendantes et n’ayant plus aucun lien juridique avec la France.",
+                      "Des bases militaires françaises installées temporairement à l’étranger pour des opérations."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle chaîne de montagnes est située entre la France et l’Espagne ?",
+                  choices: [
+                      "Les Pyrénées, massif qui forme une barrière naturelle entre les deux pays.",
+                      "Les Alpes, qui séparent principalement la France de l’Italie et de la Suisse.",
+                      "Le Jura, qui constitue une frontière naturelle entre la France et l’Allemagne.",
+                      "Le Massif central, situé au cœur de la France loin des frontières."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle île française se trouve dans l'océan Indien ?",
+                  choices: [
+                      "La Réunion, département français situé à l’est de Madagascar dans l’océan Indien.",
+                      "La Corse, île française située en Méditerranée occidentale, proche de l’Italie.",
+                      "La Guadeloupe, archipel français situé dans la mer des Caraïbes, près des Amériques.",
+                      "La Martinique, département français situé dans les Antilles, en mer des Caraïbes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la population approximative de la France en 2025 ?",
+                  choices: [
+                      "Environ 68 millions d’habitants, selon les estimations démographiques récentes.",
+                      "Environ 10 millions d’habitants, après une forte baisse de la population.",
+                      "Environ 120 millions d’habitants, la France étant devenue l’État le plus peuplé d’Europe.",
+                      "Environ 30 millions d’habitants, la moitié de la population ayant quitté le territoire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel fleuve traverse Paris ?",
+                  choices: [
+                      "La Seine, qui coule à travers la capitale avant de se jeter dans la Manche.",
+                      "La Loire, qui traverse surtout le centre de la France en passant par Orléans et Nantes.",
+                      "Le Rhône, qui prend sa source en Suisse et traverse Lyon avant de rejoindre la Méditerranée.",
+                      "La Garonne, qui passe notamment par Toulouse et Bordeaux avant d’atteindre l’océan Atlantique."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lequel de ces pays partage une frontière terrestre avec la France ?",
+                  choices: [
+                      "L’Allemagne, qui borde la France à l’est en particulier en Alsace et en Lorraine.",
+                      "Le Portugal, qui est séparé de la France par l’Espagne et n’a pas de frontière directe.",
+                      "La Suède, qui se situe en Scandinavie sans frontière terrestre avec la France.",
+                      "La Finlande, qui se trouve au nord de l’Europe à distance de la France."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays a une frontière avec la France métropolitaine au nord-est ?",
+                  choices: [
+                      "L’Allemagne, qui partage une frontière avec la France dans la région du Grand Est.",
+                      "L’Espagne, qui est frontalière de la France principalement au sud-ouest.",
+                      "L’Italie, qui est frontalière de la France au niveau des Alpes.",
+                      "La Suisse, qui a une frontière avec la France mais plus au centre-est."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où se concentrent les principales activités économiques en France ?",
+                  choices: [
+                      "Dans les grandes villes et les régions fortement urbanisées, comme l’Île-de-France et les grandes métropoles.",
+                      "Uniquement dans les zones rurales et les villages isolés, loin des centres urbains.",
+                      "Exclusivement dans les ports maritimes, qui concentrent toute l’activité industrielle.",
+                      "Principalement dans les zones de montagne, qui regroupent l’essentiel des emplois."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Parmi ces pays, lequel attire le plus de visiteurs chaque année ?",
+                  choices: [
+                      "La France, qui est l’un des pays les plus visités au monde pour ses paysages et son patrimoine.",
+                      "La Norvège, qui accueille beaucoup plus de touristes que tous les autres pays européens.",
+                      "La Roumanie, qui est devenue la première destination mondiale pour le tourisme de masse.",
+                      "La Bulgarie, qui concentre la majorité des flux touristiques internationaux sur ses côtes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où habite la majorité des Français ?",
+                  choices: [
+                      "En ville ou en zone urbaine, dans des agglomérations de tailles différentes.",
+                      "À la campagne isolée, loin de toute agglomération ou service public.",
+                      "En montagne, dans de petits villages situés en altitude toute l’année.",
+                      "En bord de mer, dans les stations balnéaires sur l’ensemble du littoral."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle région est la plus peuplée de France ?",
+                  choices: [
+                      "L’Île-de-France, qui comprend notamment Paris et sa grande agglomération.",
+                      "La Bretagne, qui concentre la majorité de la population française actuelle.",
+                      "La Corse, qui est devenue la région la plus densément peuplée du pays.",
+                      "La Bourgogne-Franche-Comté, qui regroupe la majorité des grandes villes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle ville française fait partie des 10 plus grandes métropoles du pays ?",
+                  choices: [
+                      "Lyon, grande métropole située au confluent du Rhône et de la Saône.",
+                      "Biarritz, petite station balnéaire de la côte basque avec une population réduite.",
+                      "Calais, port de la Manche mais de taille plus modeste en nombre d’habitants.",
+                      "Bastia, ville de Corse dont la population reste limitée à l’échelle nationale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Lequel de ces départements de France est l’un des plus touristiques ?",
+                  choices: [
+                      "Paris, qui accueille de très nombreux visiteurs français et étrangers chaque année.",
+                      "La Creuse, département rural peu peuplé et peu fréquenté par les touristes.",
+                      "La Meuse, principalement marquée par les sites de mémoire de la Grande Guerre.",
+                      "La Haute-Marne, territoire rural avec un tourisme beaucoup plus limité."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quand peut-on visiter gratuitement certains lieux culturels en France (musées nationaux, selon les cas) ?",
+                  choices: [
+                      "Le premier dimanche de certains mois, selon la politique de chaque musée ou période de l’année.",
+                      "Uniquement le 25 décembre, jour où tous les musées nationaux ouvrent gratuitement leurs portes.",
+                      "Jamais, l’accès aux musées nationaux étant systématiquement payant pour tous les publics.",
+                      "Seulement la nuit, lorsque les musées organisent des visites obligatoires pour les habitants."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Combien de personnes parlent français dans le monde (ordre de grandeur) ?",
+                  choices: [
+                      "Environ 320 millions de personnes, en tenant compte des locuteurs sur plusieurs continents.",
+                      "Environ 10 millions de personnes, concentrées essentiellement en Europe occidentale.",
+                      "Environ 50 millions de personnes, la langue étant très peu diffusée hors de la France.",
+                      "Plus d’un milliard de personnes, ce qui en fait la langue la plus parlée au monde."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était Marguerite Yourcenar ?",
+                  choices: [
+                      "Une écrivaine française, première femme élue à l’Académie française en 1980.",
+                      "Une femme politique française, qui a occupé la fonction de Première ministre.",
+                      "Une actrice française, connue principalement pour son rôle dans le cinéma muet.",
+                      "Une scientifique française, célèbre pour ses travaux sur la physique nucléaire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel peintre est français ?",
+                  choices: [
+                      "Claude Monet, l’un des principaux représentants du mouvement impressionniste.",
+                      "Pablo Picasso, artiste d’origine espagnole associé à la naissance du cubisme.",
+                      "Vincent Van Gogh, peintre néerlandais ayant séjourné en France mais resté hollandais.",
+                      "Salvador Dalí, peintre surréaliste espagnol connu pour ses œuvres oniriques."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel musée est situé à Paris ?",
+                  choices: [
+                      "Le musée du Louvre, l’un des plus grands musées d’art au monde, situé au cœur de la capitale.",
+                      "Le musée du Prado, grand musée national installé dans la capitale espagnole Madrid.",
+                      "Le British Museum, important musée d’histoire et d’art situé à Londres, au Royaume-Uni.",
+                      "Le Rijksmuseum, grand musée national néerlandais situé à Amsterdam."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était Auguste Rodin ?",
+                  choices: [
+                      "Un sculpteur français, auteur notamment de « Le Penseur » et « Le Baiser ».",
+                      "Un écrivain français, connu surtout pour ses romans du XIXᵉ siècle.",
+                      "Un musicien français, célèbre pour ses œuvres symphoniques romantiques.",
+                      "Un homme politique français, qui a exercé les fonctions de président de la République."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le classement approximatif de la langue française parmi les langues les plus parlées dans le monde (vers 2020–2026) ?",
+                  choices: [
+                      "Elle fait partie des cinq langues les plus parlées au monde, se situant autour de la quatrième place.",
+                      "Elle se situe autour de la vingtième place, loin derrière la plupart des langues régionales.",
+                      "Elle est la première langue la plus parlée au monde, devant l’anglais et le mandarin.",
+                      "Elle n’est parlée que par quelques millions de personnes, principalement en France métropolitaine."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle cathédrale célèbre a été en partie détruite par un incendie en 2019 ?",
+                  choices: [
+                      "Notre-Dame de Paris, dont la charpente et la flèche ont été gravement endommagées.",
+                      "La cathédrale de Chartres, entièrement détruite par le feu avant d’être reconstruite.",
+                      "La cathédrale de Reims, qui a été ravagée par un incendie à la fin du XXᵉ siècle.",
+                      "La cathédrale de Strasbourg, entièrement fermée depuis l’incendie de 2019."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était une écrivaine française célèbre ?",
+                  choices: [
+                      "Simone de Beauvoir, philosophe et romancière engagée, figure du mouvement féministe.",
+                      "Victor Hugo, auteur de nombreux romans et poèmes, mais connu comme écrivain masculin.",
+                      "Georges Brassens, poète et chanteur français reconnu pour ses chansons engagées.",
+                      "Claude Debussy, compositeur français associé au courant musical impressionniste."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était un célèbre musicien français ?",
+                  choices: [
+                      "Claude Debussy, compositeur français dont l’œuvre marque profondément la musique du XXᵉ siècle.",
+                      "Ludwig van Beethoven, compositeur allemand emblématique de la période classique.",
+                      "Wolfgang Amadeus Mozart, compositeur autrichien prolifique de la période classique.",
+                      "Frédéric Chopin, compositeur et pianiste d’origine polonaise, associé à la musique romantique."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui était Auguste Renoir ?",
+                  choices: [
+                      "Un peintre français impressionniste, connu pour ses scènes de la vie quotidienne et ses portraits.",
+                      "Un écrivain français symboliste, principalement connu pour ses essais philosophiques.",
+                      "Un architecte français, auteur de la plupart des grands monuments parisiens du XIXᵉ siècle.",
+                      "Un homme politique français, qui a joué un rôle majeur dans la fondation de la Cinquième République."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle fête est spécifiquement liée à l’histoire de la France ?",
+                  choices: [
+                      "La fête nationale du 14 juillet, qui commémore la prise de la Bastille et la Révolution française.",
+                      "Thanksgiving, fête traditionnelle célébrée principalement aux États-Unis et au Canada.",
+                      "La fête de la Saint-Patrick, célébration associée à la culture irlandaise et à ses traditions.",
+                      "La fête de la Mi-Automne, célébration traditionnelle dans plusieurs pays d’Asie de l’Est."
+                  ],
+                  correctIndex: 0
+              }
+          ];
+  
+          // --------------------------------------------------------
+          // 2) Mélange aléatoire (Fisher–Yates)
+          // --------------------------------------------------------
+          function shuffle(array) {
+              const arr = [...array];
+              for (let i = arr.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [arr[i], arr[j]] = [arr[j], arr[i]];
+              }
+              return arr;
+          }
+  
+          const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+  initQuiz({
+    questionsBank: ALL_QUESTIONS,
+    totalQuestions: TOTAL_QUESTIONS,
+    selectors: {
+      quiz: "#quiz",
+      progress: "#progress",
+      question: "#question",
+      choices: "#choices",
+      nextBtn: "#nextBtn",
+      result: "#result",
+    },
   });
 </script>
+	<script type="module" src="auth-guard.js"></script>
 </body>
 
 </html>

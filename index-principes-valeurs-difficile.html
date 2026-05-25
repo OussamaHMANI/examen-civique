@@ -5,204 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Principes et valeurs de la République</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .quiz-container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #progress {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 12px;
-        }
-
-        #question {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .choice-btn {
-            text-align: left;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-            width: 100%;
-        }
-
-        .choice-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .choice-btn.selected {
-            border-color: #2563eb;
-            background: #e0ecff;
-        }
-
-        .choice-btn.correct {
-            background: #16a34a;
-            color: #fff;
-            border-color: #15803d;
-        }
-
-        .choice-btn.incorrect {
-            background: #dc2626;
-            color: #fff;
-            border-color: #b91c1c;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: 8px;
-        }
-
-        #nextBtn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        #nextBtn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        #nextBtn:hover:not(:disabled) {
-            background: #1d4ed8;
-        }
-
-        #result {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        #result h2 {
-            margin-top: 0;
-        }
-
-        .summary-item {
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-        }
-
-        .tag-good {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        .tag-bad {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .restart-btn {
-            margin-top: 12px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #6b7280;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .home-btn {
-            display: inline-block;
-            margin: 12px 16px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            color: #111827;
-            font-size: 0.9rem;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .home-btn:hover {
-            background: #e5e7eb;
-        }
-
-        /* Responsive mobile */
-        @media (max-width: 640px) {
-            body {
-                padding: 12px;
-            }
-
-            .quiz-container {
-                padding: 16px 14px;
-            }
-
-            h1 {
-                font-size: 1.25rem;
-            }
-
-            #question {
-                font-size: 1rem;
-            }
-
-            .choice-btn {
-                font-size: 0.9rem;
-                padding: 10px;
-            }
-
-            #controls {
-                justify-content: center;
-            }
-
-            #nextBtn {
-                width: 100%;
-                border-radius: 999px;
-            }
-
-            .home-btn {
-                margin: 10px 12px;
-                width: calc(100% - 24px);
-                text-align: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -224,614 +27,436 @@
         <div id="result"></div>
     </div>
 
-    <script>
-        // --------------------------------------------------------
-        // 1) Banque de questions : Principes et valeurs (40 questions)
-        // --------------------------------------------------------
-        const ALL_QUESTIONS = [{
-                question: "Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",
-                choices: [
-                    "Participer au vote lors des élections pour choisir ses représentants aux différents niveaux de la vie publique.",
-                    "Regarder régulièrement les informations à la télévision sans jamais prendre part aux décisions collectives.",
-                    "Partir en vacances à l’étranger pour découvrir d’autres cultures sans s’intéresser à la vie politique.",
-                    "Faire ses courses au supermarché en profitant des promotions proposées par les grandes enseignes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que garantit la liberté d’expression ?",
-                choices: [
-                    "Le droit d’exprimer ses opinions, de critiquer et de débattre publiquement, dans le respect des lois en vigueur.",
-                    "Le droit d’insulter les autres publiquement sans jamais pouvoir être poursuivi ou sanctionné.",
-                    "Le droit de publier volontairement des informations mensongères, même si elles nuisent à autrui.",
-                    "Le droit d’appeler à la violence ou à la haine envers une personne ou un groupe de personnes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À quoi sert un titre de séjour ?",
-                choices: [
-                    "À permettre à un étranger de résider légalement en France, éventuellement d’y travailler, selon le type de titre.",
-                    "À bénéficier de trajets gratuits en train et dans les transports publics sur l’ensemble du territoire.",
-                    "À voter aux élections politiques françaises au même titre que les citoyens de nationalité française.",
-                    "À devenir automatiquement agent de la fonction publique sans concours ni conditions particulières."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "La liberté de circulation permet à toute personne de :",
-                choices: [
-                    "Se déplacer et s’installer librement sur le territoire français, dans le respect de la loi et des contrôles légitimes.",
-                    "Refuser tout contrôle d’identité de la police, même lorsqu’il est légalement justifié.",
-                    "Entrer sans autorisation dans tous les lieux privés, y compris les logements et locaux professionnels.",
-                    "Passer toutes les frontières internationales sans passeport, sans visa et sans respecter les formalités."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Sur quel site internet peut-on retrouver le symbole de la République française ?",
-                choices: [
-                    "Sur le site officiel de l’administration française, notamment le portail www.service-public.fr.",
-                    "Sur n’importe quel site de petites annonces entre particuliers consacré à la vente d’objets divers.",
-                    "Sur un réseau social privé dont le contenu est géré uniquement par des utilisateurs anonymes.",
-                    "Uniquement sur le site internet d’un parti politique qui se réclame des valeurs républicaines."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Complétez ces paroles de la Marseillaise : « Aux armes […] ! Formez vos bataillons »",
-                choices: [
-                    "citoyens, appelés à se lever pour défendre la patrie dans l’hymne national français.",
-                    "soldats, désignés comme seuls responsables de la défense du pays dans le chant officiel.",
-                    "Français, mentionnés pour rappeler l’origine géographique des personnes mobilisées.",
-                    "amis, évoqués pour insister sur la solidarité entre proches dans les moments difficiles."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Complétez les paroles de la Marseillaise : « Allons enfants de la patrie […] »",
-                choices: [
-                    "le jour de gloire est arrivé, vers qui ouvre le premier couplet de l’hymne national.",
-                    "la France est notre pays, phrase qui insiste sur l’identité nationale des chanteurs.",
-                    "marchons tous vers la victoire, formule qui remplace l’appel à la défense de la patrie.",
-                    "unis pour la liberté, expression qui résume l’ensemble du message de la Marseillaise."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En application de la liberté individuelle, quelle proposition est correcte ? Une personne peut :",
-                choices: [
-                    "choisir librement son mode de vie, ses opinions et ses choix personnels tant qu’elle respecte la loi.",
-                    "être arrêtée sans motif valable, sans décision de justice et sans aucune garantie de défense.",
-                    "être mariée de force par sa famille, même si elle s’y oppose clairement et explicitement.",
-                    "être fouillée sans aucune raison par n’importe qui, sans cadre légal ni contrôle judiciaire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Concernant la pratique de la religion, quelle proposition est correcte ?",
-                choices: [
-                    "Chacun est libre de croire, de ne pas croire ou de changer de religion, dans le respect des lois de la République.",
-                    "Tout le monde doit obligatoirement adhérer à une religion reconnue par l’État pour être un bon citoyen.",
-                    "L’État impose une religion officielle que tous les habitants sont tenus de pratiquer.",
-                    "Seules certaines religions autorisées par un décret spécial peuvent être pratiquées en France."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En tant que parent, peut-on refuser que son enfant participe aux cours de sport à l'école car ils sont mixtes ?",
-                choices: [
-                    "Non, car la mixité filles-garçons fait partie des règles de l’école publique et du principe d’égalité.",
-                    "Oui, à condition d’en informer le professeur et de fournir un simple mot signé par la famille.",
-                    "Oui, si l’enfant déclare ne pas aimer l’activité physique et préfère rester en étude surveillée.",
-                    "Oui, si l’on obtient un certificat de complaisance sans justification médicale sérieuse."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la devise de la France ?",
-                choices: [
-                    "Liberté, Égalité, Fraternité, devise inscrite dans les textes et sur de nombreux bâtiments publics.",
-                    "Paix, Travail, Justice, formule utilisée par certains États mais pas par la République française.",
-                    "Unité, Force, Progrès, devise symbolique employée dans d’autres contextes politiques.",
-                    "Travail, Famille, Patrie, devise associée notamment au régime de Vichy pendant la guerre."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "La répudiation de sa femme est :",
-                choices: [
-                    "interdite par la loi française, qui reconnaît l’égalité des époux et encadre la rupture du mariage.",
-                    "autorisée avec l’accord de la famille, même si la personne concernée n’est pas d’accord.",
-                    "possible uniquement devant le maire, qui peut valider un divorce prononcé unilatéralement.",
-                    "tolérée dans certaines régions dès lors qu’il s’agit d’une coutume locale ancienne."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Les impôts permettent de financer les dépenses publiques. Quelle proposition est correcte ?",
-                choices: [
-                    "Ils financent notamment les écoles, hôpitaux, routes, services de sécurité et autres services publics.",
-                    "Ils sont versés directement sur le compte personnel du président de la République et de ses conseillers.",
-                    "Ils servent uniquement à payer les retraites des fonctionnaires et les salaires des élus.",
-                    "Ils sont facultatifs pour les personnes qui estiment que les services publics ne les concernent pas."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Peut-on brûler publiquement un drapeau français ?",
-                choices: [
-                    "Non, c’est un délit puni par la loi lorsqu’il s’agit d’un acte d’outrage envers le drapeau national.",
-                    "Oui, c’est toujours autorisé car cela relève de la liberté d’expression sans aucune limite.",
-                    "Oui, mais exclusivement le 14 juillet lors des cérémonies organisées par les autorités.",
-                    "Oui, si l’on demande l’autorisation préalable au maire de la commune concernée."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que fait l’État pour lutter contre les discriminations ?",
-                choices: [
-                    "Il interdit les discriminations et peut poursuivre et sanctionner ceux qui les commettent.",
-                    "Il laisse chaque entreprise décider librement si elle souhaite traiter différemment certains salariés.",
-                    "Il autorise officiellement certaines discriminations lorsqu’elles semblent avantageuses économiquement.",
-                    "Il n’a aucun rôle en la matière et laisse uniquement les associations gérer ces situations."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que représente Marianne ?",
-                choices: [
-                    "La République française, ses valeurs de liberté, d’égalité et de fraternité, sous la forme d’un visage de femme.",
-                    "Une reine de France qui a marqué l’histoire de la monarchie par ses réformes politiques.",
-                    "Une sainte protectrice chargée de défendre religieusement le territoire national.",
-                    "Une héroïne de roman choisie comme symbole par un écrivain du XIXᵉ siècle."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est-ce que la liberté d'association ?",
-                choices: [
-                    "Le droit de créer, de rejoindre ou de quitter une association dans le cadre fixé par la loi.",
-                    "L’obligation pour chaque citoyen d’adhérer à au moins une association reconnue d’utilité publique.",
-                    "Le droit de refuser d’appliquer la loi dès lors que l’on agit au nom d’une association.",
-                    "Le droit d’organiser des réunions publiques sans aucune règle de sécurité ni déclaration."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est-ce que la liberté ?",
-                choices: [
-                    "Le droit de faire tout ce qui ne nuit pas à autrui, dans le respect des lois et des droits des autres.",
-                    "Le droit de faire tout ce que l’on veut, même si cela porte atteinte aux autres ou aux règles communes.",
-                    "Le droit de ne jamais obéir aux lois, quels que soient les enjeux collectifs ou individuels.",
-                    "Le droit de refuser systématiquement de respecter les autres dans la vie quotidienne."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est-ce que la Marseillaise ?",
-                choices: [
-                    "L’hymne national français, chant patriotique né à l’époque de la Révolution.",
-                    "Le drapeau tricolore, symbole visuel officiel de la République française.",
-                    "La devise nationale française, inscrite sur les frontons de nombreux bâtiments publics.",
-                    "Une ancienne monnaie française utilisée avant la création de l’euro."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Sur quel document peut-on voir Marianne ?",
-                choices: [
-                    "Sur certains timbres-poste, pièces de monnaie et dans les mairies ou bâtiments officiels.",
-                    "Uniquement sur les billets de banque étrangers qui rendent hommage à la France.",
-                    "Seulement dans quelques livres d’histoire, lorsqu’elle est étudiée en classe.",
-                    "Uniquement sur les passeports étrangers délivrés aux ressortissants francophones."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Un employeur refuse d’embaucher des femmes dans son entreprise. Que dit la loi ?",
-                choices: [
-                    "C’est une discrimination fondée sur le sexe, interdite et sanctionnée par le droit du travail.",
-                    "C’est acceptable si l’employeur le justifie par ses préférences personnelles.",
-                    "C’est autorisé pour les petites entreprises qui ne souhaitent pas recruter de femmes.",
-                    "C’est autorisé si les femmes concernées déclarent qu’elles ne se sentent pas discriminées."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Une des valeurs de la devise républicaine est l'égalité. Qu'est-ce que cela signifie ?",
-                choices: [
-                    "Tous les citoyens sont égaux en droits et en devoirs devant la loi, sans privilège de naissance.",
-                    "Certains citoyens disposent de plus de droits que d’autres en fonction de leur origine sociale.",
-                    "Les hommes bénéficient de droits plus étendus que les femmes dans la plupart des domaines.",
-                    "Seuls les Français nés en France possèdent de véritables droits civiques et sociaux."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la place de la langue française dans la République ?",
-                choices: [
-                    "C’est la langue officielle de la République, utilisée notamment par l’administration et les institutions.",
-                    "C’est une langue régionale parmi d’autres, sans statut particulier dans la Constitution.",
-                    "Elle n’a aucun statut juridique et n’est pas mentionnée dans les textes fondamentaux.",
-                    "Elle est seulement utilisée dans les tribunaux, mais pas dans les autres services publics."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quels sont des symboles officiels de la République française ?",
-                choices: [
-                    "Le drapeau tricolore, la Marseillaise, Marianne et la devise Liberté-Égalité-Fraternité.",
-                    "Le coq gaulois, l’ancien franc et le château de Versailles comme résidence royale.",
-                    "La baguette de pain, le fromage et le béret comme symboles de la vie quotidienne.",
-                    "Le lion couronné, la couronne royale et l’hymne européen comme signes d’union."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "A-t-on le droit d'insulter publiquement quelqu’un parce qu’il est différent (handicap, apparence physique, sexe…) ?",
-                choices: [
-                    "Non, ces insultes peuvent constituer une infraction et sont interdites et punies par la loi.",
-                    "Oui, c’est une forme normale de liberté d’expression qui ne peut jamais être limitée.",
-                    "Oui, si ces propos sont diffusés uniquement sur internet et non dans l’espace public.",
-                    "Oui, si cela se fait dans une discussion privée, même en présence de nombreuses personnes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Le régime de la France est :",
-                choices: [
-                    "Une République démocratique, fondée sur la souveraineté du peuple et la séparation des pouvoirs.",
-                    "Une monarchie absolue, où le chef de l’État détient l’ensemble des pouvoirs sans contrôle.",
-                    "Une dictature militaire, dirigée exclusivement par les forces armées du pays.",
-                    "Un empire héréditaire, transmis de génération en génération au sein d’une même famille."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
-                choices: [
-                    "Pour garantir la neutralité de l’école et le respect de toutes les convictions des élèves et des familles.",
-                    "Pour obliger tous les élèves à adopter la même religion que leurs enseignants.",
-                    "Pour interdire toute discussion ou enseignement lié à l’histoire des religions.",
-                    "Pour privilégier une religion officielle au détriment de toutes les autres."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",
-                choices: [
-                    "En 1905, date de la loi qui consacre la laïcité et la neutralité de l’État en matière religieuse.",
-                    "En 1789, dès le début de la Révolution française et avant toute autre réforme.",
-                    "En 1958, au moment de l’adoption de la Constitution de la Cinquième République.",
-                    "En 1918, à la fin de la Première Guerre mondiale et de la signature de l’armistice."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
-                choices: [
-                    "Oui, c’est la liberté de conscience : chacun peut ne pas avoir de religion ou en changer.",
-                    "Non, tout le monde doit obligatoirement appartenir à une religion reconnue.",
-                    "Oui, mais seulement à partir de 18 ans, après accord de l’administration.",
-                    "Oui, mais seulement si sa famille et son entourage donnent leur autorisation."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel droit est garanti par la laïcité ?",
-                choices: [
-                    "La liberté de conscience et de religion, c’est-à-dire le droit de croire ou de ne pas croire.",
-                    "L’obligation pour tous les citoyens de pratiquer régulièrement une religion.",
-                    "Le droit pour l’État d’imposer une religion officielle à l’ensemble de la population.",
-                    "Le droit pour une religion dominante de diriger directement les institutions publiques."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À l'école publique, qui peut porter des signes religieux très visibles ?",
-                choices: [
-                    "Ni les élèves ni les personnels, car la loi impose la neutralité religieuse dans l’enceinte scolaire.",
-                    "Seuls les enseignants, à condition qu’ils ne parlent pas de leur religion en classe.",
-                    "Tous les élèves, sans restriction, même si cela perturbe le bon fonctionnement de l’école.",
-                    "Tout le monde, sans règle particulière, même lors des examens et cérémonies officielles."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Selon le principe de laïcité, que signifie la neutralité de l’État ?",
-                choices: [
-                    "L’État ne favorise ni ne discrimine aucune religion et traite toutes les convictions de manière égale.",
-                    "L’État choisit une religion officielle qu’il soutient plus que les autres.",
-                    "L’État interdit purement et simplement toutes les religions sur son territoire.",
-                    "L’État délègue la rédaction des lois aux responsables religieux les plus influents."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que peut faire un usager du service public dans une mairie ?",
-                choices: [
-                    "Être accueilli et traité de la même façon, quels que soient sa religion, son origine ou ses opinions.",
-                    "Exiger que le service public applique strictement les règles de sa propre religion.",
-                    "Refuser de parler avec un agent d’une autre origine ou d’une autre confession.",
-                    "Obliger les autres usagers à adopter ses propres croyances ou pratiques religieuses."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",
-                choices: [
-                    "L’ensemble des agents du service public, pendant l’exercice de leurs fonctions.",
-                    "Uniquement le préfet, les autres agents restant libres d’afficher leurs convictions.",
-                    "Uniquement les usagers étrangers, les citoyens français n’étant pas concernés.",
-                    "Uniquement les agents croyants, les autres n’ayant aucune obligation en la matière."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",
-                choices: [
-                    "Oui, ils doivent s’abstenir de manifester une préférence religieuse dans l’exercice de leurs missions.",
-                    "Non, ils peuvent mettre en avant leur religion dans toutes leurs décisions administratives.",
-                    "Oui, mais uniquement pendant les principales fêtes religieuses du calendrier.",
-                    "Non, cette obligation concerne exclusivement les élus et non les fonctionnaires."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que garantit le principe de laïcité ?",
-                choices: [
-                    "La liberté de croire ou de ne pas croire et l’égalité de tous devant la loi quelles que soient les convictions.",
-                    "La supériorité d’une religion par rapport aux autres dans l’organisation de la société.",
-                    "L’interdiction de toute référence à la religion dans la vie privée et familiale.",
-                    "Le pouvoir pour les religions de contrôler directement les institutions de l’État."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "A-t-on le droit de changer de religion ?",
-                choices: [
-                    "Oui, chacun est libre de changer, de choisir ou d’abandonner sa religion au cours de sa vie.",
-                    "Non, on doit obligatoirement conserver la religion de ses parents toute sa vie.",
-                    "Oui, mais uniquement une fois, après quoi tout changement devient interdit.",
-                    "Oui, si l’État et les autorités religieuses donnent conjointement leur accord."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que représente la laïcité ?",
-                choices: [
-                    "Un principe qui permet la coexistence de toutes les convictions dans le respect de la loi et de la neutralité de l’État.",
-                    "Une religion officielle qui remplacerait l’ensemble des autres religions pratiquées.",
-                    "L’interdiction totale de toute pratique religieuse sur le territoire français.",
-                    "Un simple conseil moral sans valeur juridique, que chacun suit ou non librement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est ce qui est interdit par la Charte de la laïcité à l'école ?",
-                choices: [
-                    "Le prosélytisme et toute tentative d’imposer sa religion ou ses convictions aux autres élèves ou aux personnels.",
-                    "L’enseignement de l’histoire des religions dans un cadre scolaire encadré par des programmes officiels.",
-                    "La discussion respectueuse entre élèves à propos de leurs croyances et de leurs opinions.",
-                    "La présence d’élèves de religions différentes dans une même classe ou un même établissement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que dit l'article 1er de la Constitution française ?",
-                choices: [
-                    "Que la France est une République indivisible, laïque, démocratique et sociale, assurant l’égalité devant la loi.",
-                    "Que la France est une monarchie parlementaire dirigée par un roi et un Parlement.",
-                    "Que la France reconnaît une religion officielle qui inspire la totalité de ses lois.",
-                    "Que seuls les hommes peuvent être citoyens et exercer pleinement leurs droits politiques."
-                ],
-                correctIndex: 0
-            }
-        ];
-        // --------------------------------------------------------
-        // 2) Mélange aléatoire (Fisher–Yates)
-        // --------------------------------------------------------
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-		
-        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
-        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-
-        // --------------------------------------------------------
-        // 3) Logique du quiz
-        // --------------------------------------------------------
-        let currentIndex = 0;
-        let score = 0;
-        let userAnswers = [];
-
-        const progressEl = document.getElementById("progress");
-        const questionEl = document.getElementById("question");
-        const choicesEl = document.getElementById("choices");
-        const nextBtn = document.getElementById("nextBtn");
-        const resultEl = document.getElementById("result");
-        const quizEl = document.getElementById("quiz");
-
-        let selectedChoiceIndex = null;
-        let locked = false;
-        let currentRenderedChoices = []; // nouveau
-
-        function renderQuestion() {
-            const q = questions[currentIndex];
-            questionEl.textContent = q.question;
-            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
-
-            choicesEl.innerHTML = "";
-            selectedChoiceIndex = null;
-            locked = false;
-            nextBtn.disabled = true;
-
-            // on crée un tableau { text, isCorrect } puis on le mélange
-            currentRenderedChoices = shuffle(
-                q.choices.map((text, idx) => ({
-                    text,
-                    isCorrect: idx === q.correctIndex
-                }))
-            );
-
-            currentRenderedChoices.forEach((choiceObj, index) => {
-                const btn = document.createElement("button");
-                btn.className = "choice-btn";
-                btn.textContent = choiceObj.text;
-                btn.addEventListener("click", () => handleChoiceClick(index));
-                choicesEl.appendChild(btn);
-            });
-        }
-
-        function handleChoiceClick(index) {
-            if (locked) return;
-
-            selectedChoiceIndex = index;
-            nextBtn.disabled = false;
-
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-            buttons.forEach((btn, i) => {
-                btn.classList.toggle("selected", i === index);
-            });
-        }
-
-        function validateAnswer() {
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-
-            if (selectedChoiceIndex === null) return;
-
-            locked = true;
-            nextBtn.disabled = false;
-
-            // on trouve l’index du bouton correct dans l’ordre mélangé
-            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
-
-            buttons.forEach((btn, i) => {
-                btn.classList.remove("selected");
-                if (i === correctRenderedIndex) {
-                    btn.classList.add("correct");
-                }
-                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-                    btn.classList.add("incorrect");
-                }
-            });
-
-            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-            if (isCorrect) {
-                score += 1;
-            }
-
-            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-            userAnswers.push({
-                question: questions[currentIndex].question,
-                chosen: currentRenderedChoices[selectedChoiceIndex].text,
-                correct: currentRenderedChoices[correctRenderedIndex].text,
-                isCorrect
-            });
-        }
-
-        function showResult() {
-            const total = questions.length;
-            const noteSur40 = score;
-
-            quizEl.style.display = "none";
-            resultEl.style.display = "block";
-
-            let html = `
-        <h2>Résultats</h2>
-        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / ${TOTAL_QUESTIONS}</strong>.</p>
-        <p>Résumé des réponses :</p>
-      `;
-
-            userAnswers.forEach((entry, index) => {
-                html += `
-          <div class="summary-item">
-            <strong>Q${index + 1}.</strong> ${entry.question}<br>
-            Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
-              ${entry.chosen} (${entry.isCorrect ? "Juste" : "Faux"})
-            </span><br>
-            Bonne réponse : <strong>${entry.correct}</strong>
-          </div>
-        `;
-            });
-
-            html += `
-        <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
-      `;
-
-            resultEl.innerHTML = html;
-        }
-
-        function restartQuiz() {
-            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-            currentIndex = 0;
-            score = 0;
-            userAnswers = [];
-
-            quizEl.style.display = "block";
-            resultEl.style.display = "none";
-
-            nextBtn.textContent = "Valider";
-            renderQuestion();
-        }
-
-        nextBtn.addEventListener("click", () => {
-            if (!locked) {
-                validateAnswer();
-                if (currentIndex < questions.length - 1) {
-                    nextBtn.textContent = "Question suivante";
-                } else {
-                    nextBtn.textContent = "Voir les résultats";
-                }
-                return;
-            }
-
-            if (currentIndex < questions.length - 1) {
-                currentIndex += 1;
-                nextBtn.textContent = "Valider";
-                renderQuestion();
-            } else {
-                showResult();
-            }
-        });
-
-        nextBtn.textContent = "Valider";
-        renderQuestion();
-    </script>
-	<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  // ⚠️ même config que dans auth.html
-  const firebaseConfig = {
-    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
-    authDomain: "qcm-examen-civique-db.firebaseapp.com",
-    projectId: "qcm-examen-civique-db",
-    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
-    messagingSenderId: "899569839204",
-    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
-    measurementId: "G-S92WT27FBT"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // Pas connecté -> retour à la page de connexion
-      window.location.href = "auth.html";
-    } else {
-      // Optionnel : tu peux afficher le mail ou autre
-      console.log("Connecté :", user.email);
-    }
+    <script type="module">
+  import { initQuiz } from "./quiz-engine.js";
+  const ALL_QUESTIONS = [{
+                  question: "Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",
+                  choices: [
+                      "Participer au vote lors des élections pour choisir ses représentants aux différents niveaux de la vie publique.",
+                      "Regarder régulièrement les informations à la télévision sans jamais prendre part aux décisions collectives.",
+                      "Partir en vacances à l’étranger pour découvrir d’autres cultures sans s’intéresser à la vie politique.",
+                      "Faire ses courses au supermarché en profitant des promotions proposées par les grandes enseignes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que garantit la liberté d’expression ?",
+                  choices: [
+                      "Le droit d’exprimer ses opinions, de critiquer et de débattre publiquement, dans le respect des lois en vigueur.",
+                      "Le droit d’insulter les autres publiquement sans jamais pouvoir être poursuivi ou sanctionné.",
+                      "Le droit de publier volontairement des informations mensongères, même si elles nuisent à autrui.",
+                      "Le droit d’appeler à la violence ou à la haine envers une personne ou un groupe de personnes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À quoi sert un titre de séjour ?",
+                  choices: [
+                      "À permettre à un étranger de résider légalement en France, éventuellement d’y travailler, selon le type de titre.",
+                      "À bénéficier de trajets gratuits en train et dans les transports publics sur l’ensemble du territoire.",
+                      "À voter aux élections politiques françaises au même titre que les citoyens de nationalité française.",
+                      "À devenir automatiquement agent de la fonction publique sans concours ni conditions particulières."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "La liberté de circulation permet à toute personne de :",
+                  choices: [
+                      "Se déplacer et s’installer librement sur le territoire français, dans le respect de la loi et des contrôles légitimes.",
+                      "Refuser tout contrôle d’identité de la police, même lorsqu’il est légalement justifié.",
+                      "Entrer sans autorisation dans tous les lieux privés, y compris les logements et locaux professionnels.",
+                      "Passer toutes les frontières internationales sans passeport, sans visa et sans respecter les formalités."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Sur quel site internet peut-on retrouver le symbole de la République française ?",
+                  choices: [
+                      "Sur le site officiel de l’administration française, notamment le portail www.service-public.fr.",
+                      "Sur n’importe quel site de petites annonces entre particuliers consacré à la vente d’objets divers.",
+                      "Sur un réseau social privé dont le contenu est géré uniquement par des utilisateurs anonymes.",
+                      "Uniquement sur le site internet d’un parti politique qui se réclame des valeurs républicaines."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Complétez ces paroles de la Marseillaise : « Aux armes […] ! Formez vos bataillons »",
+                  choices: [
+                      "citoyens, appelés à se lever pour défendre la patrie dans l’hymne national français.",
+                      "soldats, désignés comme seuls responsables de la défense du pays dans le chant officiel.",
+                      "Français, mentionnés pour rappeler l’origine géographique des personnes mobilisées.",
+                      "amis, évoqués pour insister sur la solidarité entre proches dans les moments difficiles."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Complétez les paroles de la Marseillaise : « Allons enfants de la patrie […] »",
+                  choices: [
+                      "le jour de gloire est arrivé, vers qui ouvre le premier couplet de l’hymne national.",
+                      "la France est notre pays, phrase qui insiste sur l’identité nationale des chanteurs.",
+                      "marchons tous vers la victoire, formule qui remplace l’appel à la défense de la patrie.",
+                      "unis pour la liberté, expression qui résume l’ensemble du message de la Marseillaise."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En application de la liberté individuelle, quelle proposition est correcte ? Une personne peut :",
+                  choices: [
+                      "choisir librement son mode de vie, ses opinions et ses choix personnels tant qu’elle respecte la loi.",
+                      "être arrêtée sans motif valable, sans décision de justice et sans aucune garantie de défense.",
+                      "être mariée de force par sa famille, même si elle s’y oppose clairement et explicitement.",
+                      "être fouillée sans aucune raison par n’importe qui, sans cadre légal ni contrôle judiciaire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Concernant la pratique de la religion, quelle proposition est correcte ?",
+                  choices: [
+                      "Chacun est libre de croire, de ne pas croire ou de changer de religion, dans le respect des lois de la République.",
+                      "Tout le monde doit obligatoirement adhérer à une religion reconnue par l’État pour être un bon citoyen.",
+                      "L’État impose une religion officielle que tous les habitants sont tenus de pratiquer.",
+                      "Seules certaines religions autorisées par un décret spécial peuvent être pratiquées en France."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En tant que parent, peut-on refuser que son enfant participe aux cours de sport à l'école car ils sont mixtes ?",
+                  choices: [
+                      "Non, car la mixité filles-garçons fait partie des règles de l’école publique et du principe d’égalité.",
+                      "Oui, à condition d’en informer le professeur et de fournir un simple mot signé par la famille.",
+                      "Oui, si l’enfant déclare ne pas aimer l’activité physique et préfère rester en étude surveillée.",
+                      "Oui, si l’on obtient un certificat de complaisance sans justification médicale sérieuse."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la devise de la France ?",
+                  choices: [
+                      "Liberté, Égalité, Fraternité, devise inscrite dans les textes et sur de nombreux bâtiments publics.",
+                      "Paix, Travail, Justice, formule utilisée par certains États mais pas par la République française.",
+                      "Unité, Force, Progrès, devise symbolique employée dans d’autres contextes politiques.",
+                      "Travail, Famille, Patrie, devise associée notamment au régime de Vichy pendant la guerre."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "La répudiation de sa femme est :",
+                  choices: [
+                      "interdite par la loi française, qui reconnaît l’égalité des époux et encadre la rupture du mariage.",
+                      "autorisée avec l’accord de la famille, même si la personne concernée n’est pas d’accord.",
+                      "possible uniquement devant le maire, qui peut valider un divorce prononcé unilatéralement.",
+                      "tolérée dans certaines régions dès lors qu’il s’agit d’une coutume locale ancienne."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Les impôts permettent de financer les dépenses publiques. Quelle proposition est correcte ?",
+                  choices: [
+                      "Ils financent notamment les écoles, hôpitaux, routes, services de sécurité et autres services publics.",
+                      "Ils sont versés directement sur le compte personnel du président de la République et de ses conseillers.",
+                      "Ils servent uniquement à payer les retraites des fonctionnaires et les salaires des élus.",
+                      "Ils sont facultatifs pour les personnes qui estiment que les services publics ne les concernent pas."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Peut-on brûler publiquement un drapeau français ?",
+                  choices: [
+                      "Non, c’est un délit puni par la loi lorsqu’il s’agit d’un acte d’outrage envers le drapeau national.",
+                      "Oui, c’est toujours autorisé car cela relève de la liberté d’expression sans aucune limite.",
+                      "Oui, mais exclusivement le 14 juillet lors des cérémonies organisées par les autorités.",
+                      "Oui, si l’on demande l’autorisation préalable au maire de la commune concernée."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que fait l’État pour lutter contre les discriminations ?",
+                  choices: [
+                      "Il interdit les discriminations et peut poursuivre et sanctionner ceux qui les commettent.",
+                      "Il laisse chaque entreprise décider librement si elle souhaite traiter différemment certains salariés.",
+                      "Il autorise officiellement certaines discriminations lorsqu’elles semblent avantageuses économiquement.",
+                      "Il n’a aucun rôle en la matière et laisse uniquement les associations gérer ces situations."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que représente Marianne ?",
+                  choices: [
+                      "La République française, ses valeurs de liberté, d’égalité et de fraternité, sous la forme d’un visage de femme.",
+                      "Une reine de France qui a marqué l’histoire de la monarchie par ses réformes politiques.",
+                      "Une sainte protectrice chargée de défendre religieusement le territoire national.",
+                      "Une héroïne de roman choisie comme symbole par un écrivain du XIXᵉ siècle."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est-ce que la liberté d'association ?",
+                  choices: [
+                      "Le droit de créer, de rejoindre ou de quitter une association dans le cadre fixé par la loi.",
+                      "L’obligation pour chaque citoyen d’adhérer à au moins une association reconnue d’utilité publique.",
+                      "Le droit de refuser d’appliquer la loi dès lors que l’on agit au nom d’une association.",
+                      "Le droit d’organiser des réunions publiques sans aucune règle de sécurité ni déclaration."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est-ce que la liberté ?",
+                  choices: [
+                      "Le droit de faire tout ce qui ne nuit pas à autrui, dans le respect des lois et des droits des autres.",
+                      "Le droit de faire tout ce que l’on veut, même si cela porte atteinte aux autres ou aux règles communes.",
+                      "Le droit de ne jamais obéir aux lois, quels que soient les enjeux collectifs ou individuels.",
+                      "Le droit de refuser systématiquement de respecter les autres dans la vie quotidienne."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est-ce que la Marseillaise ?",
+                  choices: [
+                      "L’hymne national français, chant patriotique né à l’époque de la Révolution.",
+                      "Le drapeau tricolore, symbole visuel officiel de la République française.",
+                      "La devise nationale française, inscrite sur les frontons de nombreux bâtiments publics.",
+                      "Une ancienne monnaie française utilisée avant la création de l’euro."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Sur quel document peut-on voir Marianne ?",
+                  choices: [
+                      "Sur certains timbres-poste, pièces de monnaie et dans les mairies ou bâtiments officiels.",
+                      "Uniquement sur les billets de banque étrangers qui rendent hommage à la France.",
+                      "Seulement dans quelques livres d’histoire, lorsqu’elle est étudiée en classe.",
+                      "Uniquement sur les passeports étrangers délivrés aux ressortissants francophones."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Un employeur refuse d’embaucher des femmes dans son entreprise. Que dit la loi ?",
+                  choices: [
+                      "C’est une discrimination fondée sur le sexe, interdite et sanctionnée par le droit du travail.",
+                      "C’est acceptable si l’employeur le justifie par ses préférences personnelles.",
+                      "C’est autorisé pour les petites entreprises qui ne souhaitent pas recruter de femmes.",
+                      "C’est autorisé si les femmes concernées déclarent qu’elles ne se sentent pas discriminées."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Une des valeurs de la devise républicaine est l'égalité. Qu'est-ce que cela signifie ?",
+                  choices: [
+                      "Tous les citoyens sont égaux en droits et en devoirs devant la loi, sans privilège de naissance.",
+                      "Certains citoyens disposent de plus de droits que d’autres en fonction de leur origine sociale.",
+                      "Les hommes bénéficient de droits plus étendus que les femmes dans la plupart des domaines.",
+                      "Seuls les Français nés en France possèdent de véritables droits civiques et sociaux."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la place de la langue française dans la République ?",
+                  choices: [
+                      "C’est la langue officielle de la République, utilisée notamment par l’administration et les institutions.",
+                      "C’est une langue régionale parmi d’autres, sans statut particulier dans la Constitution.",
+                      "Elle n’a aucun statut juridique et n’est pas mentionnée dans les textes fondamentaux.",
+                      "Elle est seulement utilisée dans les tribunaux, mais pas dans les autres services publics."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quels sont des symboles officiels de la République française ?",
+                  choices: [
+                      "Le drapeau tricolore, la Marseillaise, Marianne et la devise Liberté-Égalité-Fraternité.",
+                      "Le coq gaulois, l’ancien franc et le château de Versailles comme résidence royale.",
+                      "La baguette de pain, le fromage et le béret comme symboles de la vie quotidienne.",
+                      "Le lion couronné, la couronne royale et l’hymne européen comme signes d’union."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "A-t-on le droit d'insulter publiquement quelqu’un parce qu’il est différent (handicap, apparence physique, sexe…) ?",
+                  choices: [
+                      "Non, ces insultes peuvent constituer une infraction et sont interdites et punies par la loi.",
+                      "Oui, c’est une forme normale de liberté d’expression qui ne peut jamais être limitée.",
+                      "Oui, si ces propos sont diffusés uniquement sur internet et non dans l’espace public.",
+                      "Oui, si cela se fait dans une discussion privée, même en présence de nombreuses personnes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Le régime de la France est :",
+                  choices: [
+                      "Une République démocratique, fondée sur la souveraineté du peuple et la séparation des pouvoirs.",
+                      "Une monarchie absolue, où le chef de l’État détient l’ensemble des pouvoirs sans contrôle.",
+                      "Une dictature militaire, dirigée exclusivement par les forces armées du pays.",
+                      "Un empire héréditaire, transmis de génération en génération au sein d’une même famille."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
+                  choices: [
+                      "Pour garantir la neutralité de l’école et le respect de toutes les convictions des élèves et des familles.",
+                      "Pour obliger tous les élèves à adopter la même religion que leurs enseignants.",
+                      "Pour interdire toute discussion ou enseignement lié à l’histoire des religions.",
+                      "Pour privilégier une religion officielle au détriment de toutes les autres."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",
+                  choices: [
+                      "En 1905, date de la loi qui consacre la laïcité et la neutralité de l’État en matière religieuse.",
+                      "En 1789, dès le début de la Révolution française et avant toute autre réforme.",
+                      "En 1958, au moment de l’adoption de la Constitution de la Cinquième République.",
+                      "En 1918, à la fin de la Première Guerre mondiale et de la signature de l’armistice."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
+                  choices: [
+                      "Oui, c’est la liberté de conscience : chacun peut ne pas avoir de religion ou en changer.",
+                      "Non, tout le monde doit obligatoirement appartenir à une religion reconnue.",
+                      "Oui, mais seulement à partir de 18 ans, après accord de l’administration.",
+                      "Oui, mais seulement si sa famille et son entourage donnent leur autorisation."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel droit est garanti par la laïcité ?",
+                  choices: [
+                      "La liberté de conscience et de religion, c’est-à-dire le droit de croire ou de ne pas croire.",
+                      "L’obligation pour tous les citoyens de pratiquer régulièrement une religion.",
+                      "Le droit pour l’État d’imposer une religion officielle à l’ensemble de la population.",
+                      "Le droit pour une religion dominante de diriger directement les institutions publiques."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À l'école publique, qui peut porter des signes religieux très visibles ?",
+                  choices: [
+                      "Ni les élèves ni les personnels, car la loi impose la neutralité religieuse dans l’enceinte scolaire.",
+                      "Seuls les enseignants, à condition qu’ils ne parlent pas de leur religion en classe.",
+                      "Tous les élèves, sans restriction, même si cela perturbe le bon fonctionnement de l’école.",
+                      "Tout le monde, sans règle particulière, même lors des examens et cérémonies officielles."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Selon le principe de laïcité, que signifie la neutralité de l’État ?",
+                  choices: [
+                      "L’État ne favorise ni ne discrimine aucune religion et traite toutes les convictions de manière égale.",
+                      "L’État choisit une religion officielle qu’il soutient plus que les autres.",
+                      "L’État interdit purement et simplement toutes les religions sur son territoire.",
+                      "L’État délègue la rédaction des lois aux responsables religieux les plus influents."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que peut faire un usager du service public dans une mairie ?",
+                  choices: [
+                      "Être accueilli et traité de la même façon, quels que soient sa religion, son origine ou ses opinions.",
+                      "Exiger que le service public applique strictement les règles de sa propre religion.",
+                      "Refuser de parler avec un agent d’une autre origine ou d’une autre confession.",
+                      "Obliger les autres usagers à adopter ses propres croyances ou pratiques religieuses."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",
+                  choices: [
+                      "L’ensemble des agents du service public, pendant l’exercice de leurs fonctions.",
+                      "Uniquement le préfet, les autres agents restant libres d’afficher leurs convictions.",
+                      "Uniquement les usagers étrangers, les citoyens français n’étant pas concernés.",
+                      "Uniquement les agents croyants, les autres n’ayant aucune obligation en la matière."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",
+                  choices: [
+                      "Oui, ils doivent s’abstenir de manifester une préférence religieuse dans l’exercice de leurs missions.",
+                      "Non, ils peuvent mettre en avant leur religion dans toutes leurs décisions administratives.",
+                      "Oui, mais uniquement pendant les principales fêtes religieuses du calendrier.",
+                      "Non, cette obligation concerne exclusivement les élus et non les fonctionnaires."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que garantit le principe de laïcité ?",
+                  choices: [
+                      "La liberté de croire ou de ne pas croire et l’égalité de tous devant la loi quelles que soient les convictions.",
+                      "La supériorité d’une religion par rapport aux autres dans l’organisation de la société.",
+                      "L’interdiction de toute référence à la religion dans la vie privée et familiale.",
+                      "Le pouvoir pour les religions de contrôler directement les institutions de l’État."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "A-t-on le droit de changer de religion ?",
+                  choices: [
+                      "Oui, chacun est libre de changer, de choisir ou d’abandonner sa religion au cours de sa vie.",
+                      "Non, on doit obligatoirement conserver la religion de ses parents toute sa vie.",
+                      "Oui, mais uniquement une fois, après quoi tout changement devient interdit.",
+                      "Oui, si l’État et les autorités religieuses donnent conjointement leur accord."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que représente la laïcité ?",
+                  choices: [
+                      "Un principe qui permet la coexistence de toutes les convictions dans le respect de la loi et de la neutralité de l’État.",
+                      "Une religion officielle qui remplacerait l’ensemble des autres religions pratiquées.",
+                      "L’interdiction totale de toute pratique religieuse sur le territoire français.",
+                      "Un simple conseil moral sans valeur juridique, que chacun suit ou non librement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est ce qui est interdit par la Charte de la laïcité à l'école ?",
+                  choices: [
+                      "Le prosélytisme et toute tentative d’imposer sa religion ou ses convictions aux autres élèves ou aux personnels.",
+                      "L’enseignement de l’histoire des religions dans un cadre scolaire encadré par des programmes officiels.",
+                      "La discussion respectueuse entre élèves à propos de leurs croyances et de leurs opinions.",
+                      "La présence d’élèves de religions différentes dans une même classe ou un même établissement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que dit l'article 1er de la Constitution française ?",
+                  choices: [
+                      "Que la France est une République indivisible, laïque, démocratique et sociale, assurant l’égalité devant la loi.",
+                      "Que la France est une monarchie parlementaire dirigée par un roi et un Parlement.",
+                      "Que la France reconnaît une religion officielle qui inspire la totalité de ses lois.",
+                      "Que seuls les hommes peuvent être citoyens et exercer pleinement leurs droits politiques."
+                  ],
+                  correctIndex: 0
+              }
+          ];
+          // --------------------------------------------------------
+          // 2) Mélange aléatoire (Fisher–Yates)
+          // --------------------------------------------------------
+          function shuffle(array) {
+              const arr = [...array];
+              for (let i = arr.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [arr[i], arr[j]] = [arr[j], arr[i]];
+              }
+              return arr;
+          }
+  
+          const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+  initQuiz({
+    questionsBank: ALL_QUESTIONS,
+    totalQuestions: TOTAL_QUESTIONS,
+    selectors: {
+      quiz: "#quiz",
+      progress: "#progress",
+      question: "#question",
+      choices: "#choices",
+      nextBtn: "#nextBtn",
+      result: "#result",
+    },
   });
 </script>
+	<script type="module" src="auth-guard.js"></script>
 </body>
 
 </html>

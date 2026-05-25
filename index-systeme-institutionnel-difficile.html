@@ -5,204 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QCM – Système institutionnel et politique</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .quiz-container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #progress {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 12px;
-        }
-
-        #question {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .choice-btn {
-            text-align: left;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-            width: 100%;
-        }
-
-        .choice-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .choice-btn.selected {
-            border-color: #2563eb;
-            background: #e0ecff;
-        }
-
-        .choice-btn.correct {
-            background: #16a34a;
-            color: #fff;
-            border-color: #15803d;
-        }
-
-        .choice-btn.incorrect {
-            background: #dc2626;
-            color: #fff;
-            border-color: #b91c1c;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: 8px;
-        }
-
-        #nextBtn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        #nextBtn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        #nextBtn:hover:not(:disabled) {
-            background: #1d4ed8;
-        }
-
-        #result {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        #result h2 {
-            margin-top: 0;
-        }
-
-        .summary-item {
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-        }
-
-        .tag-good {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        .tag-bad {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .restart-btn {
-            margin-top: 12px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #6b7280;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .home-btn {
-            display: inline-block;
-            margin: 12px 16px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            color: #111827;
-            font-size: 0.9rem;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .home-btn:hover {
-            background: #e5e7eb;
-        }
-
-        /* Responsive mobile */
-        @media (max-width: 640px) {
-            body {
-                padding: 12px;
-            }
-
-            .quiz-container {
-                padding: 16px 14px;
-            }
-
-            h1 {
-                font-size: 1.25rem;
-            }
-
-            #question {
-                font-size: 1rem;
-            }
-
-            .choice-btn {
-                font-size: 0.9rem;
-                padding: 10px;
-            }
-
-            #controls {
-                justify-content: center;
-            }
-
-            #nextBtn {
-                width: 100%;
-                border-radius: 999px;
-            }
-
-            .home-btn {
-                margin: 10px 12px;
-                width: calc(100% - 24px);
-                text-align: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -224,715 +27,537 @@
         <div id="result"></div>
     </div>
 
-    <script>
-        // --------------------------------------------------------
-        // 1) Banque de questions : Principes et valeurs (40 questions)
-        // --------------------------------------------------------
-        const ALL_QUESTIONS = [{
-                question: "Qu'est-ce que l'État de droit ?",
-                choices: [
-                    "Un système dans lequel chacun, y compris les gouvernants, est soumis aux lois et à leur contrôle par des juges indépendants.",
-                    "Un État dans lequel le président décide seul de l’ensemble des règles applicables aux citoyens.",
-                    "Un État dans lequel les forces de police ne sont pas tenues de respecter les lois et les procédures.",
-                    "Un système dans lequel seuls les citoyens les plus riches bénéficient réellement de droits et de protections."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Le président de la République a commis un crime. Quelle proposition est correcte ?",
-                choices: [
-                    "Il peut être poursuivi et jugé dans les conditions prévues par la Constitution, car personne n’est au-dessus de la loi.",
-                    "Il ne peut en aucun cas être jugé pendant toute la durée de son mandat, quel que soit le crime commis.",
-                    "Il est protégé à vie contre toute poursuite pénale, même après la fin de ses fonctions.",
-                    "Seul le Parlement peut lui adresser un avertissement moral, sans jamais saisir la justice."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "La loi est l'expression de :",
-                choices: [
-                    "la volonté générale, telle qu’elle résulte des représentants élus par les citoyens.",
-                    "la volonté du président, qui peut décider seul du contenu des règles à appliquer.",
-                    "la volonté des tribunaux, qui créent les lois au fil de leurs décisions de justice.",
-                    "la volonté des partis politiques, qui imposent directement leurs programmes comme lois."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la durée du mandat du conseil municipal et du maire ?",
-                choices: [
-                    "6 ans, période au terme de laquelle des élections municipales doivent être organisées.",
-                    "3 ans, avec la possibilité de renouveler automatiquement le mandat une fois.",
-                    "4 ans, avec reconduction automatique si le maire n’a pas démissionné.",
-                    "10 ans, sauf en cas de dissolution décidée par le préfet ou le gouvernement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que garantit l’État de droit ?",
-                choices: [
-                    "La protection des droits et libertés grâce à des règles juridiques stables et des juges indépendants.",
-                    "Le pouvoir illimité du gouvernement, qui peut agir sans tenir compte des lois existantes.",
-                    "L’absence totale de lois, laissant chacun fixer ses propres règles au quotidien.",
-                    "Le droit pour chaque personne de se faire justice elle-même sans passer par les tribunaux."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Une personne peut-elle voter à la place d'une autre ?",
-                choices: [
-                    "Non, c’est interdit : le vote est personnel, secret et ne peut pas être délégué.",
-                    "Oui, si la personne est un membre proche de la famille du titulaire du droit de vote.",
-                    "Oui, si la personne concernée est malade et donne son accord verbal à un proche.",
-                    "Oui, si le maire de la commune donne une autorisation écrite à cet effet."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Est-ce que le vote est obligatoire ?",
-                choices: [
-                    "Non, mais c’est un droit fondamental du citoyen, fortement encouragé en démocratie.",
-                    "Oui, sous peine de peine de prison en cas d’abstention lors d’un scrutin.",
-                    "Oui, sous peine d’amende automatique pour chaque élection manquée.",
-                    "Il n’existe pas de droit de vote en France, seules les autorités décident."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À la fin de son mandat, le président de la République peut-il décider de rester au pouvoir ?",
-                choices: [
-                    "Non, il doit se soumettre à la Constitution et au résultat des élections, comme tout responsable politique.",
-                    "Oui, s’il considère que la situation politique justifie la prolongation de son mandat.",
-                    "Oui, si le Parlement adopte une résolution lui demandant de rester en fonction.",
-                    "Oui, si les sondages d’opinion lui sont favorables et soutiennent sa décision."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui dirige l'action du Gouvernement ?",
-                choices: [
-                    "Le Premier ministre, nommé par le président de la République pour conduire la politique du gouvernement.",
-                    "Le président du Sénat, qui coordonne l’ensemble des ministres et des administrations.",
-                    "Le ministre de l’Intérieur, qui supervise tous les domaines de l’action publique.",
-                    "Le président de l’Assemblée nationale, qui donne des instructions directement aux ministres."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui nomme le Premier ministre ?",
-                choices: [
-                    "Le président de la République, qui le désigne en fonction des équilibres politiques.",
-                    "Le Parlement réuni en séance plénière, après un vote de tous les députés.",
-                    "Le Conseil constitutionnel, qui choisit le chef du gouvernement parmi les élus.",
-                    "Les maires des communes, consultés lors d’un scrutin spécifique pour ce poste."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est l'organisation administrative de la France ?",
-                choices: [
-                    "Un État central entouré de collectivités territoriales : régions, départements et communes.",
-                    "Un ensemble de royaumes et de colonies gérés séparément par des familles régnantes.",
-                    "Uniquement un État centralisé sans aucune collectivité locale dotée de compétences.",
-                    "Des provinces autonomes totalement indépendantes de l’État et de ses institutions."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est-ce que le pouvoir législatif ? Le pouvoir :",
-                choices: [
-                    "d’adopter les lois et de contrôler l’action du gouvernement dans une démocratie.",
-                    "de juger les citoyens et de prononcer les peines en matière pénale.",
-                    "de faire appliquer les lois en dirigeant l’administration au quotidien.",
-                    "de diriger les communes et de gérer les services municipaux de proximité."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Pourquoi séparer les trois pouvoirs dans une démocratie ?",
-                choices: [
-                    "Pour éviter les abus de pouvoir et garantir l’équilibre des institutions et des responsabilités.",
-                    "Pour satisfaire les demandes des partis politiques qui souhaitent plus de postes.",
-                    "Pour compliquer volontairement le fonctionnement de l’État et des services publics.",
-                    "Pour empêcher les citoyens de comprendre le système politique de leur pays."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui sanctionne l'auteur d'un vol ?",
-                choices: [
-                    "Un juge au sein des tribunaux, qui applique la loi pénale après une procédure régulière.",
-                    "Le maire de la commune, qui décide librement de la peine en fonction des circonstances.",
-                    "Le président de la République, qui fixe lui-même la sanction à appliquer.",
-                    "Le préfet du département, qui punit directement sans passer par la justice."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le rôle du gouvernement ?",
-                choices: [
-                    "Conduire la politique de la Nation et faire appliquer les lois votées par le Parlement.",
-                    "Rédiger seul la Constitution sans intervention des citoyens ou de leurs représentants.",
-                    "Contrôler les juges et modifier leurs décisions lorsqu’il n’est pas d’accord.",
-                    "Organiser uniquement les élections sans participer à d’autres politiques publiques."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
-                choices: [
-                    "Il peut être poursuivi et jugé comme tout citoyen, devant les juridictions compétentes.",
-                    "Il est protégé par sa fonction et ne risque aucune poursuite ni sanction.",
-                    "Seul le président peut le sanctionner sans passer par un juge ou un tribunal.",
-                    "Il perd automatiquement sa nationalité et doit quitter le territoire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Combien de députés composent l’Assemblée nationale ?",
-                choices: [
-                    "577 députés, élus dans des circonscriptions réparties sur le territoire.",
-                    "350 députés, désignés par les maires des grandes villes uniquement.",
-                    "750 députés, dont une majorité est nommée par le président de la République.",
-                    "120 députés, élus à vie sans possibilité de renouvellement du mandat."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui peut voter aux élections en France ?",
-                choices: [
-                    "Les citoyens français majeurs, inscrits sur les listes électorales et jouissant de leurs droits civiques.",
-                    "Toutes les personnes vivant sur le territoire, quel que soit leur statut administratif.",
-                    "Uniquement les propriétaires de leur logement depuis au moins cinq années.",
-                    "Uniquement les fonctionnaires titulaires d’un poste dans l’administration."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Pour combien de temps sont élus les sénateurs ?",
-                choices: [
-                    "6 ans, avec renouvellement partiel du Sénat tous les trois ans.",
-                    "3 ans, avec une possibilité de réélection illimitée sans condition.",
-                    "4 ans, mandat identique à celui des députés de l’Assemblée nationale.",
-                    "9 ans, avec renouvellement complet à la fin de chaque période."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
-                choices: [
-                    "Les pouvoirs législatif, exécutif et judiciaire, qui ont chacun des fonctions distinctes.",
-                    "Les pouvoirs municipal, régional et national, répartis selon la taille des territoires.",
-                    "Les pouvoirs politique, économique et religieux, partagés entre les institutions.",
-                    "Les pouvoirs présidentiel, militaire et religieux, exercés conjointement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Est-ce que le président de la République a tous les pouvoirs ?",
-                choices: [
-                    "Non, ses pouvoirs sont encadrés par la Constitution et équilibrés par les autres institutions.",
-                    "Oui, il peut décider seul de toutes les lois et de toutes les décisions publiques.",
-                    "Oui, mais uniquement en temps de paix, pas en période de crise ou de guerre.",
-                    "Oui, s’il est élu deux fois, il devient alors le seul détenteur du pouvoir."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui est le préfet ?",
-                choices: [
-                    "Le représentant de l’État dans un département ou une région, chargé d’appliquer les politiques nationales.",
-                    "Le chef élu de la commune, responsable de la gestion locale des services municipaux.",
-                    "Le président du conseil régional, élu par les citoyens de la région concernée.",
-                    "Un juge du tribunal, chargé de rendre des décisions en matière civile et pénale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle condition est nécessaire pour voter aux élections ?",
-                choices: [
-                    "Être inscrit sur les listes électorales de sa commune ou de son lieu de résidence.",
-                    "Posséder un permis de conduire en cours de validité au moment du scrutin.",
-                    "Justifier d’un emploi stable depuis au moins un an dans la même entreprise.",
-                    "Être propriétaire de son logement et à jour de toutes ses charges."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui dirige la commune ?",
-                choices: [
-                    "Le maire, élu par le conseil municipal, qui gère les affaires locales.",
-                    "Le préfet, représentant de l’État, qui décide de toutes les actions municipales.",
-                    "Le président de la République, qui supervise directement chaque commune.",
-                    "Le Premier ministre, qui nomme les responsables municipaux."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le régime politique de la France aujourd'hui ?",
-                choices: [
-                    "Une République démocratique, où les représentants sont élus au suffrage universel.",
-                    "Une monarchie absolue, dans laquelle le roi détient tous les pouvoirs.",
-                    "Une dictature militaire, dirigée exclusivement par l’armée.",
-                    "Un empire héréditaire, transmis de génération en génération."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qu'est-ce que l'Hôtel de Matignon ?",
-                choices: [
-                    "La résidence officielle et le lieu de travail du Premier ministre français.",
-                    "La résidence du président de la République et siège de la présidence.",
-                    "Le siège du Parlement, où se réunissent députés et sénateurs.",
-                    "Le siège du Conseil constitutionnel, chargé de contrôler les lois."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Le Parlement est composé :",
-                choices: [
-                    "de l’Assemblée nationale et du Sénat, qui votent les lois et contrôlent le gouvernement.",
-                    "du seul président de la République, qui décide directement des textes applicables.",
-                    "des maires de France, qui siègent en permanence pour adopter les lois locales.",
-                    "des ministres du gouvernement, qui rédigent et votent eux-mêmes les lois."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le rôle du président de la République ?",
-                choices: [
-                    "Il veille au fonctionnement régulier des pouvoirs publics et à la continuité de l’État.",
-                    "Il rédige seul toutes les lois et les applique directement sans contrôle.",
-                    "Il juge les citoyens et prononce les peines en matière pénale.",
-                    "Il dirige chaque commune et décide de tous les budgets municipaux."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le rôle du Premier ministre ?",
-                choices: [
-                    "Diriger l’action du gouvernement, coordonner les ministres et assurer l’exécution des lois.",
-                    "Commander l’ensemble des forces armées sans aucune intervention du président.",
-                    "Organiser les seules élections municipales, sans autre responsabilité.",
-                    "Rédiger la Constitution de manière unilatérale, sans vote ni débat."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Qui est le chef du Gouvernement ?",
-                choices: [
-                    "Le Premier ministre, qui dirige l’équipe gouvernementale sous l’autorité du président.",
-                    "Le président du Sénat, qui préside toutes les réunions de ministres.",
-                    "Le président de la République, qui est seulement chef du Parlement.",
-                    "Le président du Conseil constitutionnel, qui dirige les politiques publiques."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Combien y a-t-il de régions en France (métropole + outre-mer) ?",
-                choices: [
-                    "18 régions, dont 13 en métropole et 5 régions d’outre-mer.",
-                    "10 régions, réparties équitablement entre la métropole et l’outre-mer.",
-                    "22 régions, nombre resté constant depuis le début de la Cinquième République.",
-                    "25 régions, chacune disposant de sa propre Constitution et de son armée."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le rôle du Défenseur des droits ?",
-                choices: [
-                    "Protéger les droits et libertés des personnes et lutter contre les discriminations dans leurs relations avec les administrations.",
-                    "Diriger les armées et fixer la stratégie militaire de la France à l’étranger.",
-                    "Écrire les lois et proposer les révisions de la Constitution au Parlement.",
-                    "Organiser l’ensemble des élections et proclamer les résultats officiels."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Depuis quand l'euro est-elle la monnaie utilisée en France sous forme de pièces et de billets ?",
-                choices: [
-                    "Depuis 2002, date de la mise en circulation des billets et pièces en euro dans la vie quotidienne.",
-                    "Depuis 1990, année à partir de laquelle l’euro a remplacé progressivement le franc.",
-                    "Depuis 1995, lorsque la France a adopté seule l’euro avant les autres pays européens.",
-                    "Depuis 2010, après une période d’essai durant laquelle plusieurs devises coexistaient."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le rôle principal du département ?",
-                choices: [
-                    "Gérer l’action sociale, les collèges, certaines routes et des services de proximité.",
-                    "Diriger les relations diplomatiques et les ambassades à l’étranger.",
-                    "Organiser les élections présidentielles et législatives pour tout le pays.",
-                    "Commander l’armée et fixer la stratégie de défense nationale."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est le rôle principal des communes ?",
-                choices: [
-                    "Gérer les services de proximité comme l’état civil, les écoles primaires et la voirie locale.",
-                    "Voter les lois nationales et contrôler l’action du gouvernement.",
-                    "Contrôler les banques et fixer les taux d’intérêt applicables.",
-                    "Rédiger la Constitution et en proposer les modifications."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Combien de communes environ existe-t-il en France ?",
-                choices: [
-                    "Environ 35 000 communes, ce qui en fait un pays très morcelé administrativement.",
-                    "Environ 5 000 communes, regroupant chacune plusieurs millions d’habitants.",
-                    "Environ 100 000 communes, réparties de manière égale sur tout le territoire.",
-                    "Environ 500 communes, uniquement dans les grandes agglomérations urbaines."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel traité est central pour la construction de l'Union européenne ?",
-                choices: [
-                    "Le traité de Maastricht, qui renforce l’intégration européenne et crée l’Union européenne.",
-                    "Le traité de Versailles, qui met fin à la Première Guerre mondiale en 1919.",
-                    "Le traité de Yalta, qui organise le partage du monde après la Seconde Guerre mondiale.",
-                    "Le traité de Genève, qui régit principalement le droit international humanitaire."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel État a officiellement quitté l'Union européenne en 2020 ?",
-                choices: [
-                    "Le Royaume-Uni, à la suite du processus de retrait appelé communément Brexit.",
-                    "La Suisse, qui a décidé de mettre fin à tous ses accords avec l’Union européenne.",
-                    "La Norvège, qui a rompu ses relations institutionnelles avec l’Union.",
-                    "La Turquie, qui était membre fondateur et s’est retirée unilatéralement."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle est la devise de l’Union européenne ?",
-                choices: [
-                    "« Unie dans la diversité », qui met en avant l’unité des pays membres malgré leurs différences.",
-                    "« Liberté, Égalité, Fraternité », devise adoptée officiellement par l’Union.",
-                    "« In God We Trust », formule inscrite sur les documents officiels de l’Union.",
-                    "« E pluribus unum », devise latine utilisée comme slogan de l’Union européenne."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel est l'hymne de l'Union européenne ?",
-                choices: [
-                    "L’Ode à la joie de Beethoven, choisie comme symbole musical de l’unité européenne.",
-                    "La Marseillaise, hymne de la France adopté par l’ensemble des États membres.",
-                    "God Save the King, chant royal utilisé comme hymne officiel de l’Union.",
-                    "L’Hymne à la liberté, composé spécialement pour les institutions européennes."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "De quoi est composé le drapeau européen ?",
-                choices: [
-                    "D’un cercle de douze étoiles dorées sur un fond bleu uni, symbole de l’unité.",
-                    "De douze bandes horizontales bleues et jaunes représentant les États membres.",
-                    "D’étoiles rouges sur fond blanc, rappelant l’histoire militaire du continent.",
-                    "D’un aigle noir sur fond jaune, inspiré de blasons médiévaux."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "De quelle couleur est le drapeau européen ?",
-                choices: [
-                    "Bleu avec des étoiles jaunes disposées en cercle.",
-                    "Rouge avec des étoiles blanches alignées en diagonale.",
-                    "Vert avec des étoiles rouges réparties sur le fond.",
-                    "Blanc avec des rayures bleues verticales."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "En quelle année le traité de Maastricht, marquant une étape majeure de la construction européenne, a-t-il été signé ?",
-                choices: [
-                    "En 1992, avant d’entrer en vigueur quelques années plus tard.",
-                    "En 1945, immédiatement après la fin de la Seconde Guerre mondiale.",
-                    "En 1957, en même temps que la création de la Communauté économique européenne.",
-                    "En 2004, lors du grand élargissement à de nouveaux États membres."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où se tiennent les sessions plénières du Parlement européen ?",
-                choices: [
-                    "À Strasbourg, où ont lieu la plupart des sessions plénières.",
-                    "À Paris, dans l’hémicycle de l’Assemblée nationale française.",
-                    "À Rome, au sein des institutions de la République italienne.",
-                    "À Madrid, dans l’un des principaux bâtiments du gouvernement espagnol."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Où se trouve le siège de la Commission européenne ?",
-                choices: [
-                    "À Bruxelles, dans la capitale belge, au cœur des institutions de l’Union.",
-                    "À Strasbourg, dans la même ville que le Parlement européen.",
-                    "À Luxembourg, qui accueille l’ensemble des services de la Commission.",
-                    "À Berlin, en lien avec le rôle de l’Allemagne dans l’Union."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel État suivant n'est pas membre de l'Union européenne ?",
-                choices: [
-                    "La Suisse, qui a des accords avec l’Union mais n’en fait pas partie.",
-                    "L’Allemagne, qui est l’un des principaux États membres de l’Union.",
-                    "L’Italie, qui fait partie des pays fondateurs de la construction européenne.",
-                    "L’Espagne, qui a rejoint l’Union européenne dans les années 1980."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quand célèbre-t-on la journée de l'Europe ?",
-                choices: [
-                    "Le 9 mai, en mémoire de la déclaration Schuman sur la construction européenne.",
-                    "Le 1er janvier, en lien avec l’entrée en vigueur du marché unique.",
-                    "Le 14 juillet, en même temps que la fête nationale française.",
-                    "Le 25 décembre, lors des fêtes de fin d’année dans l’Union."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "À quelle fréquence les élections européennes sont-elles organisées ?",
-                choices: [
-                    "Tous les 5 ans, pour élire les députés au Parlement européen dans chaque État membre.",
-                    "Tous les 2 ans, afin de renouveler la moitié des députés européens.",
-                    "Tous les 10 ans, en même temps que les recensements de population.",
-                    "Chaque année, en alternance avec les élections nationales."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
-                choices: [
-                    "Être citoyen d’un État membre de l’Union européenne et inscrit sur les listes électorales.",
-                    "Résider en Europe depuis au moins un an, même sans nationalité d’un pays membre.",
-                    "Parler au moins trois langues européennes reconnues par les institutions.",
-                    "Posséder obligatoirement un passeport européen biométrique en cours de validité."
-                ],
-                correctIndex: 0
-            },
-            {
-                question: "Quel pays est un pays fondateur de l'Union européenne ?",
-                choices: [
-                    "La France, qui fait partie des États à l’origine des premières communautés européennes.",
-                    "La Pologne, qui a rejoint l’Union dès la signature du traité de Rome.",
-                    "La Suède, qui est membre fondateur de toutes les institutions européennes.",
-                    "La Bulgarie, qui a participé à la création de la Communauté européenne du charbon et de l’acier."
-                ],
-                correctIndex: 0
-            }
-        ];
-
-        // --------------------------------------------------------
-        // 2) Mélange aléatoire (Fisher–Yates)
-        // --------------------------------------------------------
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
-        let questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-
-        // --------------------------------------------------------
-        // 3) Logique du quiz
-        // --------------------------------------------------------
-        let currentIndex = 0;
-        let score = 0;
-        let userAnswers = [];
-
-        const progressEl = document.getElementById("progress");
-        const questionEl = document.getElementById("question");
-        const choicesEl = document.getElementById("choices");
-        const nextBtn = document.getElementById("nextBtn");
-        const resultEl = document.getElementById("result");
-        const quizEl = document.getElementById("quiz");
-
-        let selectedChoiceIndex = null;
-        let locked = false;
-        let currentRenderedChoices = []; // nouveau
-
-        function renderQuestion() {
-            const q = questions[currentIndex];
-            questionEl.textContent = q.question;
-            progressEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
-
-            choicesEl.innerHTML = "";
-            selectedChoiceIndex = null;
-            locked = false;
-            nextBtn.disabled = true;
-
-            // on crée un tableau { text, isCorrect } puis on le mélange
-            currentRenderedChoices = shuffle(
-                q.choices.map((text, idx) => ({
-                    text,
-                    isCorrect: idx === q.correctIndex
-                }))
-            );
-
-            currentRenderedChoices.forEach((choiceObj, index) => {
-                const btn = document.createElement("button");
-                btn.className = "choice-btn";
-                btn.textContent = choiceObj.text;
-                btn.addEventListener("click", () => handleChoiceClick(index));
-                choicesEl.appendChild(btn);
-            });
-        }
-
-        function handleChoiceClick(index) {
-            if (locked) return;
-
-            selectedChoiceIndex = index;
-            nextBtn.disabled = false;
-
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-            buttons.forEach((btn, i) => {
-                btn.classList.toggle("selected", i === index);
-            });
-        }
-
-        function validateAnswer() {
-            const buttons = Array.from(document.querySelectorAll(".choice-btn"));
-
-            if (selectedChoiceIndex === null) return;
-
-            locked = true;
-            nextBtn.disabled = false;
-
-            // on trouve l’index du bouton correct dans l’ordre mélangé
-            const correctRenderedIndex = currentRenderedChoices.findIndex(c => c.isCorrect);
-
-            buttons.forEach((btn, i) => {
-                btn.classList.remove("selected");
-                if (i === correctRenderedIndex) {
-                    btn.classList.add("correct");
-                }
-                if (i === selectedChoiceIndex && i !== correctRenderedIndex) {
-                    btn.classList.add("incorrect");
-                }
-            });
-
-            const isCorrect = currentRenderedChoices[selectedChoiceIndex].isCorrect;
-            if (isCorrect) {
-                score += 1;
-            }
-
-            // pour le résumé, on récupère les textes à partir de currentRenderedChoices
-            userAnswers.push({
-                question: questions[currentIndex].question,
-                chosen: currentRenderedChoices[selectedChoiceIndex].text,
-                correct: currentRenderedChoices[correctRenderedIndex].text,
-                isCorrect
-            });
-        }
-
-        function showResult() {
-            const total = questions.length;
-            const noteSur40 = score;
-
-            quizEl.style.display = "none";
-            resultEl.style.display = "block";
-
-            let html = `
-        <h2>Résultats</h2>
-        <p>Vous avez obtenu <strong>${score} / ${total}</strong>, soit une note de <strong>${noteSur40} / ${TOTAL_QUESTIONS}</strong>.</p>
-        <p>Résumé des réponses :</p>
-      `;
-
-            userAnswers.forEach((entry, index) => {
-                html += `
-          <div class="summary-item">
-            <strong>Q${index + 1}.</strong> ${entry.question}<br>
-            Votre réponse : <span class="${entry.isCorrect ? "tag-good" : "tag-bad"}">
-              ${entry.chosen} (${entry.isCorrect ? "Juste" : "Faux"})
-            </span><br>
-            Bonne réponse : <strong>${entry.correct}</strong>
-          </div>
-        `;
-            });
-
-            html += `
-        <button class="restart-btn" onclick="restartQuiz()">Recommencer un nouveau QCM</button>
-      `;
-
-            resultEl.innerHTML = html;
-        }
-
-        function restartQuiz() {
-            questions = shuffle(ALL_QUESTIONS).slice(0, TOTAL_QUESTIONS);
-            currentIndex = 0;
-            score = 0;
-            userAnswers = [];
-
-            quizEl.style.display = "block";
-            resultEl.style.display = "none";
-
-            nextBtn.textContent = "Valider";
-            renderQuestion();
-        }
-
-        nextBtn.addEventListener("click", () => {
-            if (!locked) {
-                validateAnswer();
-                if (currentIndex < questions.length - 1) {
-                    nextBtn.textContent = "Question suivante";
-                } else {
-                    nextBtn.textContent = "Voir les résultats";
-                }
-                return;
-            }
-
-            if (currentIndex < questions.length - 1) {
-                currentIndex += 1;
-                nextBtn.textContent = "Valider";
-                renderQuestion();
-            } else {
-                showResult();
-            }
-        });
-
-        nextBtn.textContent = "Valider";
-        renderQuestion();
-    </script>
-	<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  // ⚠️ même config que dans auth.html
-  const firebaseConfig = {
-    apiKey: "AIzaSyDoM5iwQU472-lX2FSX8h2Azllbq6D3vOk",
-    authDomain: "qcm-examen-civique-db.firebaseapp.com",
-    projectId: "qcm-examen-civique-db",
-    storageBucket: "qcm-examen-civique-db.firebasestorage.app",
-    messagingSenderId: "899569839204",
-    appId: "1:899569839204:web:7da2cfe9d1e66c6b620371",
-    measurementId: "G-S92WT27FBT"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // Pas connecté -> retour à la page de connexion
-      window.location.href = "auth.html";
-    } else {
-      // Optionnel : tu peux afficher le mail ou autre
-      console.log("Connecté :", user.email);
-    }
+    <script type="module">
+  import { initQuiz } from "./quiz-engine.js";
+  const ALL_QUESTIONS = [{
+                  question: "Qu'est-ce que l'État de droit ?",
+                  choices: [
+                      "Un système dans lequel chacun, y compris les gouvernants, est soumis aux lois et à leur contrôle par des juges indépendants.",
+                      "Un État dans lequel le président décide seul de l’ensemble des règles applicables aux citoyens.",
+                      "Un État dans lequel les forces de police ne sont pas tenues de respecter les lois et les procédures.",
+                      "Un système dans lequel seuls les citoyens les plus riches bénéficient réellement de droits et de protections."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Le président de la République a commis un crime. Quelle proposition est correcte ?",
+                  choices: [
+                      "Il peut être poursuivi et jugé dans les conditions prévues par la Constitution, car personne n’est au-dessus de la loi.",
+                      "Il ne peut en aucun cas être jugé pendant toute la durée de son mandat, quel que soit le crime commis.",
+                      "Il est protégé à vie contre toute poursuite pénale, même après la fin de ses fonctions.",
+                      "Seul le Parlement peut lui adresser un avertissement moral, sans jamais saisir la justice."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "La loi est l'expression de :",
+                  choices: [
+                      "la volonté générale, telle qu’elle résulte des représentants élus par les citoyens.",
+                      "la volonté du président, qui peut décider seul du contenu des règles à appliquer.",
+                      "la volonté des tribunaux, qui créent les lois au fil de leurs décisions de justice.",
+                      "la volonté des partis politiques, qui imposent directement leurs programmes comme lois."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la durée du mandat du conseil municipal et du maire ?",
+                  choices: [
+                      "6 ans, période au terme de laquelle des élections municipales doivent être organisées.",
+                      "3 ans, avec la possibilité de renouveler automatiquement le mandat une fois.",
+                      "4 ans, avec reconduction automatique si le maire n’a pas démissionné.",
+                      "10 ans, sauf en cas de dissolution décidée par le préfet ou le gouvernement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que garantit l’État de droit ?",
+                  choices: [
+                      "La protection des droits et libertés grâce à des règles juridiques stables et des juges indépendants.",
+                      "Le pouvoir illimité du gouvernement, qui peut agir sans tenir compte des lois existantes.",
+                      "L’absence totale de lois, laissant chacun fixer ses propres règles au quotidien.",
+                      "Le droit pour chaque personne de se faire justice elle-même sans passer par les tribunaux."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Une personne peut-elle voter à la place d'une autre ?",
+                  choices: [
+                      "Non, c’est interdit : le vote est personnel, secret et ne peut pas être délégué.",
+                      "Oui, si la personne est un membre proche de la famille du titulaire du droit de vote.",
+                      "Oui, si la personne concernée est malade et donne son accord verbal à un proche.",
+                      "Oui, si le maire de la commune donne une autorisation écrite à cet effet."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Est-ce que le vote est obligatoire ?",
+                  choices: [
+                      "Non, mais c’est un droit fondamental du citoyen, fortement encouragé en démocratie.",
+                      "Oui, sous peine de peine de prison en cas d’abstention lors d’un scrutin.",
+                      "Oui, sous peine d’amende automatique pour chaque élection manquée.",
+                      "Il n’existe pas de droit de vote en France, seules les autorités décident."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À la fin de son mandat, le président de la République peut-il décider de rester au pouvoir ?",
+                  choices: [
+                      "Non, il doit se soumettre à la Constitution et au résultat des élections, comme tout responsable politique.",
+                      "Oui, s’il considère que la situation politique justifie la prolongation de son mandat.",
+                      "Oui, si le Parlement adopte une résolution lui demandant de rester en fonction.",
+                      "Oui, si les sondages d’opinion lui sont favorables et soutiennent sa décision."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui dirige l'action du Gouvernement ?",
+                  choices: [
+                      "Le Premier ministre, nommé par le président de la République pour conduire la politique du gouvernement.",
+                      "Le président du Sénat, qui coordonne l’ensemble des ministres et des administrations.",
+                      "Le ministre de l’Intérieur, qui supervise tous les domaines de l’action publique.",
+                      "Le président de l’Assemblée nationale, qui donne des instructions directement aux ministres."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui nomme le Premier ministre ?",
+                  choices: [
+                      "Le président de la République, qui le désigne en fonction des équilibres politiques.",
+                      "Le Parlement réuni en séance plénière, après un vote de tous les députés.",
+                      "Le Conseil constitutionnel, qui choisit le chef du gouvernement parmi les élus.",
+                      "Les maires des communes, consultés lors d’un scrutin spécifique pour ce poste."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est l'organisation administrative de la France ?",
+                  choices: [
+                      "Un État central entouré de collectivités territoriales : régions, départements et communes.",
+                      "Un ensemble de royaumes et de colonies gérés séparément par des familles régnantes.",
+                      "Uniquement un État centralisé sans aucune collectivité locale dotée de compétences.",
+                      "Des provinces autonomes totalement indépendantes de l’État et de ses institutions."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est-ce que le pouvoir législatif ? Le pouvoir :",
+                  choices: [
+                      "d’adopter les lois et de contrôler l’action du gouvernement dans une démocratie.",
+                      "de juger les citoyens et de prononcer les peines en matière pénale.",
+                      "de faire appliquer les lois en dirigeant l’administration au quotidien.",
+                      "de diriger les communes et de gérer les services municipaux de proximité."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Pourquoi séparer les trois pouvoirs dans une démocratie ?",
+                  choices: [
+                      "Pour éviter les abus de pouvoir et garantir l’équilibre des institutions et des responsabilités.",
+                      "Pour satisfaire les demandes des partis politiques qui souhaitent plus de postes.",
+                      "Pour compliquer volontairement le fonctionnement de l’État et des services publics.",
+                      "Pour empêcher les citoyens de comprendre le système politique de leur pays."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui sanctionne l'auteur d'un vol ?",
+                  choices: [
+                      "Un juge au sein des tribunaux, qui applique la loi pénale après une procédure régulière.",
+                      "Le maire de la commune, qui décide librement de la peine en fonction des circonstances.",
+                      "Le président de la République, qui fixe lui-même la sanction à appliquer.",
+                      "Le préfet du département, qui punit directement sans passer par la justice."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le rôle du gouvernement ?",
+                  choices: [
+                      "Conduire la politique de la Nation et faire appliquer les lois votées par le Parlement.",
+                      "Rédiger seul la Constitution sans intervention des citoyens ou de leurs représentants.",
+                      "Contrôler les juges et modifier leurs décisions lorsqu’il n’est pas d’accord.",
+                      "Organiser uniquement les élections sans participer à d’autres politiques publiques."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
+                  choices: [
+                      "Il peut être poursuivi et jugé comme tout citoyen, devant les juridictions compétentes.",
+                      "Il est protégé par sa fonction et ne risque aucune poursuite ni sanction.",
+                      "Seul le président peut le sanctionner sans passer par un juge ou un tribunal.",
+                      "Il perd automatiquement sa nationalité et doit quitter le territoire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Combien de députés composent l’Assemblée nationale ?",
+                  choices: [
+                      "577 députés, élus dans des circonscriptions réparties sur le territoire.",
+                      "350 députés, désignés par les maires des grandes villes uniquement.",
+                      "750 députés, dont une majorité est nommée par le président de la République.",
+                      "120 députés, élus à vie sans possibilité de renouvellement du mandat."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui peut voter aux élections en France ?",
+                  choices: [
+                      "Les citoyens français majeurs, inscrits sur les listes électorales et jouissant de leurs droits civiques.",
+                      "Toutes les personnes vivant sur le territoire, quel que soit leur statut administratif.",
+                      "Uniquement les propriétaires de leur logement depuis au moins cinq années.",
+                      "Uniquement les fonctionnaires titulaires d’un poste dans l’administration."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Pour combien de temps sont élus les sénateurs ?",
+                  choices: [
+                      "6 ans, avec renouvellement partiel du Sénat tous les trois ans.",
+                      "3 ans, avec une possibilité de réélection illimitée sans condition.",
+                      "4 ans, mandat identique à celui des députés de l’Assemblée nationale.",
+                      "9 ans, avec renouvellement complet à la fin de chaque période."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
+                  choices: [
+                      "Les pouvoirs législatif, exécutif et judiciaire, qui ont chacun des fonctions distinctes.",
+                      "Les pouvoirs municipal, régional et national, répartis selon la taille des territoires.",
+                      "Les pouvoirs politique, économique et religieux, partagés entre les institutions.",
+                      "Les pouvoirs présidentiel, militaire et religieux, exercés conjointement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Est-ce que le président de la République a tous les pouvoirs ?",
+                  choices: [
+                      "Non, ses pouvoirs sont encadrés par la Constitution et équilibrés par les autres institutions.",
+                      "Oui, il peut décider seul de toutes les lois et de toutes les décisions publiques.",
+                      "Oui, mais uniquement en temps de paix, pas en période de crise ou de guerre.",
+                      "Oui, s’il est élu deux fois, il devient alors le seul détenteur du pouvoir."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui est le préfet ?",
+                  choices: [
+                      "Le représentant de l’État dans un département ou une région, chargé d’appliquer les politiques nationales.",
+                      "Le chef élu de la commune, responsable de la gestion locale des services municipaux.",
+                      "Le président du conseil régional, élu par les citoyens de la région concernée.",
+                      "Un juge du tribunal, chargé de rendre des décisions en matière civile et pénale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle condition est nécessaire pour voter aux élections ?",
+                  choices: [
+                      "Être inscrit sur les listes électorales de sa commune ou de son lieu de résidence.",
+                      "Posséder un permis de conduire en cours de validité au moment du scrutin.",
+                      "Justifier d’un emploi stable depuis au moins un an dans la même entreprise.",
+                      "Être propriétaire de son logement et à jour de toutes ses charges."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui dirige la commune ?",
+                  choices: [
+                      "Le maire, élu par le conseil municipal, qui gère les affaires locales.",
+                      "Le préfet, représentant de l’État, qui décide de toutes les actions municipales.",
+                      "Le président de la République, qui supervise directement chaque commune.",
+                      "Le Premier ministre, qui nomme les responsables municipaux."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le régime politique de la France aujourd'hui ?",
+                  choices: [
+                      "Une République démocratique, où les représentants sont élus au suffrage universel.",
+                      "Une monarchie absolue, dans laquelle le roi détient tous les pouvoirs.",
+                      "Une dictature militaire, dirigée exclusivement par l’armée.",
+                      "Un empire héréditaire, transmis de génération en génération."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qu'est-ce que l'Hôtel de Matignon ?",
+                  choices: [
+                      "La résidence officielle et le lieu de travail du Premier ministre français.",
+                      "La résidence du président de la République et siège de la présidence.",
+                      "Le siège du Parlement, où se réunissent députés et sénateurs.",
+                      "Le siège du Conseil constitutionnel, chargé de contrôler les lois."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Le Parlement est composé :",
+                  choices: [
+                      "de l’Assemblée nationale et du Sénat, qui votent les lois et contrôlent le gouvernement.",
+                      "du seul président de la République, qui décide directement des textes applicables.",
+                      "des maires de France, qui siègent en permanence pour adopter les lois locales.",
+                      "des ministres du gouvernement, qui rédigent et votent eux-mêmes les lois."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le rôle du président de la République ?",
+                  choices: [
+                      "Il veille au fonctionnement régulier des pouvoirs publics et à la continuité de l’État.",
+                      "Il rédige seul toutes les lois et les applique directement sans contrôle.",
+                      "Il juge les citoyens et prononce les peines en matière pénale.",
+                      "Il dirige chaque commune et décide de tous les budgets municipaux."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le rôle du Premier ministre ?",
+                  choices: [
+                      "Diriger l’action du gouvernement, coordonner les ministres et assurer l’exécution des lois.",
+                      "Commander l’ensemble des forces armées sans aucune intervention du président.",
+                      "Organiser les seules élections municipales, sans autre responsabilité.",
+                      "Rédiger la Constitution de manière unilatérale, sans vote ni débat."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Qui est le chef du Gouvernement ?",
+                  choices: [
+                      "Le Premier ministre, qui dirige l’équipe gouvernementale sous l’autorité du président.",
+                      "Le président du Sénat, qui préside toutes les réunions de ministres.",
+                      "Le président de la République, qui est seulement chef du Parlement.",
+                      "Le président du Conseil constitutionnel, qui dirige les politiques publiques."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Combien y a-t-il de régions en France (métropole + outre-mer) ?",
+                  choices: [
+                      "18 régions, dont 13 en métropole et 5 régions d’outre-mer.",
+                      "10 régions, réparties équitablement entre la métropole et l’outre-mer.",
+                      "22 régions, nombre resté constant depuis le début de la Cinquième République.",
+                      "25 régions, chacune disposant de sa propre Constitution et de son armée."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le rôle du Défenseur des droits ?",
+                  choices: [
+                      "Protéger les droits et libertés des personnes et lutter contre les discriminations dans leurs relations avec les administrations.",
+                      "Diriger les armées et fixer la stratégie militaire de la France à l’étranger.",
+                      "Écrire les lois et proposer les révisions de la Constitution au Parlement.",
+                      "Organiser l’ensemble des élections et proclamer les résultats officiels."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Depuis quand l'euro est-elle la monnaie utilisée en France sous forme de pièces et de billets ?",
+                  choices: [
+                      "Depuis 2002, date de la mise en circulation des billets et pièces en euro dans la vie quotidienne.",
+                      "Depuis 1990, année à partir de laquelle l’euro a remplacé progressivement le franc.",
+                      "Depuis 1995, lorsque la France a adopté seule l’euro avant les autres pays européens.",
+                      "Depuis 2010, après une période d’essai durant laquelle plusieurs devises coexistaient."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le rôle principal du département ?",
+                  choices: [
+                      "Gérer l’action sociale, les collèges, certaines routes et des services de proximité.",
+                      "Diriger les relations diplomatiques et les ambassades à l’étranger.",
+                      "Organiser les élections présidentielles et législatives pour tout le pays.",
+                      "Commander l’armée et fixer la stratégie de défense nationale."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est le rôle principal des communes ?",
+                  choices: [
+                      "Gérer les services de proximité comme l’état civil, les écoles primaires et la voirie locale.",
+                      "Voter les lois nationales et contrôler l’action du gouvernement.",
+                      "Contrôler les banques et fixer les taux d’intérêt applicables.",
+                      "Rédiger la Constitution et en proposer les modifications."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Combien de communes environ existe-t-il en France ?",
+                  choices: [
+                      "Environ 35 000 communes, ce qui en fait un pays très morcelé administrativement.",
+                      "Environ 5 000 communes, regroupant chacune plusieurs millions d’habitants.",
+                      "Environ 100 000 communes, réparties de manière égale sur tout le territoire.",
+                      "Environ 500 communes, uniquement dans les grandes agglomérations urbaines."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel traité est central pour la construction de l'Union européenne ?",
+                  choices: [
+                      "Le traité de Maastricht, qui renforce l’intégration européenne et crée l’Union européenne.",
+                      "Le traité de Versailles, qui met fin à la Première Guerre mondiale en 1919.",
+                      "Le traité de Yalta, qui organise le partage du monde après la Seconde Guerre mondiale.",
+                      "Le traité de Genève, qui régit principalement le droit international humanitaire."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel État a officiellement quitté l'Union européenne en 2020 ?",
+                  choices: [
+                      "Le Royaume-Uni, à la suite du processus de retrait appelé communément Brexit.",
+                      "La Suisse, qui a décidé de mettre fin à tous ses accords avec l’Union européenne.",
+                      "La Norvège, qui a rompu ses relations institutionnelles avec l’Union.",
+                      "La Turquie, qui était membre fondateur et s’est retirée unilatéralement."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle est la devise de l’Union européenne ?",
+                  choices: [
+                      "« Unie dans la diversité », qui met en avant l’unité des pays membres malgré leurs différences.",
+                      "« Liberté, Égalité, Fraternité », devise adoptée officiellement par l’Union.",
+                      "« In God We Trust », formule inscrite sur les documents officiels de l’Union.",
+                      "« E pluribus unum », devise latine utilisée comme slogan de l’Union européenne."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel est l'hymne de l'Union européenne ?",
+                  choices: [
+                      "L’Ode à la joie de Beethoven, choisie comme symbole musical de l’unité européenne.",
+                      "La Marseillaise, hymne de la France adopté par l’ensemble des États membres.",
+                      "God Save the King, chant royal utilisé comme hymne officiel de l’Union.",
+                      "L’Hymne à la liberté, composé spécialement pour les institutions européennes."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "De quoi est composé le drapeau européen ?",
+                  choices: [
+                      "D’un cercle de douze étoiles dorées sur un fond bleu uni, symbole de l’unité.",
+                      "De douze bandes horizontales bleues et jaunes représentant les États membres.",
+                      "D’étoiles rouges sur fond blanc, rappelant l’histoire militaire du continent.",
+                      "D’un aigle noir sur fond jaune, inspiré de blasons médiévaux."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "De quelle couleur est le drapeau européen ?",
+                  choices: [
+                      "Bleu avec des étoiles jaunes disposées en cercle.",
+                      "Rouge avec des étoiles blanches alignées en diagonale.",
+                      "Vert avec des étoiles rouges réparties sur le fond.",
+                      "Blanc avec des rayures bleues verticales."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "En quelle année le traité de Maastricht, marquant une étape majeure de la construction européenne, a-t-il été signé ?",
+                  choices: [
+                      "En 1992, avant d’entrer en vigueur quelques années plus tard.",
+                      "En 1945, immédiatement après la fin de la Seconde Guerre mondiale.",
+                      "En 1957, en même temps que la création de la Communauté économique européenne.",
+                      "En 2004, lors du grand élargissement à de nouveaux États membres."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où se tiennent les sessions plénières du Parlement européen ?",
+                  choices: [
+                      "À Strasbourg, où ont lieu la plupart des sessions plénières.",
+                      "À Paris, dans l’hémicycle de l’Assemblée nationale française.",
+                      "À Rome, au sein des institutions de la République italienne.",
+                      "À Madrid, dans l’un des principaux bâtiments du gouvernement espagnol."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Où se trouve le siège de la Commission européenne ?",
+                  choices: [
+                      "À Bruxelles, dans la capitale belge, au cœur des institutions de l’Union.",
+                      "À Strasbourg, dans la même ville que le Parlement européen.",
+                      "À Luxembourg, qui accueille l’ensemble des services de la Commission.",
+                      "À Berlin, en lien avec le rôle de l’Allemagne dans l’Union."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel État suivant n'est pas membre de l'Union européenne ?",
+                  choices: [
+                      "La Suisse, qui a des accords avec l’Union mais n’en fait pas partie.",
+                      "L’Allemagne, qui est l’un des principaux États membres de l’Union.",
+                      "L’Italie, qui fait partie des pays fondateurs de la construction européenne.",
+                      "L’Espagne, qui a rejoint l’Union européenne dans les années 1980."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quand célèbre-t-on la journée de l'Europe ?",
+                  choices: [
+                      "Le 9 mai, en mémoire de la déclaration Schuman sur la construction européenne.",
+                      "Le 1er janvier, en lien avec l’entrée en vigueur du marché unique.",
+                      "Le 14 juillet, en même temps que la fête nationale française.",
+                      "Le 25 décembre, lors des fêtes de fin d’année dans l’Union."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "À quelle fréquence les élections européennes sont-elles organisées ?",
+                  choices: [
+                      "Tous les 5 ans, pour élire les députés au Parlement européen dans chaque État membre.",
+                      "Tous les 2 ans, afin de renouveler la moitié des députés européens.",
+                      "Tous les 10 ans, en même temps que les recensements de population.",
+                      "Chaque année, en alternance avec les élections nationales."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
+                  choices: [
+                      "Être citoyen d’un État membre de l’Union européenne et inscrit sur les listes électorales.",
+                      "Résider en Europe depuis au moins un an, même sans nationalité d’un pays membre.",
+                      "Parler au moins trois langues européennes reconnues par les institutions.",
+                      "Posséder obligatoirement un passeport européen biométrique en cours de validité."
+                  ],
+                  correctIndex: 0
+              },
+              {
+                  question: "Quel pays est un pays fondateur de l'Union européenne ?",
+                  choices: [
+                      "La France, qui fait partie des États à l’origine des premières communautés européennes.",
+                      "La Pologne, qui a rejoint l’Union dès la signature du traité de Rome.",
+                      "La Suède, qui est membre fondateur de toutes les institutions européennes.",
+                      "La Bulgarie, qui a participé à la création de la Communauté européenne du charbon et de l’acier."
+                  ],
+                  correctIndex: 0
+              }
+          ];
+  
+          // --------------------------------------------------------
+          // 2) Mélange aléatoire (Fisher–Yates)
+          // --------------------------------------------------------
+          function shuffle(array) {
+              const arr = [...array];
+              for (let i = arr.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [arr[i], arr[j]] = [arr[j], arr[i]];
+              }
+              return arr;
+          }
+  
+          const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+  initQuiz({
+    questionsBank: ALL_QUESTIONS,
+    totalQuestions: TOTAL_QUESTIONS,
+    selectors: {
+      quiz: "#quiz",
+      progress: "#progress",
+      question: "#question",
+      choices: "#choices",
+      nextBtn: "#nextBtn",
+      result: "#result",
+    },
   });
 </script>
+	<script type="module" src="auth-guard.js"></script>
 </body>
 
 </html>
