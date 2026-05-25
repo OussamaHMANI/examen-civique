@@ -10,7 +10,13 @@
 
 <body>
     <header>
-        <h1>Examen civique – Carte de résident</h1>
+        <div class="header-top">
+            <h1>Examen civique – Carte de résident</h1>
+            <div class="user-section">
+                <span id="user-email" class="user-email">Chargement...</span>
+                <button id="logout-btn" class="logout-btn" type="button">Se déconnecter</button>
+            </div>
+        </div>
         <p>Choisis un quiz par thème ou lance un examen blanc complet.</p>
     </header>
 
@@ -114,13 +120,13 @@
 
         </div>
 
-        <!-- Carte d’examen blanc, seule et centrée -->
+        <!-- Carte d'examen blanc, seule et centrée -->
         <section class="exam-section">
             <div class="exam-title">Examen blanc</div>
             <div class="exam-card">
                 <h2>Examen blanc complet</h2>
                 <p>
-                    40 questions mélangées par thème. Choisis une difficulté puis lance l’examen.
+                    40 questions mélangées par thème. Choisis une difficulté puis lance l'examen.
                 </p>
 
                 <div class="exam-difficulty">
@@ -130,8 +136,19 @@
                         <option value="moyenne">Difficulté moyenne</option>
                         <option value="difficile">Difficulté élevée</option>
                     </select>
-                    <button id="start-exam-btn">Lancer l’examen blanc</button>
+                    <button id="start-exam-btn">Lancer l'examen blanc</button>
                 </div>
+            </div>
+        </section>
+
+        <!-- Section Statistiques des Examens Blancs -->
+        <section class="stats-section">
+            <div class="stats-title-row">
+                <div class="stats-title">📊 Mes statistiques – Examens blancs</div>
+                <div id="stats-sync-badge" class="stats-sync-badge stats-sync-loading">Synchronisation...</div>
+            </div>
+            <div id="stats-container" class="stats-container">
+                <div class="stats-loading">⏳ Chargement des statistiques...</div>
             </div>
         </section>
     </main>
@@ -176,7 +193,231 @@
             });
         });
     </script>
-	<script type="module" src="auth-guard.js"></script>
+
+    <!-- Load statistics after DOM is ready -->
+    <script type="module">
+        import { getExamResults, calculateStats, ensureChartJS, getLastSyncMeta } from "./stats-manager.js";
+
+        function updateSyncBadge() {
+            const badge = document.getElementById("stats-sync-badge");
+            if (!badge) return;
+
+            const meta = getLastSyncMeta();
+            badge.className = "stats-sync-badge";
+
+            if (meta.source === "firestore") {
+                badge.classList.add("stats-sync-ok");
+                badge.textContent = meta.message || "Synchroniser";
+                return;
+            }
+            if (meta.source === "local") {
+                badge.classList.add("stats-sync-local");
+                badge.textContent = meta.message || "Mode local";
+                return;
+            }
+            if (meta.source === "fallback") {
+                badge.classList.add("stats-sync-warning");
+                badge.textContent = meta.message || "Fallback local";
+                return;
+            }
+            if (meta.source === "error") {
+                badge.classList.add("stats-sync-error");
+                badge.textContent = meta.message || "Erreur de synchronisation";
+                return;
+            }
+
+            badge.classList.add("stats-sync-loading");
+            badge.textContent = "Synchronisation...";
+        }
+
+        async function initializeStats() {
+            const statsContainer = document.getElementById("stats-container");
+
+            try {
+                // Load exam results
+                const results = await getExamResults("complete");
+                updateSyncBadge();
+
+                if (!results || results.length === 0) {
+                    statsContainer.innerHTML = `
+                        <div class="stats-empty">
+                            <p>📚 Aucun examen blanc complété pour le moment.</p>
+                            <p style="font-size: 0.9rem; color: #888;">Lancez votre premier examen pour voir vos statistiques ici !</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Calculate statistics
+                const stats = calculateStats(results);
+
+                // Ensure Chart.js is loaded
+                await ensureChartJS();
+
+                // Create stats HTML
+                const statsHTML = createStatsHTML(stats, results);
+                statsContainer.innerHTML = statsHTML;
+
+                // Initialize chart after DOM is updated
+                setTimeout(() => {
+                    initializeChart(stats);
+                }, 100);
+
+            } catch (error) {
+                console.error("Error initializing stats:", error);
+                updateSyncBadge();
+                statsContainer.innerHTML = `
+                    <div class="stats-error">
+                        <p>⚠️ Erreur lors du chargement des statistiques</p>
+                    </div>
+                `;
+            }
+        }
+
+        function createStatsHTML(stats, results) {
+            const avgPercentage = Math.round(stats.averageScore);
+            const successEmoji = stats.successRate >= 60 ? "✅" : stats.successRate >= 40 ? "⚠️" : "❌";
+
+            return `
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-label">📋 Examens passés</div>
+                        <div class="stat-value">${stats.totalAttempts}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 Moyenne</div>
+                        <div class="stat-value">${avgPercentage}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🎯 Taux de réussite</div>
+                        <div class="stat-value">${stats.successRate}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🏆 Meilleur score</div>
+                        <div class="stat-value">${Math.round(stats.bestScore)}%</div>
+                    </div>
+                </div>
+
+                <div class="stats-chart-container">
+                    <div class="stats-chart-wrapper">
+                        <h3>📊 Évolution de vos scores</h3>
+                        <canvas id="scoresChart"></canvas>
+                    </div>
+                    <div class="stats-progress-wrapper">
+                        <h3>🎓 Progrès</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${stats.successRate}%;" data-percentage="${stats.successRate}">
+                                <span class="progress-text">${stats.successRate}%</span>
+                            </div>
+                        </div>
+                        <p class="stats-detail">${successEmoji} Vous avez réussi ${Math.round(stats.successRate)}% de vos examens</p>
+                        <div class="last-exams">
+                            <h4>Derniers examens :</h4>
+                            <ul>
+                                ${results.slice(0, 5).map((r, idx) => {
+                                    const date = new Date(r.timestamp);
+                                    const dateStr = date.toLocaleDateString('fr-FR');
+                                    const scorePercent = Math.round((r.score / r.totalQuestions) * 100);
+                                    const resultEmoji = scorePercent >= 60 ? "✅" : "❌";
+                                    return `<li>${idx + 1}. ${dateStr} : ${r.score}/${r.totalQuestions} (${scorePercent}%) ${resultEmoji}</li>`;
+                                }).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initializeChart(stats) {
+            const ctx = document.getElementById('scoresChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: stats.dates,
+                    datasets: [{
+                        label: 'Score (%)',
+                        data: stats.scores,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: '#2563eb'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#374151',
+                                font: { size: 12, weight: 'bold' },
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#6b7280',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#6b7280'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize stats when page loads
+        window.addEventListener('load', initializeStats);
+    </script>
+    <script type="module">
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { firebaseConfig } from "./firebase-config.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Display user email when authenticated
+        auth.onAuthStateChanged((user) => {
+            const userEmailElement = document.getElementById("user-email");
+            if (user) {
+                userEmailElement.textContent = user.email || "Utilisateur connecté";
+                userEmailElement.style.color = "#e5e7eb";
+            } else {
+                userEmailElement.textContent = "Non connecté";
+                userEmailElement.style.color = "#9ca3af";
+            }
+        });
+    </script>
+    <script type="module" src="logout-index.js"></script>
+    <script type="module" src="auth-guard.js"></script>
 </body>
 
 </html>

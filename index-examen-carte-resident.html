@@ -2591,8 +2591,8 @@
         const systeme = shuffle(SYSTEME_INSTIT_QUESTIONS).slice(0, 6);
         const droits = shuffle(DROITS_DEVOIRS_QUESTIONS).slice(0, 6);
         const vivre = shuffle(VIVRE_SOCIETE_QUESTIONS).slice(0, 5);
-        const histoire = shuffle(HISTOIRE_GEO_CULTURE_QUESTIONS).slice(0, 5); // 9+9+9+9+4 = 40
-        const situation = shuffle(VIVRE_EN_FRANCE).slice(0, 12); // 9+9+9+9+4 = 40
+        const histoire = shuffle(HISTOIRE_GEO_CULTURE_QUESTIONS).slice(0, 5);
+        const situation = shuffle(VIVRE_EN_FRANCE).slice(0, 12);
 
         const forty = [
             ...principes,
@@ -2616,6 +2616,7 @@
     let userAnswers = []; // un objet par question : {question, chosen, correct, isCorrect}
     let selectedChoiceIndex = null;
     let currentRenderedChoices = [];
+    let examStartTime = new Date(); // Track exam start time
 
     const progressEl = document.getElementById("progress");
     const questionEl = document.getElementById("question");
@@ -2788,6 +2789,21 @@
                 "Bravo, tu as réussi l'examen blanc !" :
                 "Tu n'as pas encore atteint 32/40. Continue à t'entraîner, tu vas y arriver.";
 
+        // Save exam result to Firebase/localStorage
+        try {
+            import("./stats-manager.js").then(({ saveExamResult }) => {
+                saveExamResult({
+                    type: "complete",
+                    score: score,
+                    totalQuestions: total,
+                    timestamp: new Date().toISOString(),
+                    duration: Math.round((new Date() - examStartTime) / 1000)
+                });
+            }).catch(err => console.warn("Could not save result:", err));
+        } catch (err) {
+            console.warn("Could not save result:", err);
+        }
+
         const headerHtml = `
     <div class="result-header">
       <h2>Résultats de l'examen blanc</h2>
@@ -2817,6 +2833,7 @@
         score = 0;
         userAnswers = [];
         examFinished = false;
+        examStartTime = new Date(); // Reset start time
 
         if (timerInterval) {
             clearInterval(timerInterval);

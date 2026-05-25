@@ -55,6 +55,18 @@ export function initQuiz(options) {
   function showResult() {
     const total = questions.length;
     const noteSur40 = score;
+    const examDuration = Math.round((new Date() - examStartTime) / 1000); // in seconds
+
+    // Save exam result if it's a complete exam
+    if (examType === "complete") {
+      saveExamResultIfComplete({
+        type: "complete",
+        score: score,
+        totalQuestions: total,
+        timestamp: new Date().toISOString(),
+        duration: examDuration
+      });
+    }
 
     quizEl.style.display = "none";
     resultEl.style.display = "block";
