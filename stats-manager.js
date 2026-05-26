@@ -68,6 +68,11 @@ export async function saveExamResult(examData) {
  */
 function saveToLocalStorage(examData, userId = null) {
   try {
+    // Test localStorage availability (important on mobile)
+    const testKey = "__test_ls__";
+    localStorage.setItem(testKey, "test");
+    localStorage.removeItem(testKey);
+
     const results = JSON.parse(localStorage.getItem("exam_results") || "[]");
     results.push({
       ...examData,
@@ -75,21 +80,45 @@ function saveToLocalStorage(examData, userId = null) {
       userId
     });
     localStorage.setItem("exam_results", JSON.stringify(results));
+    console.log("✅ Saved to localStorage");
   } catch (error) {
-    console.error("Error saving to localStorage:", error);
+    console.warn("localStorage unavailable (private mode or full):", error.message);
+    // Fallback: store in memory (lost on page refresh but better than nothing)
+    if (!window.__exam_results_memory) {
+      window.__exam_results_memory = [];
+    }
+    window.__exam_results_memory.push({
+      ...examData,
+      timestamp: examData.timestamp || new Date().toISOString(),
+      userId
+    });
   }
 }
 
 function getLocalResults(type = null, userId = null) {
-  const localResults = JSON.parse(localStorage.getItem("exam_results") || "[]");
-  return localResults.filter(r => {
-    const typeOk = !type || r.type === type;
-    const userOk = !userId || !r.userId || r.userId === userId;
-    return typeOk && userOk;
-  });
+  try {
+    const localResults = JSON.parse(localStorage.getItem("exam_results") || "[]");
+    return localResults.filter(r => {
+      const typeOk = !type || r.type === type;
+      const userOk = !userId || !r.userId || r.userId === userId;
+      return typeOk && userOk;
+    });
+  } catch (error) {
+    // Fallback to memory storage if localStorage fails
+    const memoryResults = window.__exam_results_memory || [];
+    return memoryResults.filter(r => {
+      const typeOk = !type || r.type === type;
+      const userOk = !userId || !r.userId || r.userId === userId;
+      return typeOk && userOk;
+    });
+  }
 }
 
-async function getCurrentUserWithWait(timeoutMs = 3000) {
+async function getCurrentUserWithWait(timeoutMs = 5000) {
+  // On mobile, increase timeout
+  const isMobile = /iPhone|iPad|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+  const actualTimeout = isMobile ? Math.max(timeoutMs, 8000) : timeoutMs;
+
   if (auth.currentUser) {
     return auth.currentUser;
   }
@@ -100,9 +129,10 @@ async function getCurrentUserWithWait(timeoutMs = 3000) {
       if (!settled) {
         settled = true;
         unsubscribe();
+        console.warn(`Auth timeout after ${actualTimeout}ms, using fallback`);
         resolve(auth.currentUser || null);
       }
-    }, timeoutMs);
+    }, actualTimeout);
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (settled) {

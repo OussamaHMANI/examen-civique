@@ -234,8 +234,33 @@
             const statsContainer = document.getElementById("stats-container");
 
             try {
-                // Load exam results
-                const results = await getExamResults("complete");
+                // Show loading state
+                statsContainer.innerHTML = `
+                    <div class="stats-loading">⏳ Chargement des statistiques...</div>
+                `;
+
+                // Load exam results with retry logic for mobile
+                let attempts = 0;
+                let results = null;
+
+                while (attempts < 3 && !results) {
+                  try {
+                    results = await Promise.race([
+                      getExamResults("complete"),
+                      new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error("Timeout")), 8000)
+                      )
+                    ]);
+                    break;
+                  } catch (e) {
+                    attempts++;
+                    console.warn(`Attempt ${attempts} failed, retrying...`);
+                    if (attempts < 3) {
+                      await new Promise(r => setTimeout(r, 1000));
+                    }
+                  }
+                }
+
                 updateSyncBadge();
 
                 if (!results || results.length === 0) {
@@ -269,6 +294,7 @@
                 statsContainer.innerHTML = `
                     <div class="stats-error">
                         <p>⚠️ Erreur lors du chargement des statistiques</p>
+                        <p style="font-size: 0.85rem; color: #666;">Vérifiez votre connexion et rechargez la page</p>
                     </div>
                 `;
             }
@@ -394,7 +420,27 @@
         }
 
         // Initialize stats when page loads
-        window.addEventListener('load', initializeStats);
+        window.addEventListener('load', () => {
+            initializeStats();
+
+            // On mobile, don't scroll automatically - let the user choose
+            // For desktop, wait a bit then scroll to stats
+            const isMobile = /iPhone|iPad|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+
+            if (!isMobile) {
+                setTimeout(() => {
+                    const statsSection = document.querySelector('.stats-section');
+                    if (statsSection && statsSection.offsetTop > 0) {
+                        // Only scroll if there's something to show
+                        const hasStats = !statsSection.querySelector('.stats-empty') &&
+                                        !statsSection.querySelector('.stats-loading');
+                        if (hasStats) {
+                            statsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                }, 500);
+            }
+        });
     </script>
     <script type="module">
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";

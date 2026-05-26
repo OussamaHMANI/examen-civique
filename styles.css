@@ -946,4 +946,35 @@ footer {
         width: 100%;
         padding: 14px 16px;
     }
+
+    /* Mobile stats optimizations */
+    .stats-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+    .stat-value {
+        font-size: 1.6rem;
+    }
+
+    .stats-chart-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    canvas {
+        max-height: 250px;
+    }
+
+    .progress-text {
+        font-size: 0.75rem;
+    }
 }

@@ -12,7 +12,9 @@ export function initQuiz(options) {
     questionsBank,
     totalQuestions = questionsBank.length,
     selectors = {},
-    examDurationMinutes = null  // Ajouter support du timer optionnel
+    examDurationMinutes = null,  // Ajouter support du timer optionnel
+    examType = "theme",
+    onResultSave = null
   } = options;
 
   const {
@@ -50,22 +52,27 @@ export function initQuiz(options) {
   let currentRenderedChoices = [];
   let timerInterval = null;
   let remainingSeconds = null;
+  const quizStartTime = new Date();
 
   // Déclarer showResult avant de l'utiliser dans le timer
   function showResult() {
     const total = questions.length;
     const noteSur40 = score;
-    const examDuration = Math.round((new Date() - examStartTime) / 1000); // in seconds
+    const examDuration = Math.round((new Date() - quizStartTime) / 1000); // in seconds
 
-    // Save exam result if it's a complete exam
-    if (examType === "complete") {
-      saveExamResultIfComplete({
-        type: "complete",
-        score: score,
-        totalQuestions: total,
-        timestamp: new Date().toISOString(),
-        duration: examDuration
-      });
+    // Optional external save callback (for pages that need persistence)
+    if (typeof onResultSave === "function") {
+      try {
+        onResultSave({
+          type: examType,
+          score,
+          totalQuestions: total,
+          timestamp: new Date().toISOString(),
+          duration: examDuration
+        });
+      } catch (error) {
+        console.warn("Could not save quiz result:", error);
+      }
     }
 
     quizEl.style.display = "none";
